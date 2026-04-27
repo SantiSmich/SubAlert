@@ -30,7 +30,7 @@ export default async function handler(req, res) {
   const accessToken = tokenData.access_token;
 
   const query = encodeURIComponent(
-  '("subscription" OR "your subscription" OR "subscription renewed" OR "subscription renewal" OR "plan renewed" OR "membership" OR "recurring payment" OR "suscripción" OR "tu suscripción" OR "suscripción renovada" OR "renovación de suscripción" OR "membresía" OR "pago recurrente") ("€" OR "EUR" OR "$" OR "USD" OR "mensual" OR "monthly" OR "annual" OR "anual") -transfer -wise -pedido -order -glovo -reembolso -refund -promo -sale -oferta -descuento'
+  '("subscription" OR "suscripción" OR "renewal" OR "renovación" OR "membership" OR "membresía" OR "monthly" OR "mensual" OR "annual" OR "anual" OR "recurring" OR "recurrente")'
 );
   const listResponse = await fetch(
     `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${query}&maxResults=10`,
@@ -70,8 +70,45 @@ export default async function handler(req, res) {
     const from = headers.find(h => h.name === "From")?.value || "Sin remitente";
     const date = headers.find(h => h.name === "Date")?.value || "Sin fecha";
 
-    results.push({ subject, from, date });
-  }
+    const text = `${subject} ${from}`.toLowerCase();
+
+const mustInclude = [
+  "subscription",
+  "suscripción",
+  "renewal",
+  "renovación",
+  "membership",
+  "membresía",
+  "monthly",
+  "mensual",
+  "annual",
+  "anual",
+  "recurring",
+  "recurrente"
+];
+
+const mustExclude = [
+  "wise",
+  "glovo",
+  "remitly",
+  "pedido",
+  "order",
+  "transfer",
+  "envío",
+  "reembolso",
+  "refund",
+  "oferta",
+  "descuento",
+  "promo"
+];
+
+const isSubscription =
+  mustInclude.some(word => text.includes(word)) &&
+  !mustExclude.some(word => text.includes(word));
+
+if (isSubscription) {
+  results.push({ subject, from, date });
+}
 
   const html = `
     <html>
