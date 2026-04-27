@@ -29,11 +29,11 @@ export default async function handler(req, res) {
     const accessToken = tokenData.access_token;
 
     const query = encodeURIComponent(
-      '("subscription" OR "suscripción" OR "receipt" OR "invoice" OR "payment" OR "factura" OR "billing" OR "charge" OR "cargo")'
+      '("subscription" OR "suscripción" OR "receipt" OR "invoice" OR "payment" OR "factura" OR "billing" OR "charge" OR "cargo" OR "renewal" OR "renovación" OR "membership" OR "membresía" OR "monthly" OR "mensual" OR "annual" OR "anual")'
     );
 
     const listResponse = await fetch(
-      `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${query}&maxResults=30`,
+      `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${query}&maxResults=60`,
       {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
@@ -41,7 +41,6 @@ export default async function handler(req, res) {
 
     const listData = await listResponse.json();
     const messages = listData.messages || [];
-    const results = [];
 
     const mustInclude = [
       "subscription",
@@ -52,7 +51,15 @@ export default async function handler(req, res) {
       "factura",
       "billing",
       "charge",
-      "cargo"
+      "cargo",
+      "renewal",
+      "renovación",
+      "membership",
+      "membresía",
+      "monthly",
+      "mensual",
+      "annual",
+      "anual"
     ];
 
     const mustExclude = [
@@ -70,22 +77,13 @@ export default async function handler(req, res) {
       "descuento",
       "promo",
       "sale",
-      "delivery"
+      "delivery",
+      "restaurant",
+      "regalo",
+      "madre"
     ];
 
-    const likelySubscriptionBrands = [
-      "spotify",
-      "netflix",
-      "google",
-      "apple",
-      "adobe",
-      "canva",
-      "moises",
-      "amazon prime",
-      "youtube",
-      "chatgpt",
-      "openai"
-    ];
+    const senderMap = {};
 
     for (const msg of messages) {
       const msgResponse = await fetch(
@@ -112,19 +110,26 @@ export default async function handler(req, res) {
 
       const text = `${subject} ${from}`.toLowerCase();
 
-      const isPaid =
+      const isPossiblePayment =
         mustInclude.some((word) => text.includes(word)) &&
         !mustExclude.some((word) => text.includes(word));
 
-      const looksLikeSubscription =
-        likelySubscriptionBrands.some((b) => text.includes(b)) ||
-        text.includes("monthly") ||
-        text.includes("mensual") ||
-        text.includes("renew") ||
-        text.includes("renovación");
+      if (!isPossiblePayment) continue;
 
-      if (isPaid && looksLikeSubscription) {
-        results.push({ subject, from, date });
+      const senderKey = from.toLowerCase().trim();
+
+      if (!senderMap[senderKey]) {
+        senderMap[senderKey] = [];
+      }
+
+      senderMap[senderKey].push({ subject, from, date });
+    }
+
+    const finalResults = [];
+
+    for (const sender in senderMap) {
+      if (senderMap[sender].length >= 2) {
+        finalResults.push(...senderMap[sender]);
       }
     }
 
@@ -153,18 +158,18 @@ export default async function handler(req, res) {
         </head>
         <body>
           <h1>SubAlert</h1>
-          <h2>Posibles suscripciones pagas encontradas</h2>
+          <h2>Posibles suscripciones recurrentes encontradas</h2>
 
           ${
-            results.length
-              ? results.map(r => `
+            finalResults.length
+              ? finalResults.map(r => `
                 <div class="card">
                   <h3>${r.subject}</h3>
                   <p><strong>De:</strong> ${r.from}</p>
                   <p><strong>Fecha:</strong> ${r.date}</p>
                 </div>
               `).join("")
-              : `<p>No encontré suscripciones claras.</p>`
+              : `<p>No encontré suscripciones recurrentes claras. Evité mostrar pagos únicos, pedidos, transferencias, reembolsos y promociones.</p>`
           }
 
           <br />
@@ -174,9 +179,11 @@ export default async function handler(req, res) {
     `;
 
     return res.send(html);
-
   } catch (err) {
     console.error("ERROR:", err);
-    return res.status(500).json({ error: "Internal crash", details: err.message });
+    return res.status(500).json({
+      error: "Internal crash",
+      details: err.message,
+    });
   }
 }
