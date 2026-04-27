@@ -28,20 +28,64 @@ export default async function handler(req, res) {
   const accessToken = tokenData.access_token;
 
   const query = encodeURIComponent(
-    '("subscription" OR "suscripción" OR "renewal" OR "renovación" OR "membership" OR "membresía" OR "recurring" OR "recurrente" OR "mensual" OR "monthly" OR "annual" OR "anual")'
+    '("subscription" OR "suscripción" OR "renewal" OR "renovación" OR "membership" OR "membresía" OR "recurring" OR "recurrente" OR "mensual" OR "monthly" OR "annual" OR "anual" OR "receipt" OR "invoice" OR "payment" OR "factura" OR "billing" OR "charge" OR "cargo")'
   );
 
   const listResponse = await fetch(
-    `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${query}&maxResults=25`,
+    `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${query}&maxResults=30`,
     {
       headers: { Authorization: `Bearer ${accessToken}` },
     }
   );
 
   const listData = await listResponse.json();
-
   const messages = listData.messages || [];
   const results = [];
+
+  const mustInclude = [
+    "subscription",
+    "suscripción",
+    "renewal",
+    "renovación",
+    "membership",
+    "membresía",
+    "recurring",
+    "recurrente",
+    "mensual",
+    "monthly",
+    "annual",
+    "anual",
+    "receipt",
+    "invoice",
+    "payment",
+    "factura",
+    "billing",
+    "charge",
+    "cargo"
+  ];
+
+  const mustExclude = [
+    "wise",
+    "glovo",
+    "remitly",
+    "pedido",
+    "order",
+    "transfer",
+    "envío",
+    "shipment",
+    "reembolso",
+    "refund",
+    "oferta",
+    "descuento",
+    "promo",
+    "sale",
+    "regalo",
+    "madre",
+    "delivery",
+    "restaurant",
+    "enviaste",
+    "sent"
+  ];
 
   for (const msg of messages) {
     const msgResponse = await fetch(
@@ -54,51 +98,25 @@ export default async function handler(req, res) {
     const msgData = await msgResponse.json();
     const headers = msgData.payload?.headers || [];
 
-    const subject = headers.find(h => h.name === "Subject")?.value || "Sin asunto";
-    const from = headers.find(h => h.name === "From")?.value || "Sin remitente";
-    const date = headers.find(h => h.name === "Date")?.value || "Sin fecha";
+    const subject =
+      headers.find((h) => h.name.toLowerCase() === "subject")?.value ||
+      "Sin asunto";
+
+    const from =
+      headers.find((h) => h.name.toLowerCase() === "from")?.value ||
+      "Sin remitente";
+
+    const date =
+      headers.find((h) => h.name.toLowerCase() === "date")?.value ||
+      "Sin fecha";
 
     const text = `${subject} ${from}`.toLowerCase();
 
-    const mustInclude = [
-      "subscription",
-      "suscripción",
-      "renewal",
-      "renovación",
-      "membership",
-      "membresía",
-      "recurring",
-      "recurrente",
-      "mensual",
-      "monthly",
-      "annual",
-      "anual"
-    ];
+    const isPossiblePaidSubscription =
+      mustInclude.some((word) => text.includes(word)) &&
+      !mustExclude.some((word) => text.includes(word));
 
-    const mustExclude = [
-      "wise",
-      "glovo",
-      "remitly",
-      "pedido",
-      "order",
-      "transfer",
-      "envío",
-      "shipment",
-      "reembolso",
-      "refund",
-      "oferta",
-      "descuento",
-      "promo",
-      "sale",
-      "regalo",
-      "madre"
-    ];
-
-    const isSubscription =
-      mustInclude.some(word => text.includes(word)) &&
-      !mustExclude.some(word => text.includes(word));
-
-    if (isSubscription) {
+    if (isPossiblePaidSubscription) {
       results.push({ subject, from, date });
     }
   }
@@ -114,29 +132,61 @@ export default async function handler(req, res) {
             color: white;
             padding: 24px;
           }
+
+          h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+          }
+
+          h2 {
+            font-size: 30px;
+            line-height: 1.15;
+            margin-bottom: 24px;
+          }
+
           .card {
             background: #211936;
-            padding: 16px;
-            border-radius: 16px;
-            margin-bottom: 12px;
+            padding: 18px;
+            border-radius: 18px;
+            margin-bottom: 14px;
             border: 1px solid rgba(255,255,255,.12);
           }
-          a { color: #b388ff; }
+
+          .card h3 {
+            font-size: 23px;
+            margin: 0 0 18px;
+          }
+
+          .card p {
+            font-size: 18px;
+            line-height: 1.35;
+            margin: 10px 0;
+          }
+
+          a {
+            color: #b388ff;
+            font-size: 18px;
+          }
         </style>
       </head>
+
       <body>
         <h1>SubAlert</h1>
         <h2>Posibles suscripciones pagas encontradas</h2>
 
         ${
           results.length
-            ? results.map(r => `
-              <div class="card">
-                <h3>${r.subject}</h3>
-                <p><strong>De:</strong> ${r.from}</p>
-                <p><strong>Fecha:</strong> ${r.date}</p>
-              </div>
-            `).join("")
+            ? results
+                .map(
+                  (r) => `
+                    <div class="card">
+                      <h3>${r.subject}</h3>
+                      <p><strong>De:</strong> ${r.from}</p>
+                      <p><strong>Fecha:</strong> ${r.date}</p>
+                    </div>
+                  `
+                )
+                .join("")
             : `<p>No encontré suscripciones pagas claras. Evité mostrar pedidos, transferencias, reembolsos y promociones.</p>`
         }
 
