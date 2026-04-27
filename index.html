@@ -1,111 +1,631 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SubAlert</title>
 
 <style>
-body {
+:root{
+  --bg:#101018;
+  --card:#1b1b27;
+  --card2:#242435;
+  --text:#f7f4ff;
+  --muted:#aaa6bd;
+  --purple:#7c3aed;
+  --purple2:#a78bfa;
+  --red:#ff5c6c;
+  --yellow:#f7c948;
+  --green:#35d07f;
+}
+
+*{box-sizing:border-box}
+
+body{
   margin:0;
-  font-family: Arial, sans-serif;
-  background:#111;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(124,58,237,.35), transparent 35%),
+    linear-gradient(180deg,#11111a,#09090d);
+  color:var(--text);
+}
+
+.app{
+  max-width:440px;
+  margin:auto;
+  min-height:100vh;
+  padding:22px 18px 100px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
+}
+
+.kicker{
+  color:var(--purple2);
+  font-size:13px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin:0 0 4px;
+}
+
+h1{
+  font-size:42px;
+  line-height:1;
+  margin:0;
+}
+
+.subtitle{
+  color:var(--muted);
+  margin:6px 0 0;
+}
+
+.addBtn{
+  width:54px;
+  height:54px;
+  border:0;
+  border-radius:18px;
+  background:var(--purple);
   color:white;
+  font-size:30px;
+  cursor:pointer;
+}
+
+.summary{
+  background:linear-gradient(135deg,rgba(255,255,255,.11),rgba(255,255,255,.04));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:28px;
+  padding:22px;
+  margin-bottom:16px;
+  box-shadow:0 25px 70px rgba(0,0,0,.35);
+}
+
+.summary p{
+  color:var(--muted);
+  margin:0 0 6px;
+}
+
+.total{
+  font-size:34px;
+  font-weight:900;
+}
+
+.alertBox{
+  margin-top:14px;
+  padding:12px;
+  border-radius:18px;
+  background:rgba(255,92,108,.12);
+  color:#ffd6dc;
+  font-weight:800;
+  display:none;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.actions button{
+  border:1px solid rgba(255,255,255,.08);
+  background:var(--card);
+  color:white;
+  border-radius:18px;
+  padding:14px 10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.search{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:22px;
+}
+
+.search input{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:white;
+  font-size:16px;
+}
+
+.sectionTitle{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.sectionTitle h2{
+  font-size:18px;
+  margin:0;
+}
+
+.sectionTitle span{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.08);
+  border-left:6px solid var(--green);
+  border-radius:24px;
+  padding:16px;
+  cursor:pointer;
+}
+
+.card.warning{border-left-color:var(--yellow)}
+.card.danger{border-left-color:var(--red)}
+
+.cardTop{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.card h3{
+  margin:0 0 4px;
+  font-size:18px;
+}
+
+.card p{
+  margin:0;
+  color:var(--muted);
+}
+
+.price{
+  text-align:right;
+  white-space:nowrap;
+}
+
+.price strong{
+  display:block;
+}
+
+.price span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.renewal{
+  margin-top:14px;
+  font-weight:900;
+}
+
+.details{
+  display:none;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.08);
+  color:var(--muted);
+}
+
+.card.open .details{
+  display:block;
+}
+
+.details b{
+  color:white;
+}
+
+.delete{
+  margin-top:8px;
+  border:0;
+  background:transparent;
+  color:var(--red);
+  font-weight:900;
+  cursor:pointer;
+}
+
+.empty{
+  padding:24px;
+  text-align:center;
+  color:var(--muted);
+  background:var(--card);
+  border-radius:24px;
+}
+
+.modalBg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:16px;
+}
+
+.modal{
+  width:min(440px,100%);
+  background:var(--card);
+  border-radius:28px;
   padding:20px;
 }
 
-h1 {
-  font-size:28px;
+.modalHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
 }
 
-.total {
-  margin:20px 0;
-  font-size:22px;
+.modalHeader h2{
+  margin:0;
 }
 
-.card {
-  background:#1c1c1c;
-  padding:15px;
-  border-radius:12px;
-  margin-bottom:10px;
-  border-left:5px solid #4caf50;
-}
-
-.card.alert {
-  border-left:5px solid red;
-}
-
-button {
-  margin-top:10px;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  background:#7c3aed;
+.close{
+  border:0;
+  background:var(--card2);
   color:white;
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  cursor:pointer;
 }
 
-input {
+label{
+  display:block;
+  margin-bottom:12px;
+  color:var(--muted);
+  font-size:14px;
+  font-weight:700;
+}
+
+input,select{
   width:100%;
-  padding:10px;
-  margin:5px 0;
-  border-radius:8px;
-  border:none;
+  margin-top:6px;
+  padding:13px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:#11111a;
+  color:white;
+  font-size:16px;
 }
 
-</style>
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
 
+.save{
+  width:100%;
+  margin-top:8px;
+  padding:15px;
+  border:0;
+  border-radius:16px;
+  background:var(--purple);
+  color:white;
+  font-weight:900;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%);
+  background:white;
+  color:#111;
+  padding:12px 18px;
+  border-radius:999px;
+  font-weight:900;
+  display:none;
+}
+</style>
 </head>
 
 <body>
+<main class="app">
 
-<h1>SubAlert 🚀</h1>
+  <header class="header">
+    <div>
+      <p class="kicker">Memoria digital</p>
+      <h1>SubAlert</h1>
+      <p class="subtitle">Nunca más una suscripción sorpresa.</p>
+    </div>
+    <button class="addBtn" onclick="openModal()">+</button>
+  </header>
 
-<div class="total" id="total">Total: 0€</div>
+  <section class="summary">
+    <p>Total mensual estimado</p>
+    <div class="total" id="total">0,00 €</div>
+    <div class="alertBox" id="alertBox"></div>
+  </section>
 
-<div id="list"></div>
+  <section class="actions">
+    <button onclick="demoEmail()">🔍 Buscar en correo</button>
+    <button onclick="demoSMS()">📱 Buscar por SMS</button>
+  </section>
 
-<button onclick="addSub()">+ Agregar suscripción</button>
+  <section class="search">
+    <input id="searchInput" oninput="render()" placeholder="Buscar suscripción..." />
+  </section>
+
+  <section class="sectionTitle">
+    <h2>Suscripciones</h2>
+    <span id="count">0 activas</span>
+  </section>
+
+  <section class="list" id="list"></section>
+
+</main>
+
+<div class="modalBg" id="modalBg">
+  <form class="modal" onsubmit="saveSub(event)">
+    <div class="modalHeader">
+      <h2>Agregar suscripción</h2>
+      <button type="button" class="close" onclick="closeModal()">×</button>
+    </div>
+
+    <label>Servicio
+      <input id="name" required placeholder="Netflix, Spotify, iCloud..." />
+    </label>
+
+    <div class="grid">
+      <label>Precio
+        <input id="price" required type="number" step="0.01" placeholder="12.99" />
+      </label>
+
+      <label>Frecuencia
+        <select id="frequency">
+          <option value="monthly">Mensual</option>
+          <option value="yearly">Anual</option>
+        </select>
+      </label>
+    </div>
+
+    <label>Plan
+      <input id="plan" placeholder="Premium, Estándar, Básico..." />
+    </label>
+
+    <label>Próxima renovación
+      <input id="date" required type="date" />
+    </label>
+
+    <label>Email de contacto
+      <input id="email" type="email" placeholder="soporte@app.com" />
+    </label>
+
+    <label>Teléfono / contacto
+      <input id="phone" placeholder="+34..." />
+    </label>
+
+    <button class="save">Guardar suscripción</button>
+  </form>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
+let subs = JSON.parse(localStorage.getItem("subalert_subs")) || [
+  {
+    id: crypto.randomUUID(),
+    name:"Spotify",
+    plan:"Premium Individual",
+    price:10.99,
+    frequency:"monthly",
+    date:plusDays(3),
+    email:"support@spotify.com",
+    phone:"",
+    source:"Correo"
+  },
+  {
+    id: crypto.randomUUID(),
+    name:"Netflix",
+    plan:"Estándar",
+    price:12.99,
+    frequency:"monthly",
+    date:plusDays(12),
+    email:"help@netflix.com",
+    phone:"",
+    source:"Manual"
+  },
+  {
+    id: crypto.randomUUID(),
+    name:"iCloud",
+    plan:"50 GB",
+    price:2.99,
+    frequency:"monthly",
+    date:plusDays(1),
+    email:"support@apple.com",
+    phone:"",
+    source:"SMS"
+  }
+];
 
-let subs = [];
-
-function render() {
-  let total = 0;
-  let html = "";
-
-  subs.forEach((s,i) => {
-    total += s.price;
-
-    let days = Math.ceil((new Date(s.date) - new Date()) / (1000*60*60*24));
-
-    let alert = days <= 3 ? "alert" : "";
-
-    html += `
-    <div class="card ${alert}">
-      <b>${s.name}</b><br>
-      ${s.price}€ / mes<br>
-      Se renueva en ${days} días
-    </div>
-    `;
-  });
-
-  document.getElementById("list").innerHTML = html;
-  document.getElementById("total").innerText = "Total: " + total + "€";
+function save(){
+  localStorage.setItem("subalert_subs", JSON.stringify(subs));
 }
 
-function addSub() {
-  let name = prompt("Nombre:");
-  let price = parseFloat(prompt("Precio:"));
-  let date = prompt("Fecha (YYYY-MM-DD):");
+function render(){
+  const list = document.getElementById("list");
+  const query = document.getElementById("searchInput").value.toLowerCase();
+  let filtered = subs.filter(s => s.name.toLowerCase().includes(query));
+  filtered.sort((a,b)=> new Date(a.date)-new Date(b.date));
 
-  subs.push({name, price, date});
+  let monthly = subs.reduce((acc,s)=> acc + monthlyCost(s),0);
+  document.getElementById("total").innerText = money(monthly);
+  document.getElementById("count").innerText = subs.length + " activas";
+
+  const urgent = subs.filter(s => {
+    let d = daysUntil(s.date);
+    return d >= 0 && d <= 3;
+  });
+
+  const alertBox = document.getElementById("alertBox");
+  if(urgent.length){
+    alertBox.style.display = "block";
+    alertBox.innerText = "⚠️ " + urgent.length + " renovación" + (urgent.length>1?"es":"") + " en 3 días o menos";
+  } else {
+    alertBox.style.display = "none";
+  }
+
+  if(!filtered.length){
+    list.innerHTML = `<div class="empty">No hay suscripciones cargadas.</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(s => {
+    let d = daysUntil(s.date);
+    let status = getStatus(d);
+    return `
+      <article class="card ${status.class}" onclick="this.classList.toggle('open')">
+        <div class="cardTop">
+          <div>
+            <h3>${s.name}</h3>
+            <p>${s.plan || "Sin plan indicado"}</p>
+          </div>
+          <div class="price">
+            <strong>${money(s.price)}</strong>
+            <span>${s.frequency === "yearly" ? "año" : "mes"}</span>
+          </div>
+        </div>
+
+        <div class="renewal">${status.text}</div>
+
+        <div class="details" onclick="event.stopPropagation()">
+          <p><b>Renovación:</b> ${formatDate(s.date)}</p>
+          <p><b>Coste mensual estimado:</b> ${money(monthlyCost(s))}</p>
+          <p><b>Email:</b> ${s.email || "No indicado"}</p>
+          <p><b>Teléfono:</b> ${s.phone || "No indicado"}</p>
+          <p><b>Origen:</b> ${s.source || "Manual"}</p>
+          <button class="delete" onclick="deleteSub('${s.id}')">Eliminar</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function openModal(){
+  document.getElementById("modalBg").style.display="flex";
+  document.getElementById("date").value = plusDays(30);
+}
+
+function closeModal(){
+  document.getElementById("modalBg").style.display="none";
+}
+
+function saveSub(e){
+  e.preventDefault();
+
+  subs.push({
+    id: crypto.randomUUID(),
+    name: document.getElementById("name").value,
+    price: parseFloat(document.getElementById("price").value),
+    frequency: document.getElementById("frequency").value,
+    plan: document.getElementById("plan").value,
+    date: document.getElementById("date").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    source:"Manual"
+  });
+
+  save();
   render();
+  closeModal();
+  e.target.reset();
+  toast("Suscripción agregada");
+}
+
+function deleteSub(id){
+  subs = subs.filter(s => s.id !== id);
+  save();
+  render();
+  toast("Suscripción eliminada");
+}
+
+function demoEmail(){
+  subs.unshift({
+    id: crypto.randomUUID(),
+    name:"Canva",
+    plan:"Pro",
+    price:11.99,
+    frequency:"monthly",
+    date:plusDays(5),
+    email:"support@canva.com",
+    phone:"",
+    source:"Correo"
+  });
+  save();
+  render();
+  toast("Demo: suscripción detectada por correo");
+}
+
+function demoSMS(){
+  subs.unshift({
+    id: crypto.randomUUID(),
+    name:"AFA Play",
+    plan:"Mensual",
+    price:7,
+    frequency:"monthly",
+    date:plusDays(2),
+    email:"",
+    phone:"+34 900 000 000",
+    source:"SMS"
+  });
+  save();
+  render();
+  toast("Demo: suscripción detectada por SMS");
+}
+
+function daysUntil(date){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const target = new Date(date + "T00:00:00");
+  return Math.ceil((target - today) / 86400000);
+}
+
+function getStatus(days){
+  if(days < 0) return {class:"danger", text:"⚠️ Renovación vencida"};
+  if(days <= 3) return {class:"danger", text:`🔔 Te cobran en ${days} día${days===1?"":"s"}`};
+  if(days <= 7) return {class:"warning", text:`🟡 Se renueva en ${days} días`};
+  return {class:"safe", text:`🔕 Próxima renovación en ${days} días`};
+}
+
+function monthlyCost(s){
+  return s.frequency === "yearly" ? s.price / 12 : s.price;
+}
+
+function money(n){
+  return new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR"}).format(n || 0);
+}
+
+function formatDate(d){
+  return new Intl.DateTimeFormat("es-ES",{day:"2-digit",month:"short",year:"numeric"}).format(new Date(d + "T00:00:00"));
+}
+
+function plusDays(days){
+  const d = new Date();
+  d.setDate(d.getDate()+days);
+  return d.toISOString().slice(0,10);
+}
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.style.display = "block";
+  setTimeout(()=> t.style.display="none", 1800);
 }
 
 render();
-
 </script>
 
 </body>
