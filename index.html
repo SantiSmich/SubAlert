@@ -1,142 +1,115 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SubAlert</title>
 
 <style>
-:root{
-  --card:#1b1b27; --card2:#242435; --text:#f7f4ff; --muted:#aaa6bd;
-  --purple:#7c3aed; --purple2:#a78bfa; --red:#ff5c6c; --yellow:#f7c948; --green:#35d07f;
-}
-*{box-sizing:border-box}
-
-body{
+body {
   margin:0;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:radial-gradient(circle at top left, rgba(124,58,237,.35), transparent 35%),linear-gradient(180deg,#11111a,#09090d);
-  color:var(--text);
+  font-family: Arial, sans-serif;
+  background:#111;
+  color:white;
+  padding:20px;
 }
 
-.app{max-width:440px;margin:auto;padding:22px 18px 100px}
+h1 {font-size:28px;}
 
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-
-h1{font-size:38px;margin:0}
-.subtitle{color:var(--muted)}
-
-.addBtn{
-  width:50px;height:50px;border:0;border-radius:14px;
-  background:var(--purple);color:white;font-size:26px;cursor:pointer;
+.summary {
+  margin:15px 0;
 }
 
-.summary{
-  background:var(--card);
-  border-radius:20px;padding:18px;margin-bottom:15px;
+.total {
+  font-size:24px;
+  font-weight:bold;
 }
 
-.total{font-size:28px;font-weight:bold}
-
-.alertBox{
-  margin-top:10px;padding:10px;border-radius:14px;
-  background:rgba(255,92,108,.2);
+.alert {
+  color:#ff5c6c;
+  margin-top:5px;
 }
 
-.actions{display:flex;gap:10px;margin-bottom:10px}
-.actions button,.reminderBtn{
-  flex:1;padding:10px;border-radius:14px;border:none;background:var(--card2);color:white;cursor:pointer;
+button {
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#7c3aed;
+  color:white;
+  margin-top:10px;
 }
 
-.reminderBtn{margin-bottom:15px;background:var(--purple)}
-
-.card{
-  background:var(--card);
-  border-radius:18px;padding:14px;margin-bottom:10px;
-  border-left:5px solid var(--green);
+.card {
+  background:#1c1c1c;
+  padding:12px;
+  border-radius:12px;
+  margin:10px 0;
+  border-left:5px solid #35d07f;
 }
 
-.card.danger{border-left:5px solid var(--red)}
-.card.warning{border-left:5px solid var(--yellow)}
+.card.danger {border-left:5px solid #ff5c6c;}
+.card.warning {border-left:5px solid #f7c948;}
 
-.cardTop{display:flex;justify-content:space-between}
-
-.details{margin-top:10px;font-size:13px;color:var(--muted)}
-
-.btnRow{margin-top:10px;display:flex;gap:6px}
-
-.smallBtn{
-  flex:1;padding:6px;border-radius:10px;border:none;font-size:12px;
-  cursor:pointer;
+.small {
+  font-size:12px;
+  color:#aaa;
 }
 
-.edit{background:#3b2a78}
-.cancel{background:#5c1d2a}
-.delete{background:transparent;color:red}
-
-input,select{
-  width:100%;margin:5px 0;padding:8px;border-radius:10px;border:none;
+.row {
+  display:flex;
+  gap:5px;
+  margin-top:10px;
 }
 
-.modal{
-  position:fixed;bottom:0;left:0;right:0;
-  background:#111;padding:15px;border-radius:20px 20px 0 0;
+.row button {
+  flex:1;
+  font-size:12px;
+}
+
+.modal {
   display:none;
+  background:#222;
+  padding:15px;
+  border-radius:10px;
 }
 
-.toast{
-  position:fixed;bottom:20px;left:50%;
-  transform:translateX(-50%);
-  background:white;color:black;padding:10px;border-radius:20px;
-  display:none;
+input,select {
+  width:100%;
+  margin:5px 0;
+  padding:8px;
+  border-radius:8px;
+  border:none;
 }
 </style>
+
 </head>
 
 <body>
 
-<div class="app">
-
 <h1>SubAlert</h1>
-<p class="subtitle">Nunca más una suscripción sorpresa</p>
+<p>Nunca más una suscripción sorpresa</p>
 
 <div class="summary">
   <div class="total" id="total">0 €</div>
-  <div class="alertBox" id="alertBox"></div>
+  <div class="alert" id="week"></div>
 </div>
 
-<div class="actions">
-  <button onclick="demoEmail()">Correo</button>
-  <button onclick="demoSMS()">SMS</button>
-</div>
-
-<button class="reminderBtn" onclick="activateReminders()">🔔 Activar recordatorios</button>
+<button onclick="openModal()">+ Agregar</button> <button onclick="demo()">Demo</button>
 
 <div id="list"></div>
 
-<button class="addBtn" onclick="openModal()">+</button>
-
-</div>
-
 <div class="modal" id="modal">
-  <input id="editId" type="hidden">
+  <input id="id" hidden>
   <input id="name" placeholder="Servicio">
   <input id="price" type="number" placeholder="Precio">
-  <select id="frequency">
-    <option value="monthly">Mensual</option>
-    <option value="yearly">Anual</option>
-  </select>
   <input id="date" type="date">
-  <input id="cancelUrl" placeholder="Link cancelar">
-  <button onclick="saveSub()">Guardar</button>
+  <input id="url" placeholder="Link cancelar">
+  <button onclick="save()">Guardar</button>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script>
 let subs = JSON.parse(localStorage.getItem("subs")) || [];
-
-function save(){localStorage.setItem("subs", JSON.stringify(subs));}
 
 function render(){
   let html="";
@@ -146,29 +119,43 @@ function render(){
   subs.forEach(s=>{
     total+=s.price;
     let d=days(s.date);
+
     if(d<=7) week+=s.price;
 
     let status=getStatus(d,s.price);
 
-    html+=     <div class="card ${status.class}">       <div class="cardTop">         <div>${s.name}</div>         <div>${s.price}€</div>       </div>       <div>${status.text}</div>        <div class="details">         ${s.date}       </div>        <div class="btnRow">         <button class="smallBtn edit" onclick="editSub('${s.id}')">Editar</button>         <button class="smallBtn cancel" onclick="cancel('${s.name}')">Cancelar</button>         <button class="smallBtn delete" onclick="remove('${s.id}')">X</button>       </div>     </div>;
+    html+=`
+    <div class="card ${status.class}">
+      <b>${s.name}</b> - ${s.price}€
+      <div>${status.text}</div>
+      <div class="small">${s.date}</div>
+
+      <div class="row">
+        <button onclick="edit('${s.id}')">Editar</button>
+        <button onclick="cancel('${s.name}')">Cancelar</button>
+        <button onclick="del('${s.id}')">X</button>
+      </div>
+    </div>`;
   });
 
   document.getElementById("list").innerHTML=html;
   document.getElementById("total").innerText=total+"€";
-  document.getElementById("alertBox").innerText="Esta semana: "+week+"€";
+  document.getElementById("week").innerText="Esta semana: "+week+"€";
 }
 
-function openModal(){document.getElementById("modal").style.display="block";}
-function saveSub(){
-  let id=document.getElementById("editId").value;
+function openModal(){
+  document.getElementById("modal").style.display="block";
+}
+
+function save(){
+  let id=document.getElementById("id").value;
 
   let obj={
     id:id||Date.now(),
     name:name.value,
     price:parseFloat(price.value),
     date:date.value,
-    frequency:frequency.value,
-    cancelUrl:cancelUrl.value
+    url:url.value
   };
 
   if(id){
@@ -177,58 +164,51 @@ function saveSub(){
     subs.push(obj);
   }
 
-  save();
+  localStorage.setItem("subs",JSON.stringify(subs));
   render();
-  document.getElementById("modal").style.display="none";
+  modal.style.display="none";
 }
 
-function editSub(id){
+function edit(id){
   let s=subs.find(x=>x.id==id);
-  editId.value=s.id;
+  document.getElementById("id").value=s.id;
   name.value=s.name;
   price.value=s.price;
   date.value=s.date;
-  frequency.value=s.frequency;
 }
 
-function remove(id){
+function del(id){
   subs=subs.filter(s=>s.id!=id);
-  save(); render();
+  localStorage.setItem("subs",JSON.stringify(subs));
+  render();
 }
 
 function cancel(name){
-  window.open("https://www.google.com/search?q=cancelar+"+name);
+  window.open("https://google.com/search?q=cancelar+"+name);
 }
 
 function getStatus(d,p){
-  if(d<=0)return{class:"danger",text:"🚨 Hoy te cobran "+p+"€"};
-  if(d==1)return{class:"danger",text:"🚨 Mañana "+p+"€"};
-  if(d<=3)return{class:"danger",text:"⚠️ "+d+" días "+p+"€"};
-  if(d<=7)return{class:"warning",text:"En "+d+" días"};
-  return{class:"safe",text:"En "+d+" días"};
+  if(d<=0) return {class:"danger",text:"🚨 Hoy te cobran "+p+"€"};
+  if(d==1) return {class:"danger",text:"🚨 Mañana "+p+"€"};
+  if(d<=3) return {class:"danger",text:"⚠️ "+d+" días "+p+"€"};
+  if(d<=7) return {class:"warning",text:"En "+d+" días"};
+  return {class:"",text:"En "+d+" días"};
 }
 
 function days(date){
   return Math.ceil((new Date(date)-new Date())/86400000);
 }
 
-function demoEmail(){
-  subs.push({id:Date.now(),name:"Canva",price:11,date:future(3)});
-  save();render();
-}
-
-function demoSMS(){
-  subs.push({id:Date.now(),name:"AFA Play",price:7,date:future(2)});
-  save();render();
+function demo(){
+  subs.push({id:Date.now(),name:"Netflix",price:12,date:future(2)});
+  subs.push({id:Date.now()+1,name:"Spotify",price:10,date:future(5)});
+  localStorage.setItem("subs",JSON.stringify(subs));
+  render();
 }
 
 function future(d){
   let t=new Date();t.setDate(t.getDate()+d);
   return t.toISOString().slice(0,10);
-}
-
-function activateReminders(){
-  alert("Próximamente notificaciones reales 🚀");
 }
 
 render();
