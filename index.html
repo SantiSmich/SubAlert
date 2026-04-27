@@ -485,7 +485,7 @@ function render(){
 
   list.innerHTML = filtered.map(s => {
     let d = daysUntil(s.date);
-    let status = getStatus(d);
+   let status = getStatus(d, s.price);
     return `
       <article class="card ${status.class}" onclick="this.classList.toggle('open')">
         <div class="cardTop">
@@ -593,11 +593,23 @@ function daysUntil(date){
   return Math.ceil((target - today) / 86400000);
 }
 
-function getStatus(days){
-  if(days < 0) return {class:"danger", text:"⚠️ Renovación vencida"};
-  if(days <= 3) return {class:"danger", text:`🔔 Te cobran en ${days} día${days===1?"":"s"}`};
-  if(days <= 7) return {class:"warning", text:`🟡 Se renueva en ${days} días`};
-  return {class:"safe", text:`🔕 Próxima renovación en ${days} días`};
+function getStatus(days, price){
+
+  if(days < 0) return {class:"danger", text:"⚠️ Cobro vencido"};
+
+  if(days === 0)
+    return {class:"danger", text:`🚨 Hoy te cobran ${money(price)}`};
+
+  if(days === 1)
+    return {class:"danger", text:`🚨 Mañana te cobran ${money(price)}`};
+
+  if(days <= 3)
+    return {class:"danger", text:`🔔 En ${days} días: ${money(price)}`};
+
+  if(days <= 7)
+    return {class:"warning", text:`🟡 En ${days} días: ${money(price)}`};
+
+  return {class:"safe", text:`🔕 En ${days} días`};
 }
 
 function monthlyCost(s){
