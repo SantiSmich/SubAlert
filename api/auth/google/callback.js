@@ -1,8 +1,8 @@
 export default async function handler(req, res) {
-  const { code } = req.query;
+  const code = req.query.code;
 
   if (!code) {
-    return res.status(400).send("No code");
+    return res.redirect("/?google=error");
   }
 
   const params = new URLSearchParams({
@@ -15,11 +15,17 @@ export default async function handler(req, res) {
 
   const response = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
     body: params,
   });
 
   const data = await response.json();
 
-  res.json(data);
+  if (!data.access_token) {
+    return res.status(400).json(data);
+  }
+
+  return res.redirect("/?google=connected");
 }
