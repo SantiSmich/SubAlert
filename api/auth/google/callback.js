@@ -116,10 +116,30 @@ export default async function handler(req, res) {
       mustInclude.some((word) => text.includes(word)) &&
       !mustExclude.some((word) => text.includes(word));
 
-    if (isPossiblePaidSubscription) {
-      results.push({ subject, from, date });
-    }
-  }
+    const likelySubscriptionBrands = [
+  "spotify",
+  "netflix",
+  "google",
+  "apple",
+  "adobe",
+  "canva",
+  "moises",
+  "amazon prime",
+  "youtube",
+  "chatgpt",
+  "openai"
+];
+
+const looksLikeSubscription =
+  likelySubscriptionBrands.some(b => text.includes(b)) ||
+  text.includes("monthly") ||
+  text.includes("mensual") ||
+  text.includes("renew") ||
+  text.includes("renovación");
+
+if (isPossiblePaidSubscription && looksLikeSubscription) {
+  results.push({ subject, from, date });
+}
 
   const html = `
     <html>
