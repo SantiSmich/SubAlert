@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SubAlert</title>
-
 <style>
 :root{
   --bg:#101018;
@@ -92,33 +91,22 @@ input{
 }
 </style>
 </head>
-
 <body>
-
 <div class="app">
-
 <h1>SubAlert</h1>
 <p class="subtitle">Nunca más una suscripción sorpresa</p>
-
 <div class="summary">
   <div class="total" id="total">0 €</div>
   <div class="alertBox" id="alert"></div>
 </div>
-
-<button onclick="openModal()">+ Agregar</button>
-<button onclick="demo()">Demo</button>
-
 <div id="list"></div>
-
 </div>
-
 <div id="modal" style="display:none;padding:20px;">
   <input id="name" placeholder="Servicio">
   <input id="price" type="number" placeholder="Precio">
   <input id="date" type="date">
   <button onclick="save()">Guardar</button>
 </div>
-
 <script>
 let subs = JSON.parse(localStorage.getItem("subs")) || [];
 
@@ -134,7 +122,15 @@ function render(){
 
     let status=getStatus(d,s.price);
 
-    html+=     <div class="card ${status.class}">       <b>${s.name}</b> - ${s.price}€       <div>${status.text}</div>        <div class="btnRow">         <button onclick="del('${s.id}')">Eliminar</button>       </div>     </div>;
+    html+=`
+    <div class="card ${status.class}">
+      <b>${s.name}</b> - ${s.price}€
+      <div>${status.text}</div>
+
+      <div class="btnRow">
+        <button onclick="del('${s.id}')">Eliminar</button>
+      </div>
+    </div>`;
   });
 
   document.getElementById("list").innerHTML=html;
@@ -191,6 +187,5 @@ function future(d){
 
 render();
 </script>
-
 </body>
 </html>
