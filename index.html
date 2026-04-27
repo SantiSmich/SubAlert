@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -92,7 +91,6 @@ input,select{
   display:none;
 }
 </style>
-
 </head>
 
 <body>
@@ -152,24 +150,7 @@ function render(){
 
     let status=getStatus(d,s.price);
 
-    html+=`
-    <div class="card ${status.class}">
-      <div class="cardTop">
-        <div>${s.name}</div>
-        <div>${s.price}€</div>
-      </div>
-      <div>${status.text}</div>
-
-      <div class="details">
-        ${s.date}
-      </div>
-
-      <div class="btnRow">
-        <button class="smallBtn edit" onclick="editSub('${s.id}')">Editar</button>
-        <button class="smallBtn cancel" onclick="cancel('${s.name}')">Cancelar</button>
-        <button class="smallBtn delete" onclick="remove('${s.id}')">X</button>
-      </div>
-    </div>`;
+    html+=     <div class="card ${status.class}">       <div class="cardTop">         <div>${s.name}</div>         <div>${s.price}€</div>       </div>       <div>${status.text}</div>        <div class="details">         ${s.date}       </div>        <div class="btnRow">         <button class="smallBtn edit" onclick="editSub('${s.id}')">Editar</button>         <button class="smallBtn cancel" onclick="cancel('${s.name}')">Cancelar</button>         <button class="smallBtn delete" onclick="remove('${s.id}')">X</button>       </div>     </div>;
   });
 
   document.getElementById("list").innerHTML=html;
