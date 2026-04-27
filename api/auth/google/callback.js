@@ -15,9 +15,7 @@ export default async function handler(req, res) {
 
   const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: tokenParams,
   });
 
@@ -30,36 +28,26 @@ export default async function handler(req, res) {
   const accessToken = tokenData.access_token;
 
   const query = encodeURIComponent(
-  '("subscription" OR "suscripción" OR "renewal" OR "renovación" OR "membership" OR "membresía" OR "monthly" OR "mensual" OR "annual" OR "anual" OR "recurring" OR "recurrente")'
-);
+    '("subscription" OR "suscripción" OR "renewal" OR "renovación" OR "membership" OR "membresía" OR "recurring" OR "recurrente" OR "mensual" OR "monthly" OR "annual" OR "anual")'
+  );
+
   const listResponse = await fetch(
-    `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${query}&maxResults=10`,
+    `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${query}&maxResults=25`,
     {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+      headers: { Authorization: `Bearer ${accessToken}` },
     }
   );
 
   const listData = await listResponse.json();
 
-  if (!listData.messages || listData.messages.length === 0) {
-    return res.send(`
-      <h1>SubAlert</h1>
-      <p>No encontré posibles suscripciones en Gmail.</p>
-      <a href="/">Volver</a>
-    `);
-  }
-
+  const messages = listData.messages || [];
   const results = [];
 
-  for (const msg of listData.messages) {
+  for (const msg of messages) {
     const msgResponse = await fetch(
       `https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`,
       {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
 
@@ -72,43 +60,48 @@ export default async function handler(req, res) {
 
     const text = `${subject} ${from}`.toLowerCase();
 
-const mustInclude = [
-  "subscription",
-  "suscripción",
-  "renewal",
-  "renovación",
-  "membership",
-  "membresía",
-  "monthly",
-  "mensual",
-  "annual",
-  "anual",
-  "recurring",
-  "recurrente"
-];
+    const mustInclude = [
+      "subscription",
+      "suscripción",
+      "renewal",
+      "renovación",
+      "membership",
+      "membresía",
+      "recurring",
+      "recurrente",
+      "mensual",
+      "monthly",
+      "annual",
+      "anual"
+    ];
 
-const mustExclude = [
-  "wise",
-  "glovo",
-  "remitly",
-  "pedido",
-  "order",
-  "transfer",
-  "envío",
-  "reembolso",
-  "refund",
-  "oferta",
-  "descuento",
-  "promo"
-];
+    const mustExclude = [
+      "wise",
+      "glovo",
+      "remitly",
+      "pedido",
+      "order",
+      "transfer",
+      "envío",
+      "shipment",
+      "reembolso",
+      "refund",
+      "oferta",
+      "descuento",
+      "promo",
+      "sale",
+      "regalo",
+      "madre"
+    ];
 
-const isSubscription =
-  mustInclude.some(word => text.includes(word)) &&
-  !mustExclude.some(word => text.includes(word));
+    const isSubscription =
+      mustInclude.some(word => text.includes(word)) &&
+      !mustExclude.some(word => text.includes(word));
 
-if (isSubscription) {
-  results.push({ subject, from, date });
-}
+    if (isSubscription) {
+      results.push({ subject, from, date });
+    }
+  }
 
   const html = `
     <html>
@@ -128,21 +121,25 @@ if (isSubscription) {
             margin-bottom: 12px;
             border: 1px solid rgba(255,255,255,.12);
           }
-          a {
-            color: #b388ff;
-          }
+          a { color: #b388ff; }
         </style>
       </head>
       <body>
         <h1>SubAlert</h1>
-       <h2>Posibles suscripciones pagas encontradas</h2>
-        ${results.map(r => `
-          <div class="card">
-            <h3>${r.subject}</h3>
-            <p><strong>De:</strong> ${r.from}</p>
-            <p><strong>Fecha:</strong> ${r.date}</p>
-          </div>
-        `).join("")}
+        <h2>Posibles suscripciones pagas encontradas</h2>
+
+        ${
+          results.length
+            ? results.map(r => `
+              <div class="card">
+                <h3>${r.subject}</h3>
+                <p><strong>De:</strong> ${r.from}</p>
+                <p><strong>Fecha:</strong> ${r.date}</p>
+              </div>
+            `).join("")
+            : `<p>No encontré suscripciones pagas claras. Evité mostrar pedidos, transferencias, reembolsos y promociones.</p>`
+        }
+
         <br />
         <a href="/">Volver a SubAlert</a>
       </body>
