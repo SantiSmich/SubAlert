@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SubAlert</title>
+
 <style>
 :root{
   --bg:#101018;
@@ -18,174 +19,795 @@
   --green:#35d07f;
 }
 
+*{box-sizing:border-box}
+
 body{
   margin:0;
-  font-family:system-ui;
-  background:linear-gradient(#111,#09090d);
-  color:white;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at top left,rgba(124,58,237,.35),transparent 35%),
+    linear-gradient(180deg,#11111a,#09090d);
+  color:var(--text);
 }
 
 .app{
-  max-width:420px;
+  max-width:440px;
   margin:auto;
-  padding:20px;
+  min-height:100vh;
+  padding:22px 18px 100px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
+}
+
+.kicker{
+  color:var(--purple2);
+  font-size:13px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin:0 0 4px;
 }
 
 h1{
-  font-size:34px;
+  font-size:42px;
+  line-height:1;
   margin:0;
 }
 
 .subtitle{
-  color:#aaa;
-  margin-bottom:20px;
+  color:var(--muted);
+  margin:6px 0 0;
+}
+
+.addBtn{
+  width:54px;
+  height:54px;
+  border:0;
+  border-radius:18px;
+  background:var(--purple);
+  color:white;
+  font-size:30px;
+  cursor:pointer;
 }
 
 .summary{
-  background:var(--card);
-  padding:20px;
-  border-radius:20px;
+  background:linear-gradient(135deg,rgba(255,255,255,.11),rgba(255,255,255,.04));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:28px;
+  padding:22px;
+  margin-bottom:16px;
+  box-shadow:0 25px 70px rgba(0,0,0,.35);
+}
+
+.summary p{
+  color:var(--muted);
+  margin:0 0 6px;
 }
 
 .total{
-  font-size:28px;
-  font-weight:bold;
+  font-size:34px;
+  font-weight:900;
 }
 
 .alertBox{
-  margin-top:10px;
-  color:#ff5c6c;
+  margin-top:14px;
+  padding:12px;
+  border-radius:18px;
+  background:rgba(255,92,108,.12);
+  color:#ffd6dc;
+  font-weight:800;
+  display:none;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.actions button,
+.reminderBtn{
+  border:1px solid rgba(255,255,255,.08);
+  background:var(--card);
+  color:white;
+  border-radius:18px;
+  padding:14px 10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.reminderBtn{
+  width:100%;
+  margin-bottom:16px;
+  background:linear-gradient(135deg,var(--purple),#5225b8);
+}
+
+.search{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:22px;
+}
+
+.search input{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:white;
+  font-size:16px;
+}
+
+.sectionTitle{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.sectionTitle h2{
+  font-size:18px;
+  margin:0;
+}
+
+.sectionTitle span{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
 .card{
   background:var(--card);
-  margin-top:10px;
-  padding:15px;
-  border-radius:15px;
-  border-left:5px solid var(--green);
+  border:1px solid rgba(255,255,255,.08);
+  border-left:6px solid var(--green);
+  border-radius:24px;
+  padding:16px;
+  cursor:pointer;
 }
 
-.card.danger{border-left:5px solid var(--red)}
-.card.warning{border-left:5px solid var(--yellow)}
+.card.warning{border-left-color:var(--yellow)}
+.card.danger{border-left-color:var(--red)}
 
-.btnRow{
+.cardTop{
   display:flex;
-  gap:5px;
-  margin-top:10px;
+  justify-content:space-between;
+  gap:12px;
 }
 
-button{
-  padding:8px;
-  border:none;
-  border-radius:10px;
-  background:var(--purple);
+.card h3{
+  margin:0 0 4px;
+  font-size:18px;
+}
+
+.card p{
+  margin:0;
+  color:var(--muted);
+}
+
+.price{
+  text-align:right;
+  white-space:nowrap;
+}
+
+.price strong{
+  display:block;
+}
+
+.price span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.renewal{
+  margin-top:14px;
+  font-weight:900;
+}
+
+.details{
+  display:none;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.08);
+  color:var(--muted);
+}
+
+.card.open .details{
+  display:block;
+}
+
+.details b{
   color:white;
 }
 
-input{
+.cardActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+
+.smallBtn{
+  border:0;
+  border-radius:12px;
+  padding:10px;
+  background:var(--card2);
+  color:white;
+  font-weight:900;
+  cursor:pointer;
+  text-align:center;
+  text-decoration:none;
+}
+
+.cancelBtn{
+  background:rgba(255,92,108,.14);
+  color:#ffc8cf;
+}
+
+.editBtn{
+  background:rgba(124,58,237,.22);
+  color:#ddd0ff;
+}
+
+.deleteBtn{
+  grid-column:1/3;
+  background:transparent;
+  color:var(--red);
+}
+
+.empty{
+  padding:24px;
+  text-align:center;
+  color:var(--muted);
+  background:var(--card);
+  border-radius:24px;
+}
+
+.modalBg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:16px;
+  z-index:10;
+}
+
+.modal{
+  width:min(440px,100%);
+  background:var(--card);
+  border-radius:28px;
+  padding:20px;
+  max-height:92vh;
+  overflow:auto;
+}
+
+.modalHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+}
+
+.modalHeader h2{
+  margin:0;
+}
+
+.close{
+  border:0;
+  background:var(--card2);
+  color:white;
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  cursor:pointer;
+}
+
+label{
+  display:block;
+  margin-bottom:12px;
+  color:var(--muted);
+  font-size:14px;
+  font-weight:700;
+}
+
+input,select{
   width:100%;
-  margin:5px 0;
-  padding:8px;
-  border-radius:10px;
-  border:none;
+  margin-top:6px;
+  padding:13px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:#11111a;
+  color:white;
+  font-size:16px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.saveBtn{
+  width:100%;
+  margin-top:8px;
+  padding:15px;
+  border:0;
+  border-radius:16px;
+  background:var(--purple);
+  color:white;
+  font-weight:900;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%);
+  background:white;
+  color:#111;
+  padding:12px 18px;
+  border-radius:999px;
+  font-weight:900;
+  display:none;
+  z-index:30;
 }
 </style>
 </head>
+
 <body>
-<div class="app">
-<h1>SubAlert</h1>
-<p class="subtitle">Nunca más una suscripción sorpresa</p>
-<div class="summary">
-  <div class="total" id="total">0 €</div>
-  <div class="alertBox" id="alert"></div>
+
+<main class="app">
+
+  <header class="header">
+    <div>
+      <p class="kicker">Memoria digital</p>
+      <h1>SubAlert</h1>
+      <p class="subtitle">Nunca más una suscripción sorpresa.</p>
+    </div>
+    <button class="addBtn" onclick="openModal()">+</button>
+  </header>
+
+  <section class="summary">
+    <p>Total mensual estimado</p>
+    <div class="total" id="total">0,00 €</div>
+    <div class="alertBox" id="alertBox"></div>
+  </section>
+
+  <section class="actions">
+    <button onclick="demoEmail()">🔍 Buscar en correo</button>
+    <button onclick="demoSMS()">📱 Buscar por SMS</button>
+  </section>
+
+  <button class="reminderBtn" onclick="activateReminders()">🔔 Activar recordatorios</button>
+
+  <section class="search">
+    <input id="searchInput" oninput="render()" placeholder="Buscar suscripción..." />
+  </section>
+
+  <section class="sectionTitle">
+    <h2>Suscripciones</h2>
+    <span id="count">0 activas</span>
+  </section>
+
+  <section class="list" id="list"></section>
+
+</main>
+
+<div class="modalBg" id="modalBg">
+  <form class="modal" onsubmit="saveSub(event)">
+    <div class="modalHeader">
+      <h2 id="modalTitle">Agregar suscripción</h2>
+      <button type="button" class="close" onclick="closeModal()">×</button>
+    </div>
+
+    <input id="editId" type="hidden" />
+
+    <label>Servicio
+      <input id="name" required placeholder="Netflix, Spotify, iCloud..." />
+    </label>
+
+    <div class="grid">
+      <label>Precio
+        <input id="price" required type="number" step="0.01" placeholder="12.99" />
+      </label>
+
+      <label>Frecuencia
+        <select id="frequency">
+          <option value="monthly">Mensual</option>
+          <option value="yearly">Anual</option>
+        </select>
+      </label>
+    </div>
+
+    <label>Plan
+      <input id="plan" placeholder="Premium, Estándar, Básico..." />
+    </label>
+
+    <label>Próxima renovación
+      <input id="date" required type="date" />
+    </label>
+
+    <label>Email de contacto
+      <input id="email" type="email" placeholder="soporte@app.com" />
+    </label>
+
+    <label>Teléfono / contacto
+      <input id="phone" placeholder="+34..." />
+    </label>
+
+    <label>Link para cancelar o gestionar
+      <input id="cancelUrl" type="url" placeholder="https://..." />
+    </label>
+
+    <button class="saveBtn" id="saveBtn">Guardar suscripción</button>
+  </form>
 </div>
-<div id="list"></div>
-</div>
-<div id="modal" style="display:none;padding:20px;">
-  <input id="name" placeholder="Servicio">
-  <input id="price" type="number" placeholder="Precio">
-  <input id="date" type="date">
-  <button onclick="save()">Guardar</button>
-</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-let subs = JSON.parse(localStorage.getItem("subs")) || [];
-
-function render(){
-  let html="";
-  let total=0;
-  let week=0;
-
-  subs.forEach(s=>{
-    total+=s.price;
-    let d=days(s.date);
-    if(d<=7) week+=s.price;
-
-    let status=getStatus(d,s.price);
-
-    html+=`
-    <div class="card ${status.class}">
-      <b>${s.name}</b> - ${s.price}€
-      <div>${status.text}</div>
-
-      <div class="btnRow">
-        <button onclick="del('${s.id}')">Eliminar</button>
-      </div>
-    </div>`;
-  });
-
-  document.getElementById("list").innerHTML=html;
-  document.getElementById("total").innerText=total+"€";
-  document.getElementById("alert").innerText="Esta semana: "+week+"€";
-}
-
-function openModal(){
-  document.getElementById("modal").style.display="block";
-}
+let subs = JSON.parse(localStorage.getItem("subalert_subs")) || [
+  {
+    id: crypto.randomUUID(),
+    name:"Spotify",
+    plan:"Premium Individual",
+    price:10.99,
+    frequency:"monthly",
+    date:plusDays(3),
+    email:"support@spotify.com",
+    phone:"",
+    cancelUrl:"https://www.spotify.com/account/subscription/",
+    source:"Correo"
+  },
+  {
+    id: crypto.randomUUID(),
+    name:"Netflix",
+    plan:"Estándar",
+    price:12.99,
+    frequency:"monthly",
+    date:plusDays(12),
+    email:"help@netflix.com",
+    phone:"",
+    cancelUrl:"https://www.netflix.com/account",
+    source:"Manual"
+  },
+  {
+    id: crypto.randomUUID(),
+    name:"iCloud",
+    plan:"50 GB",
+    price:2.99,
+    frequency:"monthly",
+    date:plusDays(1),
+    email:"support@apple.com",
+    phone:"",
+    cancelUrl:"https://account.apple.com/",
+    source:"SMS"
+  }
+];
 
 function save(){
-  subs.push({
-    id:Date.now(),
-    name:name.value,
-    price:parseFloat(price.value),
-    date:date.value
+  localStorage.setItem("subalert_subs", JSON.stringify(subs));
+}
+
+function render(){
+  const list = document.getElementById("list");
+  const query = document.getElementById("searchInput").value.toLowerCase();
+
+  let filtered = subs.filter(s => s.name.toLowerCase().includes(query));
+  filtered.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  const monthly = subs.reduce((acc,s) => acc + monthlyCost(s), 0);
+  document.getElementById("total").innerText = money(monthly);
+  document.getElementById("count").innerText = subs.length + " activas";
+
+  const weekTotal = subs
+    .filter(s => {
+      let d = daysUntil(s.date);
+      return d >= 0 && d <= 7;
+    })
+    .reduce((acc,s) => acc + Number(s.price), 0);
+
+  const alertBox = document.getElementById("alertBox");
+
+  if(weekTotal > 0){
+    alertBox.style.display = "block";
+    alertBox.innerText = `⚠️ Esta semana te cobran ${money(weekTotal)}`;
+  } else {
+    alertBox.style.display = "none";
+  }
+
+  if(!filtered.length){
+    list.innerHTML = `<div class="empty">No hay suscripciones cargadas.</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(s => {
+    const d = daysUntil(s.date);
+    const status = getStatus(d, s.price);
+    const cancelLink = s.cancelUrl
+      ? s.cancelUrl
+      : `https://www.google.com/search?q=cancelar+${encodeURIComponent(s.name)}+suscripcion`;
+
+    return `
+      <article class="card ${status.class}" onclick="this.classList.toggle('open')">
+        <div class="cardTop">
+          <div>
+            <h3>${escapeHTML(s.name)}</h3>
+            <p>${escapeHTML(s.plan || "Sin plan indicado")}</p>
+          </div>
+          <div class="price">
+            <strong>${money(s.price)}</strong>
+            <span>${s.frequency === "yearly" ? "año" : "mes"}</span>
+          </div>
+        </div>
+
+        <div class="renewal">${status.text}</div>
+
+        <div class="details" onclick="event.stopPropagation()">
+          <p><b>Renovación:</b> ${formatDate(s.date)}</p>
+          <p><b>Coste mensual estimado:</b> ${money(monthlyCost(s))}</p>
+          <p><b>Email:</b> ${escapeHTML(s.email || "No indicado")}</p>
+          <p><b>Teléfono:</b> ${escapeHTML(s.phone || "No indicado")}</p>
+          <p><b>Origen:</b> ${escapeHTML(s.source || "Manual")}</p>
+
+          <div class="cardActions">
+            <button class="smallBtn editBtn" onclick="editSub('${s.id}')">Editar</button>
+            <a class="smallBtn cancelBtn" href="${cancelLink}" target="_blank" rel="noopener">Ir a cancelar</a>
+            <button class="smallBtn deleteBtn" onclick="deleteSub('${s.id}')">Eliminar</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function openModal(id = null){
+  document.getElementById("modalBg").style.display = "flex";
+  document.getElementById("modalTitle").innerText = id ? "Editar suscripción" : "Agregar suscripción";
+  document.getElementById("saveBtn").innerText = id ? "Guardar cambios" : "Guardar suscripción";
+
+  if(!id){
+    document.querySelector(".modal").reset();
+    document.getElementById("editId").value = "";
+    document.getElementById("date").value = plusDays(30);
+  }
+}
+
+function closeModal(){
+  document.getElementById("modalBg").style.display = "none";
+}
+
+function saveSub(e){
+  e.preventDefault();
+
+  const id = document.getElementById("editId").value;
+
+  const data = {
+    id: id || crypto.randomUUID(),
+    name: document.getElementById("name").value.trim(),
+    price: parseFloat(document.getElementById("price").value),
+    frequency: document.getElementById("frequency").value,
+    plan: document.getElementById("plan").value.trim(),
+    date: document.getElementById("date").value,
+    email: document.getElementById("email").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    cancelUrl: document.getElementById("cancelUrl").value.trim(),
+    source: id ? (subs.find(s => s.id === id)?.source || "Manual") : "Manual"
+  };
+
+  if(id){
+    subs = subs.map(s => s.id === id ? data : s);
+    toast("Suscripción actualizada");
+  } else {
+    const exists = subs.some(s => s.name.toLowerCase() === data.name.toLowerCase());
+    if(exists && !confirm("Ya existe una suscripción con ese nombre. ¿Agregar igual?")) return;
+
+    subs.push(data);
+    toast("Suscripción agregada");
+  }
+
+  save();
+  render();
+  closeModal();
+  e.target.reset();
+}
+
+function editSub(id){
+  const s = subs.find(x => x.id === id);
+  if(!s) return;
+
+  openModal(id);
+
+  document.getElementById("editId").value = s.id;
+  document.getElementById("name").value = s.name;
+  document.getElementById("price").value = s.price;
+  document.getElementById("frequency").value = s.frequency;
+  document.getElementById("plan").value = s.plan || "";
+  document.getElementById("date").value = s.date;
+  document.getElementById("email").value = s.email || "";
+  document.getElementById("phone").value = s.phone || "";
+  document.getElementById("cancelUrl").value = s.cancelUrl || "";
+}
+
+function deleteSub(id){
+  if(!confirm("¿Eliminar esta suscripción?")) return;
+
+  subs = subs.filter(s => s.id !== id);
+  save();
+  render();
+  toast("Suscripción eliminada");
+}
+
+function demoEmail(){
+  addDetected({
+    name:"Canva",
+    plan:"Pro",
+    price:11.99,
+    frequency:"monthly",
+    date:plusDays(5),
+    email:"support@canva.com",
+    phone:"",
+    cancelUrl:"https://www.canva.com/settings/billing-and-plans/",
+    source:"Correo"
+  });
+}
+
+function demoSMS(){
+  addDetected({
+    name:"AFA Play",
+    plan:"Mensual",
+    price:7,
+    frequency:"monthly",
+    date:plusDays(2),
+    email:"",
+    phone:"+34 900 000 000",
+    cancelUrl:"",
+    source:"SMS"
+  });
+}
+
+function addDetected(item){
+  const exists = subs.some(s =>
+    s.name.toLowerCase() === item.name.toLowerCase()
+  );
+
+  if(exists){
+    toast("Ya existe una suscripción parecida");
+    return;
+  }
+
+  subs.unshift({
+    ...item,
+    id: crypto.randomUUID()
   });
 
-  localStorage.setItem("subs",JSON.stringify(subs));
+  save();
   render();
+  toast(`Detectamos ${item.name}`);
 }
 
-function del(id){
-  subs=subs.filter(s=>s.id!=id);
-  localStorage.setItem("subs",JSON.stringify(subs));
-  render();
+function activateReminders(){
+  if(!("Notification" in window)){
+    toast("Tu navegador no soporta notificaciones");
+    return;
+  }
+
+  Notification.requestPermission().then(permission => {
+    if(permission === "granted"){
+      toast("Recordatorios activados");
+      new Notification("SubAlert", {
+        body:"Te avisaremos antes de tus renovaciones."
+      });
+    } else {
+      toast("No se activaron los recordatorios");
+    }
+  });
 }
 
-function getStatus(d,p){
-  if(d<=0)return{class:"danger",text:"🚨 Hoy "+p+"€"};
-  if(d==1)return{class:"danger",text:"🚨 Mañana "+p+"€"};
-  if(d<=3)return{class:"danger",text:"⚠️ "+d+" días "+p+"€"};
-  if(d<=7)return{class:"warning",text:"En "+d+" días"};
-  return{class:"",text:"En "+d+" días"};
+function daysUntil(date){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const target = new Date(date + "T00:00:00");
+  return Math.ceil((target - today) / 86400000);
 }
 
-function days(date){
-  return Math.ceil((new Date(date)-new Date())/86400000);
+function getStatus(days, price){
+  if(days < 0) return {
+    class:"danger",
+    text:"⚠️ Cobro vencido"
+  };
+
+  if(days === 0) return {
+    class:"danger",
+    text:`🚨 Hoy te cobran ${money(price)}`
+  };
+
+  if(days === 1) return {
+    class:"danger",
+    text:`🚨 Mañana te cobran ${money(price)}`
+  };
+
+  if(days <= 3) return {
+    class:"danger",
+    text:`🔔 En ${days} días: ${money(price)}`
+  };
+
+  if(days <= 7) return {
+    class:"warning",
+    text:`🟡 En ${days} días: ${money(price)}`
+  };
+
+  return {
+    class:"safe",
+    text:`🔕 En ${days} días`
+  };
 }
 
-function demo(){
-  subs.push({id:1,name:"Netflix",price:12,date:future(2)});
-  subs.push({id:2,name:"Spotify",price:10,date:future(5)});
-  localStorage.setItem("subs",JSON.stringify(subs));
-  render();
+function monthlyCost(s){
+  return s.frequency === "yearly"
+    ? Number(s.price) / 12
+    : Number(s.price);
 }
 
-function future(d){
-  let t=new Date();
-  t.setDate(t.getDate()+d);
-  return t.toISOString().slice(0,10);
+function money(n){
+  return new Intl.NumberFormat("es-ES", {
+    style:"currency",
+    currency:"EUR"
+  }).format(Number(n || 0));
+}
+
+function formatDate(d){
+  return new Intl.DateTimeFormat("es-ES", {
+    day:"2-digit",
+    month:"short",
+    year:"numeric"
+  }).format(new Date(d + "T00:00:00"));
+}
+
+function plusDays(days){
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0,10);
+}
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.style.display = "block";
+
+  setTimeout(() => {
+    t.style.display = "none";
+  }, 1800);
+}
+
+function escapeHTML(str){
+  return String(str).replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[c]));
 }
 
 render();
 </script>
+
 </body>
 </html>
