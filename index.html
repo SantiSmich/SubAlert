@@ -654,17 +654,7 @@ function deleteSub(id){
 }
 
 function demoEmail(){
-  addDetected({
-    name:"Canva",
-    plan:"Pro",
-    price:11.99,
-    frequency:"monthly",
-    date:plusDays(5),
-    email:"support@canva.com",
-    phone:"",
-    cancelUrl:"https://www.canva.com/settings/billing-and-plans/",
-    source:"Correo"
-  });
+  window.location.href = "/api/auth/google";
 }
 
 function demoSMS(){
