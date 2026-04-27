@@ -178,7 +178,7 @@ export default async function handler(req, res) {
       </html>
     `;
 
-    return res.send(html);
+    return res.redirect(`/?data=${encodeURIComponent(JSON.stringify(finalResults))}`);
   } catch (err) {
     console.error("ERROR:", err);
     return res.status(500).json({
