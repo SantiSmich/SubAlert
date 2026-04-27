@@ -1,110 +1,121 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SubAlert</title>
 
 <style>
-body {
+:root{
+  --bg:#101018;
+  --card:#1b1b27;
+  --card2:#242435;
+  --text:#f7f4ff;
+  --muted:#aaa6bd;
+  --purple:#7c3aed;
+  --purple2:#a78bfa;
+  --red:#ff5c6c;
+  --yellow:#f7c948;
+  --green:#35d07f;
+}
+
+body{
   margin:0;
-  font-family: Arial, sans-serif;
-  background:#111;
+  font-family:system-ui;
+  background:linear-gradient(#111,#09090d);
   color:white;
+}
+
+.app{
+  max-width:420px;
+  margin:auto;
   padding:20px;
 }
 
-h1 {font-size:28px;}
-
-.summary {
-  margin:15px 0;
+h1{
+  font-size:34px;
+  margin:0;
 }
 
-.total {
-  font-size:24px;
+.subtitle{
+  color:#aaa;
+  margin-bottom:20px;
+}
+
+.summary{
+  background:var(--card);
+  padding:20px;
+  border-radius:20px;
+}
+
+.total{
+  font-size:28px;
   font-weight:bold;
 }
 
-.alert {
-  color:#ff5c6c;
-  margin-top:5px;
-}
-
-button {
-  padding:10px;
-  border:none;
-  border-radius:10px;
-  background:#7c3aed;
-  color:white;
+.alertBox{
   margin-top:10px;
+  color:#ff5c6c;
 }
 
-.card {
-  background:#1c1c1c;
-  padding:12px;
-  border-radius:12px;
-  margin:10px 0;
-  border-left:5px solid #35d07f;
+.card{
+  background:var(--card);
+  margin-top:10px;
+  padding:15px;
+  border-radius:15px;
+  border-left:5px solid var(--green);
 }
 
-.card.danger {border-left:5px solid #ff5c6c;}
-.card.warning {border-left:5px solid #f7c948;}
+.card.danger{border-left:5px solid var(--red)}
+.card.warning{border-left:5px solid var(--yellow)}
 
-.small {
-  font-size:12px;
-  color:#aaa;
-}
-
-.row {
+.btnRow{
   display:flex;
   gap:5px;
   margin-top:10px;
 }
 
-.row button {
-  flex:1;
-  font-size:12px;
-}
-
-.modal {
-  display:none;
-  background:#222;
-  padding:15px;
+button{
+  padding:8px;
+  border:none;
   border-radius:10px;
+  background:var(--purple);
+  color:white;
 }
 
-input,select {
+input{
   width:100%;
   margin:5px 0;
   padding:8px;
-  border-radius:8px;
+  border-radius:10px;
   border:none;
 }
 </style>
-
 </head>
 
 <body>
 
+<div class="app">
+
 <h1>SubAlert</h1>
-<p>Nunca más una suscripción sorpresa</p>
+<p class="subtitle">Nunca más una suscripción sorpresa</p>
 
 <div class="summary">
   <div class="total" id="total">0 €</div>
-  <div class="alert" id="week"></div>
+  <div class="alertBox" id="alert"></div>
 </div>
 
-<button onclick="openModal()">+ Agregar</button> <button onclick="demo()">Demo</button>
+<button onclick="openModal()">+ Agregar</button>
+<button onclick="demo()">Demo</button>
 
 <div id="list"></div>
 
-<div class="modal" id="modal">
-  <input id="id" hidden>
+</div>
+
+<div id="modal" style="display:none;padding:20px;">
   <input id="name" placeholder="Servicio">
   <input id="price" type="number" placeholder="Precio">
   <input id="date" type="date">
-  <input id="url" placeholder="Link cancelar">
   <button onclick="save()">Guardar</button>
 </div>
 
@@ -119,28 +130,16 @@ function render(){
   subs.forEach(s=>{
     total+=s.price;
     let d=days(s.date);
-
     if(d<=7) week+=s.price;
 
     let status=getStatus(d,s.price);
 
-    html+=`
-    <div class="card ${status.class}">
-      <b>${s.name}</b> - ${s.price}€
-      <div>${status.text}</div>
-      <div class="small">${s.date}</div>
-
-      <div class="row">
-        <button onclick="edit('${s.id}')">Editar</button>
-        <button onclick="cancel('${s.name}')">Cancelar</button>
-        <button onclick="del('${s.id}')">X</button>
-      </div>
-    </div>`;
+    html+=     <div class="card ${status.class}">       <b>${s.name}</b> - ${s.price}€       <div>${status.text}</div>        <div class="btnRow">         <button onclick="del('${s.id}')">Eliminar</button>       </div>     </div>;
   });
 
   document.getElementById("list").innerHTML=html;
   document.getElementById("total").innerText=total+"€";
-  document.getElementById("week").innerText="Esta semana: "+week+"€";
+  document.getElementById("alert").innerText="Esta semana: "+week+"€";
 }
 
 function openModal(){
@@ -148,33 +147,15 @@ function openModal(){
 }
 
 function save(){
-  let id=document.getElementById("id").value;
-
-  let obj={
-    id:id||Date.now(),
+  subs.push({
+    id:Date.now(),
     name:name.value,
     price:parseFloat(price.value),
-    date:date.value,
-    url:url.value
-  };
-
-  if(id){
-    subs=subs.map(s=>s.id==id?obj:s);
-  }else{
-    subs.push(obj);
-  }
+    date:date.value
+  });
 
   localStorage.setItem("subs",JSON.stringify(subs));
   render();
-  modal.style.display="none";
-}
-
-function edit(id){
-  let s=subs.find(x=>x.id==id);
-  document.getElementById("id").value=s.id;
-  name.value=s.name;
-  price.value=s.price;
-  date.value=s.date;
 }
 
 function del(id){
@@ -183,16 +164,12 @@ function del(id){
   render();
 }
 
-function cancel(name){
-  window.open("https://google.com/search?q=cancelar+"+name);
-}
-
 function getStatus(d,p){
-  if(d<=0) return {class:"danger",text:"🚨 Hoy te cobran "+p+"€"};
-  if(d==1) return {class:"danger",text:"🚨 Mañana "+p+"€"};
-  if(d<=3) return {class:"danger",text:"⚠️ "+d+" días "+p+"€"};
-  if(d<=7) return {class:"warning",text:"En "+d+" días"};
-  return {class:"",text:"En "+d+" días"};
+  if(d<=0)return{class:"danger",text:"🚨 Hoy "+p+"€"};
+  if(d==1)return{class:"danger",text:"🚨 Mañana "+p+"€"};
+  if(d<=3)return{class:"danger",text:"⚠️ "+d+" días "+p+"€"};
+  if(d<=7)return{class:"warning",text:"En "+d+" días"};
+  return{class:"",text:"En "+d+" días"};
 }
 
 function days(date){
@@ -200,14 +177,15 @@ function days(date){
 }
 
 function demo(){
-  subs.push({id:Date.now(),name:"Netflix",price:12,date:future(2)});
-  subs.push({id:Date.now()+1,name:"Spotify",price:10,date:future(5)});
+  subs.push({id:1,name:"Netflix",price:12,date:future(2)});
+  subs.push({id:2,name:"Spotify",price:10,date:future(5)});
   localStorage.setItem("subs",JSON.stringify(subs));
   render();
 }
 
 function future(d){
-  let t=new Date();t.setDate(t.getDate()+d);
+  let t=new Date();
+  t.setDate(t.getDate()+d);
   return t.toISOString().slice(0,10);
 }
 
