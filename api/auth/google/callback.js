@@ -30,9 +30,8 @@ export default async function handler(req, res) {
   const accessToken = tokenData.access_token;
 
   const query = encodeURIComponent(
-    '(subscription OR suscripción OR invoice OR receipt OR renewal OR "will be charged" OR "te cobraremos" OR "renovación")'
-  );
-
+  '("receipt" OR "invoice" OR "payment" OR "paid" OR "charged" OR "subscription" OR "renewal" OR "recibo" OR "factura" OR "pago" OR "cobro" OR "suscripción" OR "renovación") ("€" OR "EUR" OR "$" OR "USD" OR "total" OR "amount" OR "importe")'
+);
   const listResponse = await fetch(
     `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${query}&maxResults=10`,
     {
@@ -99,7 +98,7 @@ export default async function handler(req, res) {
       </head>
       <body>
         <h1>SubAlert</h1>
-        <h2>Posibles suscripciones encontradas</h2>
+       <h2>Posibles suscripciones pagas encontradas</h2>
         ${results.map(r => `
           <div class="card">
             <h3>${r.subject}</h3>
