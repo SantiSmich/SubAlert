@@ -1,4 +1,21 @@
-<!DOCTYPE html>
+const params = new URLSearchParams(window.location.search);
+const data = params.get("data");
+
+if (data) {
+  const subs = JSON.parse(decodeURIComponent(data));
+  console.log(subs);
+
+  subs.forEach(s => {
+    addDetected({
+      name: s.from,
+      plan: s.subject,
+      price: "",
+      frequency: "",
+      date: "",
+      source: "Correo"
+    });
+  });
+}<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
