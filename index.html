@@ -340,23 +340,35 @@ let subs = JSON.parse(localStorage.getItem("subs") || "[]");
 
 const $ = id => document.getElementById(id);
 
-function save(){
+async function save(){
   localStorage.setItem("subs", JSON.stringify(subs));
 
   if(typeof supabaseClient !== "undefined"){
     const last = subs[0];
 
     if(last){
-      supabaseClient.from("subscriptions").insert({
+      await supabaseClient.from("subscriptions").insert([{
         name: last.name,
         price: last.price,
         frequency: last.frequency,
         date: last.date || null,
         usage: last.usage || "media",
         source: last.source || "app"
-      }).then(({ error }) => {
-        if(error) console.log("Supabase error:", error.message);
-      });
+      })
+        const { error } = await supabaseClient
+  .from("subscriptions")
+  .insert([{
+    name: last.name,
+    price: last.price,
+    frequency: last.frequency,
+    date: last.date || null,
+    usage: last.usage || "media",
+    source: last.source || "app"
+  }]);
+
+if (error) {
+  alert("Error: " + error.message);
+}
     }
   }
 }
