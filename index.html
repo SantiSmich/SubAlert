@@ -9,7 +9,9 @@
     * { box-sizing: border-box; }
 
     body {
-      margin: 0;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
       font-family: Arial, sans-serif;
       background: radial-gradient(circle at top left, #32155f, #080711 55%);
       color: white;
@@ -361,6 +363,12 @@
   </div>
 
   <div class="actions">
+    <div style="margin: 18px 0;">
+  <textarea id="aiInput" placeholder="Escribí tus suscripciones: Netflix 6.99 mensual, ChatGPT 20 USD, Canva anual..." 
+  style="min-height:90px;"></textarea>
+
+  <button class="reminder" onclick="parseAI()">✨ Cargar con IA</button>
+</div>
     <a class="btn" href="/api/auth/google">🔍 Buscar en correo</a>
     <button class="btn" onclick="demoSMS()">📱 Buscar por SMS</button>
   </div>
@@ -619,7 +627,51 @@
       if (s.frequency === "trial") return "🔥 Trial activo: revisá antes de que te cobren.";
       return "";
     }
+function parseAI() {
+  const text = document.getElementById("aiInput").value;
 
+  if (!text.trim()) return toast("Escribí algo primero");
+
+  const lines = text.split(",");
+
+  lines.forEach(line => {
+    const lower = line.toLowerCase();
+
+    const priceMatch = line.match(/(\d+([.,]\d+)?)/);
+    const price = priceMatch ? Number(priceMatch[0].replace(",", ".")) : 0;
+
+    const isYearly = lower.includes("anual") || lower.includes("year");
+    const isTrial = lower.includes("trial") || lower.includes("prueba");
+
+    let frequency = "monthly";
+    if (isYearly) frequency = "yearly";
+    if (isTrial) frequency = "trial";
+
+    const currency = lower.includes("usd") || lower.includes("$") ? "USD" : "EUR";
+
+    const name = line
+      .replace(/(\d+([.,]\d+)?)/g, "")
+      .replace(/mensual|anual|usd|eur|dolares|euros/gi, "")
+      .trim();
+
+    if (!name) return;
+
+    addDetected({
+      name,
+      plan: "Detectado por IA",
+      price,
+      currency,
+      frequency,
+      date: "",
+      usage: "media",
+      notes: "Agregado con IA",
+      source: "IA"
+    });
+  });
+
+  document.getElementById("aiInput").value = "";
+  toast("Suscripciones cargadas 🚀");
+}
     function render() {
       const list = document.getElementById("list");
       const search = document.getElementById("search").value.toLowerCase();
