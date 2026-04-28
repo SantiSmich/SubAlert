@@ -1,283 +1,266 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>SubAlert</title>
 
 <style>
+*{box-sizing:border-box}
 
 body{
-
-  margin:0;
-
-  font-family:Arial;
-
-  background:#0b0715;
-
-  color:white;
-
-  padding:20px 16px 120px;
-
+margin:0;
+font-family:-apple-system, BlinkMacSystemFont, sans-serif;
+background: radial-gradient(circle at top,#2a0d5a,#070510 60%);
+color:white;
+padding:20px 16px 120px;
 }
 
-h1{font-size:34px;margin:0}
+/* TITULO */
+h1{
+font-size:38px;
+margin:10px 0 20px;
+font-weight:800;
+}
 
+/* INPUT */
+textarea{
+width:100%;
+padding:16px;
+border-radius:18px;
+border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.06);
+color:white;
+font-size:16px;
+margin-bottom:12px;
+}
+
+/* BOTON PRINCIPAL */
+.primary{
+width:100%;
+padding:16px;
+border-radius:18px;
+border:0;
+background:linear-gradient(90deg,#8a3cff,#6a22d6);
+color:white;
+font-weight:800;
+font-size:16px;
+}
+
+/* CARD */
 .card{
-
-  background:#1a142a;
-
-  border-radius:20px;
-
-  padding:16px;
-
-  margin-bottom:14px;
-
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.12);
+border-radius:26px;
+padding:18px;
+margin-top:16px;
+backdrop-filter:blur(12px);
 }
 
-button{
-
-  border:0;
-
-  border-radius:12px;
-
-  padding:10px 14px;
-
-  font-weight:bold;
-
+/* HEADER CARD */
+.head{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
 }
 
-.primary{background:#7b3cff;color:white;width:100%;margin-top:10px}
+.name{
+font-size:24px;
+font-weight:900;
+}
 
-.small{background:#2a203d;color:white}
+.price{
+font-size:22px;
+font-weight:900;
+text-align:right;
+}
 
+.price span{
+display:block;
+font-size:14px;
+color:#bbb;
+}
+
+/* STATUS */
+.status{
+margin:12px 0;
+padding:10px 14px;
+border-radius:14px;
+background:rgba(255,255,255,.07);
+font-weight:700;
+}
+
+/* COLORES */
+.ok{color:#63ffb0}
+.warn{color:#ffd166}
 .danger{color:#ff6b7a}
 
-.good{color:#5dffb3}
+/* FECHA */
+.date{
+font-weight:700;
+margin-top:6px;
+}
 
-.warn{color:#ffd166}
+/* BOTONES */
+.actions{
+display:flex;
+gap:8px;
+margin-top:14px;
+}
 
-input,textarea{
-
-  width:100%;
-
-  padding:10px;
-
-  border-radius:10px;
-
-  border:1px solid #333;
-
-  background:#120c1f;
-
-  color:white;
-
-  margin-bottom:10px;
-
+.btn{
+padding:10px 12px;
+border-radius:12px;
+border:1px solid rgba(255,255,255,.12);
+background:rgba(255,255,255,.06);
+color:white;
+font-weight:700;
+font-size:13px;
 }
 
 </style>
-
 </head>
 
 <body>
 
 <h1>SubAlert</h1>
 
-<textarea id="aiInput" placeholder="Ej: Spotify 11.99 mensual renovación 9/5"></textarea>
-
-<button class="primary" onclick="parseAI()">✨ Cargar con IA</button>
+<textarea id="input" placeholder="Ej: Spotify 11.99 mensual renovación 9/5"></textarea>
+<button class="primary" onclick="parse()">✨ Cargar con IA</button>
 
 <div id="list"></div>
 
 <script>
 
-let subs = JSON.parse(localStorage.getItem("subs")||"[]")
+/* DATA */
+let subs = JSON.parse(localStorage.getItem("subs") || "[]")
 
 function save(){
-
-  localStorage.setItem("subs",JSON.stringify(subs))
-
+localStorage.setItem("subs",JSON.stringify(subs))
 }
 
-function cleanName(line){
-
-  return line
-
-    .replace(/\d+([.,]\d+)?/g,"")
-
-    .replace(/mensual|anual|usd|eur|renovación|renovacion|fecha|\/|\d+/gi,"")
-
-    .trim()
-
+/* LIMPIAR NOMBRE */
+function cleanName(text){
+return text
+.replace(/\d+([.,]\d+)?/g,"")
+.replace(/mensual|anual|usd|eur|renovación|renovacion|fecha|\/|\d+/gi,"")
+.trim()
 }
 
-function parseDate(line){
+/* FECHA */
+function parseDate(text){
+const m = text.match(/(\d{1,2})\/(\d{1,2})/)
+if(!m) return ""
 
-  const m = line.match(/(\d{1,2})\/(\d{1,2})/)
-
-  if(!m) return ""
-
-  const d = new Date()
-
-  const year = d.getFullYear()
-
-  return `${year}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`
-
+const now = new Date()
+return `${now.getFullYear()}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`
 }
 
-function parseAI(){
+/* IA */
+function parse(){
+const lines = document.getElementById("input").value.split(",")
 
-  const lines = document.getElementById("aiInput").value.split(",")
+lines.forEach(l=>{
+const t = l.trim()
+if(!t) return
 
-  lines.forEach(l=>{
+const priceMatch = t.match(/\d+([.,]\d+)?/)
+if(!priceMatch) return
 
-    const line = l.trim()
+const price = Number(priceMatch[0].replace(",","."))
+const name = cleanName(t)
+const date = parseDate(t)
 
-    if(!line) return
+/* evitar duplicados */
+if(subs.some(s=>s.name.toLowerCase()===name.toLowerCase())) return
 
-    const priceMatch = line.match(/\d+([.,]\d+)?/)
+subs.push({
+id:Date.now()+Math.random(),
+name,
+price,
+date,
+usage:"media"
+})
+})
 
-    if(!priceMatch) return
-
-    const price = Number(priceMatch[0].replace(",","."))
-
-    const name = cleanName(line)
-
-    const date = parseDate(line)
-
-    // evitar duplicados
-
-    const exists = subs.some(s=>s.name.toLowerCase()===name.toLowerCase())
-
-    if(exists) return
-
-    subs.push({
-
-      id:Date.now()+Math.random(),
-
-      name,
-
-      price,
-
-      frequency:"monthly",
-
-      usage:"media",
-
-      date,
-
-      source:"IA"
-
-    })
-
-  })
-
-  save()
-
-  render()
-
+save()
+render()
 }
 
-function getScore(s){
-
-  let score=0
-
-  if(s.usage==="baja") score+=5
-
-  if(s.usage==="media") score+=2
-
-  if(s.price>10) score+=2
-
-  if(s.price>20) score+=3
-
-  return Math.min(score,10)
-
+/* SCORE */
+function score(s){
+let n=0
+if(s.usage==="baja") n+=5
+if(s.usage==="media") n+=2
+if(s.price>10) n+=2
+if(s.price>20) n+=3
+return Math.min(n,10)
 }
 
-function getLabel(score){
-
-  if(score>=8) return "🔴 Cancelar ya"
-
-  if(score>=5) return "🟡 Revisar"
-
-  return "🟢 Mantener"
-
+/* LABEL */
+function label(n){
+if(n>=8) return ["danger","🔴 Cancelar ya"]
+if(n>=5) return ["warn","🟡 Revisar"]
+return ["ok","🟢 Mantener"]
 }
 
+/* RENDER */
 function render(){
+const list=document.getElementById("list")
+list.innerHTML=""
 
-  const list=document.getElementById("list")
+subs.forEach(s=>{
+const sc = score(s)
+const [cls,text] = label(sc)
 
-  list.innerHTML=""
+const el=document.createElement("div")
+el.className="card"
 
-  subs.forEach(s=>{
+el.innerHTML=`
+<div class="head">
+<div class="name">${s.name}</div>
+<div class="price">${s.price} €<span>/ mes</span></div>
+</div>
 
-    const score=getScore(s)
+<div class="status ${cls}">${text}</div>
 
-    const div=document.createElement("div")
+<div class="date">
+${s.date ? "Renueva: "+s.date : "Sin fecha"}
+</div>
 
-    div.className="card"
+<div class="actions">
+<button class="btn" onclick="remove(${s.id})">Eliminar</button>
+<button class="btn" onclick="analyze(${s.id})">Analizar</button>
+</div>
+`
 
-    div.innerHTML=`
-
-      <h2>${s.name}</h2>
-
-      <p>${s.price} € / mes</p>
-
-      <p class="${score>=8?"danger":score>=5?"warn":"good"}">${getLabel(score)}</p>
-
-      <p>${s.date ? "Renueva: "+s.date : "Sin fecha"}</p>
-
-      <button class="small" onclick="remove(${s.id})">Eliminar</button>
-
-      <button class="small" onclick="analyze(${s.id})">Analizar</button>
-
-    `
-
-    list.appendChild(div)
-
-  })
-
+list.appendChild(el)
+})
 }
 
+/* ELIMINAR */
 function remove(id){
-
-  subs=subs.filter(s=>s.id!==id)
-
-  save()
-
-  render()
-
+subs = subs.filter(s=>s.id!==id)
+save()
+render()
 }
 
+/* ANALIZAR */
 function analyze(id){
+const s = subs.find(x=>x.id===id)
+const sc = score(s)
 
-  const s=subs.find(x=>x.id===id)
+let msg = `Score cancelación: ${sc}/10\n\n`
 
-  const score=getScore(s)
+if(sc>=8){
+msg += "Cancelar ya"
+}else if(sc>=5){
+msg += "Podrías revisarla"
+}else{
+msg += "Vale la pena mantenerla"
+}
 
-  let msg="Score cancelación: "+score+"/10\n\n"
-
-  if(score>=8){
-
-    msg+="CANCELAR YA"
-
-  }else if(score>=5){
-
-    msg+="Podrías revisarla"
-
-  }else{
-
-    msg+="Vale la pena mantenerla"
-
-  }
-
-  alert(msg)
-
+alert(msg)
 }
 
 render()
@@ -285,5 +268,4 @@ render()
 </script>
 
 </body>
-
 </html>
