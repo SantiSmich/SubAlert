@@ -715,17 +715,15 @@ function quickAdd(name){
     "Google Drive": { price: 1.99, frequency: "monthly", currency: "EUR", usage: "media" },
     "Amazon Prime": { price: 4.99, frequency: "monthly", currency: "EUR", usage: "media" },
     "HBO Max": { price: 9.99, frequency: "monthly", currency: "EUR", usage: "media" },
-    "Suno": { price: 10, frequency: "monthly", currency: "USD", usage: "media" },
+    "Suno": { price: 10, frequency: "monthly", currency: "EUR", usage: "media" },
     "Moises": { price: 5.99, frequency: "monthly", currency: "EUR", usage: "media" }
   };
 
   const data = map[name];
   if(!data) return;
 
-  if(duplicateExists(name)){
-    showAnswer(`${name} ya está cargada.`);
-    return;
-  }
+  const already = subs.some(s => s.name.toLowerCase() === name.toLowerCase());
+  if(already) return;
 
   const date = new Date();
   date.setDate(date.getDate() + (data.frequency === "yearly" ? 365 : 30));
@@ -744,23 +742,21 @@ function quickAdd(name){
   save();
   render();
 
-  const total = subs.reduce((a,s)=>a + monthlyEUR(s), 0);
-  showAnswer(`Agregué ${name}.\n\nAhora estás registrando aproximadamente ${moneyEUR(total)} al mes en suscripciones.`);
   document.querySelectorAll(".quickGrid button").forEach(btn => {
-  const label = btn.textContent.trim().replace("✓ ", "");
+    const label = btn.textContent.trim().replace("✓ ", "");
 
-  const matches =
-    label.toLowerCase() === name.toLowerCase() ||
-    (name === "Amazon Prime" && label === "Prime") ||
-    (name === "Google Drive" && label === "Drive") ||
-    (name === "HBO Max" && label === "HBO");
+    const matches =
+      label.toLowerCase() === name.toLowerCase() ||
+      (name === "Amazon Prime" && label === "Prime") ||
+      (name === "Google Drive" && label === "Drive") ||
+      (name === "HBO Max" && label === "HBO");
 
-  if (matches) {
-    btn.textContent = "✓ " + label;
-    btn.disabled = true;
-    btn.style.opacity = "0.55";
-  }
-});
+    if(matches){
+      btn.textContent = "✓ " + label;
+      btn.disabled = true;
+      btn.style.opacity = "0.55";
+    }
+  });
 }
   
 function render(){
