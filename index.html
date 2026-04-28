@@ -6,237 +6,342 @@
   <title>SubAlert</title>
 
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#2b0b55">
+  <meta name="theme-color" content="#140622">
 
   <style>
     *{box-sizing:border-box}
+
     body{
       margin:0;
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:linear-gradient(180deg,#32105f,#08040f);
+      background:linear-gradient(180deg,#241044,#07040d);
       color:white;
-     padding:20px 16px 90px;
+      padding:22px 16px 96px;
     }
+
     .app{max-width:520px;margin:auto}
-    h1{font-size:30px;margin:18px 0 4px}
-    h2{font-size:22px;margin:20px 0 10px}
-   p{color:#d7c8ff;font-size:15px}
-    .mainCTA{
-      margin-top:18px;
-padding:16px;
-border-radius:22px;
+
+    h1{font-size:30px;margin:8px 0 4px}
+    h2{font-size:22px;margin:0 0 12px}
+    p{color:#d8ccff;font-size:15px;margin:6px 0}
+
+    .tagline{color:#d8ccff;font-size:16px;margin-bottom:18px}
+
+    .screen{display:none}
+    .screen.active{display:block}
+
+    .card{
       background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:24px;
+      padding:18px;
+      margin:14px 0;
     }
-    button.primary{
+
+    .heroTotal{text-align:center;padding:24px 18px}
+    .label{color:#d8ccff;font-size:15px}
+    .total{font-size:48px;font-weight:900;margin:6px 0}
+    .year{color:#d8ccff;font-size:15px}
+
+    .primary{
       width:100%;
-      margin-top:16px;
-      padding:14px;
-      border-radius:26px;
-      border:none;
+      border:0;
+      border-radius:20px;
+      padding:15px;
+      margin-top:12px;
       background:linear-gradient(90deg,#9333ea,#6d28d9);
       color:white;
       font-size:17px;
+      font-weight:900;
+    }
+
+    .secondary{
+      width:100%;
+      border:1px solid rgba(255,255,255,.15);
+      border-radius:20px;
+      padding:14px;
+      margin-top:10px;
+      background:rgba(255,255,255,.08);
+      color:white;
+      font-size:16px;
       font-weight:800;
     }
-    .card{
+
+    textarea,input,select{
+      width:100%;
+      padding:14px;
+      margin-top:10px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:30px;
-      padding:26px;
-      margin-top:28px;
-    }
-    .totalLabel{text-align:center;color:#d7c8ff;font-size:18px}
-    .total{text-align:center;font-size:56px;font-weight:800;margin:8px 0}
-    .totalSub{text-align:center;color:#d7c8ff;font-size:18px}
-    .quickGrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-    .quickGrid button{
-      border:none;
-      border-radius:999px;
-      padding:8px 16px;
+      color:white;
       font-size:16px;
+    }
+
+    textarea{resize:none;min-height:90px}
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .miniGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .mini{
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:20px;
+      padding:14px;
+    }
+
+    .mini strong{display:block;font-size:22px;margin-top:6px}
+    .mini span{color:#d8ccff;font-size:13px;font-weight:700}
+
+    .subCard{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:22px;
+      padding:16px;
+      margin:12px 0;
+    }
+
+    .subTop{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .subName{font-size:22px;font-weight:900}
+    .subPrice{text-align:right;font-size:20px;font-weight:900}
+    .muted{color:#d8ccff;font-size:14px}
+
+    .badge{
+      display:inline-block;
+      margin-top:12px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.09);
+      font-weight:900;
+      font-size:14px;
+    }
+
+    .green{color:#4ade80}
+    .yellow{color:#facc15}
+    .red{color:#fb7185}
+
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .actions button{
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:14px;
+      padding:10px 12px;
+      background:rgba(255,255,255,.08);
+      color:white;
+      font-weight:800;
+    }
+
+    .quickGrid{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .quickGrid button{
+      border:0;
+      border-radius:999px;
+      padding:9px 14px;
       background:#eee;
       color:#111;
+      font-weight:800;
     }
+
     .quickGrid button.selected{
       background:#7c3aed;
       color:white;
       opacity:.75;
     }
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .mini{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.15);
-      border-radius:24px;
-      padding:18px;
-      margin-top:16px;
-    }
-    .mini span{color:#d7c8ff;font-weight:700}
-    .mini strong{display:block;font-size:28px;margin-top:10px}
-    textarea,input{
-      width:100%;
-      margin-top:12px;
-      padding:18px;
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.08);
-      color:white;
-      font-size:18px;
-    }
-    .quick{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
-    .quick button{
-      padding:18px;
-      border-radius:24px;
-      background:rgba(255,255,255,.08);
-      color:white;
-      border:1px solid rgba(255,255,255,.18);
-      font-size:18px;
-      font-weight:700;
-    }
-    .sectionTitle{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-top:34px;
-    }
-    .sectionTitle h2{margin:0;font-size:34px}
-    .subCard{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:30px;
-      padding:24px;
-      margin-top:18px;
-    }
-    .subTop{display:flex;justify-content:space-between;gap:12px}
-    .subTop h3{font-size:30px;margin:0}
-    .price{text-align:right;font-size:30px;font-weight:800}
-    .status{
-      margin:20px 0;
-      background:rgba(255,255,255,.08);
-      border-radius:20px;
-      padding:14px;
-      font-size:22px;
-      font-weight:800;
-    }
-    .green{color:#4ade80}
-    .yellow{color:#facc15}
-    .red{color:#f87171}
-    .chips{display:flex;gap:10px;flex-wrap:wrap}
-    .chip{
-      background:rgba(255,255,255,.10);
-      padding:8px 14px;
-      border-radius:999px;
-      color:#d7c8ff;
-      font-weight:700;
-    }
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-    .actions button{
-      padding:12px 16px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.08);
-      color:white;
-      font-weight:800;
-    }
-    .danger{color:#fb7185!important}
-    .keep{color:#4ade80!important}
-    .review{color:#facc15!important}
+
     .answer{
-      margin-top:16px;
-      padding:18px;
-      border-radius:20px;
+      display:none;
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
       background:rgba(255,255,255,.09);
-      color:#eee;
       white-space:pre-wrap;
-      font-size:17px;
+      line-height:1.4;
+      color:#f1ecff;
     }
+
+    .empty{
+      text-align:center;
+      color:#d8ccff;
+      padding:20px;
+    }
+
     .nav{
       position:fixed;
-      left:18px;
-      right:18px;
-      bottom:18px;
+      left:14px;
+      right:14px;
+      bottom:14px;
       max-width:520px;
       margin:auto;
-      display:flex;
-      justify-content:space-around;
-      padding:14px;
-      border-radius:26px;
-      background:rgba(13,7,25,.92);
-      border:1px solid rgba(255,255,255,.15);
-      backdrop-filter:blur(12px);
-      z-index:20;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      background:rgba(12,6,24,.92);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:24px;
+      overflow:hidden;
+      backdrop-filter:blur(16px);
+      z-index:10;
     }
-    .nav a{color:#d7c8ff;text-decoration:none;font-weight:800}
+
+    .nav button{
+      border:0;
+      background:transparent;
+      color:#d8ccff;
+      padding:14px 6px;
+      font-weight:900;
+      font-size:13px;
+    }
+
+    .nav button.active{
+      background:rgba(255,255,255,.08);
+      color:white;
+    }
   </style>
 </head>
 
 <body>
 <div class="app">
 
-  <header id="home">
+  <header>
     <h1>SubAlert</h1>
-    <p>Descubrí tus gastos invisibles</p>
+    <p class="tagline">Detectá. Decidí. Ahorrá.</p>
   </header>
 
-  <section class="mainCTA" id="ia">
-    <h2>Detectá tus suscripciones</h2>
-   <p>Pegá tus gastos y listo.</p>
+  <!-- INICIO -->
+  <section id="homeScreen" class="screen active">
 
-    <textarea id="aiInput" rows="3" placeholder="Ej: Spotify 11.99 mensual renovación 9/5&#10;ChatGPT 20 mensual renueva 15 de mayo&#10;Canva 120 anual"></textarea>
-    <button class="primary" id="aiBtn">✨ Detectar mis suscripciones</button>
-  </section>
-
-  <section class="card">
-    <div class="totalLabel">Estás perdiendo</div>
-    <div class="total" id="total">0,00 €</div>
-    <div class="totalSub">al mes</div>
-    <div class="totalSub" id="yearlyTotal">0,00 € al año</div>
-  </section>
-
-  
-  <section class="grid">
-    <div class="mini">
-      <span>Próximos 7 días</span>
-      <strong id="weekTotal">0,00 €</strong>
+    <div class="card heroTotal">
+      <div class="label">Pagás al mes</div>
+      <div class="total" id="total">0,00 €</div>
+      <div class="year" id="yearlyTotal">0,00 € al año</div>
     </div>
-    <div class="mini">
-      <span>Ahorro potencial</span>
-      <strong id="savingTotal">0,00 €</strong>
+
+    <div class="miniGrid">
+      <div class="mini">
+        <span>Próximo cobro</span>
+        <strong id="nextCharge">—</strong>
+      </div>
+      <div class="mini">
+        <span>Ahorro posible</span>
+        <strong id="savingTotal">0,00 €</strong>
+      </div>
     </div>
+
+    <div class="card">
+      <h2>Detectá tus suscripciones</h2>
+      <p>Pegá tus gastos o recordatorios y armamos tu lista.</p>
+
+      <textarea id="aiInput" rows="3" placeholder="Ej:
+Spotify 11.99 mensual renovación 9/5
+Netflix 12.99 mensual
+Canva 120 anual"></textarea>
+
+      <button class="primary" id="aiBtn">✨ Detectar mis suscripciones</button>
+      <button class="secondary" id="manualOpenBtn">+ Agregar manualmente</button>
+    </div>
+
+    <div class="card" id="manualBox" style="display:none">
+      <h2>Agregar suscripción</h2>
+      <input id="mName" placeholder="Nombre">
+      <input id="mPrice" type="number" step="0.01" placeholder="Precio">
+      <input id="mDate" type="date">
+
+      <div class="row">
+        <select id="mFrequency">
+          <option value="monthly">Mensual</option>
+          <option value="yearly">Anual</option>
+        </select>
+
+        <select id="mUsage">
+          <option value="alta">Uso alto</option>
+          <option value="media">Uso medio</option>
+          <option value="baja">Uso bajo</option>
+        </select>
+      </div>
+
+      <button class="primary" id="manualBtn">Guardar</button>
+    </div>
+
+    <div class="card">
+      <h2>Opciones rápidas</h2>
+      <p>Para probar rápido, tocá las que usás.</p>
+
+      <div class="quickGrid">
+        <button onclick="quickAdd('Spotify')">Spotify</button>
+        <button onclick="quickAdd('Netflix')">Netflix</button>
+        <button onclick="quickAdd('ChatGPT')">ChatGPT</button>
+        <button onclick="quickAdd('Canva')">Canva</button>
+        <button onclick="quickAdd('Amazon Prime')">Prime</button>
+        <button onclick="quickAdd('Disney+')">Disney+</button>
+        <button onclick="quickAdd('HBO Max')">HBO</button>
+        <button onclick="quickAdd('Suno')">Suno</button>
+        <button onclick="quickAdd('Moises')">Moises</button>
+      </div>
+    </div>
+
+    <button class="secondary" id="notifyBtn">🔔 Activar notificaciones</button>
+    <button class="secondary" id="upcomingBtn">Ver próximos cobros</button>
+
   </section>
 
-  <div class="quick">
-    <button id="mailBtn">🔍 Correo</button>
-    <button id="smsBtn">📱 SMS</button>
-  </div>
-
-  <button class="primary" id="notifyBtn">🔔 Activar notificaciones</button>
-  <button class="primary" id="upcomingBtn">🔔 Ver próximos cobros</button>
-
-  <section class="card">
-    <h2>Resumen inteligente</h2>
-    <div id="rankList"></div>
-  </section>
-
-  
-
-  <input id="search" placeholder="Buscar suscripción...">
-
-  <section id="list">
-    <div class="sectionTitle">
+  <!-- LISTA -->
+  <section id="listScreen" class="screen">
+    <div class="card">
       <h2>Suscripciones</h2>
-      <strong id="count">0 activas</strong>
+      <p id="count">0 activas</p>
+      <input id="search" placeholder="Buscar...">
     </div>
+
     <div id="subsList"></div>
+  </section>
+
+  <!-- IA -->
+  <section id="aiScreen" class="screen">
+    <div class="card">
+      <h2>Asistente SubAlert</h2>
+      <p>Preguntame qué cancelar, cómo ahorrar o qué se renueva pronto.</p>
+
+      <button class="secondary" onclick="askAI('cancelar')">¿Qué debería cancelar?</button>
+      <button class="secondary" onclick="askAI('ahorrar')">¿Cómo puedo ahorrar?</button>
+      <button class="secondary" onclick="askAI('proximos')">¿Qué se cobra pronto?</button>
+
+      <input id="customQuestion" placeholder="O escribí tu pregunta...">
+      <button class="primary" onclick="askAI('custom')">Preguntar</button>
+
+      <div id="answer" class="answer"></div>
+    </div>
   </section>
 
 </div>
 
 <nav class="nav">
-  <a href="#home">Inicio</a>
-  <a href="#ia">IA</a>
-  <a href="#ia">Agregar</a>
-  <a href="#list">Lista</a>
+  <button class="active" onclick="showTab('home')">Inicio</button>
+  <button onclick="showTab('list')">Lista</button>
+  <button onclick="showTab('ai')">IA</button>
 </nav>
 
 <script>
@@ -248,19 +353,17 @@ function save(){
   localStorage.setItem("subs", JSON.stringify(subs));
 }
 
-function moneyEUR(n){
+function money(n){
   return Number(n || 0).toLocaleString("es-ES", {
     minimumFractionDigits:2,
     maximumFractionDigits:2
   }) + " €";
 }
 
-function monthlyEUR(s){
+function monthlyCost(s){
   const price = Number(s.price || 0);
-  const converted = s.currency === "USD" ? price * 0.93 : price;
-  if(s.frequency === "yearly") return converted / 12;
-  if(s.frequency === "trial") return 0;
-  return converted;
+  if(s.frequency === "yearly") return price / 12;
+  return price;
 }
 
 function daysUntil(dateStr){
@@ -272,14 +375,16 @@ function daysUntil(dateStr){
 }
 
 function formatDate(dateStr){
-  if(!dateStr) return "Sin fecha de renovación";
-  const d = new Date(dateStr + "T00:00:00");
-  return d.toLocaleDateString("es-ES", { day:"numeric", month:"short" });
+  if(!dateStr) return "Sin fecha";
+  return new Date(dateStr + "T00:00:00").toLocaleDateString("es-ES", {
+    day:"numeric",
+    month:"short"
+  });
 }
 
 function score(s){
   let points = 0;
-  const m = monthlyEUR(s);
+  const m = monthlyCost(s);
 
   if(s.usage === "baja") points += 5;
   if(s.usage === "media") points += 2;
@@ -287,118 +392,62 @@ function score(s){
   if(m > 15) points += 2;
   if(!s.date) points += 1;
 
-  return Math.min(points, 10);
+  return Math.min(points,10);
 }
 
 function decision(s){
   const sc = score(s);
-  if(sc >= 7) return { text:"Cancelar", cls:"red", dot:"🔴" };
-  if(sc >= 4) return { text:"Revisar", cls:"yellow", dot:"🟡" };
-  return { text:"Mantener", cls:"green", dot:"🟢" };
+  if(sc >= 7) return {label:"Cancelar", cls:"red", icon:"🔴"};
+  if(sc >= 4) return {label:"Revisar", cls:"yellow", icon:"🟡"};
+  return {label:"Mantener", cls:"green", icon:"🟢"};
 }
 
-function explain(s){
-  const arr = [];
-  if(s.usage === "alta") arr.push("La marcaste como uso alto, por eso no parece urgente cancelarla.");
-  if(s.usage === "media") arr.push("Tiene uso medio: conviene revisar si realmente la aprovechás.");
-  if(s.usage === "baja") arr.push("Tiene uso bajo: candidata fuerte a cancelar.");
-  if(monthlyEUR(s) > 15) arr.push("Tiene un coste mensual alto.");
-  else if(monthlyEUR(s) > 10) arr.push("Tiene un coste mensual medio/alto.");
-  else arr.push("Su coste mensual no es especialmente alto.");
-  if(!s.date) arr.push("No tiene fecha de renovación cargada.");
-  return arr.map(x => "• " + x).join("<br>");
-}
-
-function normalizeButtonName(label){
-  if(label === "Prime") return "Amazon Prime";
-  if(label === "Drive") return "Google Drive";
-  if(label === "HBO") return "HBO Max";
-  return label;
-}
-
-function markQuickButtons(){
-  document.querySelectorAll(".quickGrid button").forEach(btn => {
-    const clean = btn.textContent.replace("✓","").trim();
-    const realName = normalizeButtonName(clean);
-    const exists = subs.some(s => s.name.toLowerCase() === realName.toLowerCase());
-
-    if(exists){
-      btn.textContent = "✓ " + clean;
-      btn.classList.add("selected");
-      btn.disabled = true;
-    } else {
-      btn.textContent = clean;
-      btn.classList.remove("selected");
-      btn.disabled = false;
-    }
-  });
+function nextDate(days){
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split("T")[0];
 }
 
 function quickAdd(name){
   const map = {
-    "Spotify": { price: 11.99, frequency: "monthly", currency: "EUR", usage: "alta" },
-    "Netflix": { price: 12.99, frequency: "monthly", currency: "EUR", usage: "media" },
-    "ChatGPT": { price: 20, frequency: "monthly", currency: "EUR", usage: "media" },
-    "Canva": { price: 120, frequency: "yearly", currency: "EUR", usage: "media" },
-    "Disney+": { price: 8.99, frequency: "monthly", currency: "EUR", usage: "media" },
-    "YouTube": { price: 11.99, frequency: "monthly", currency: "EUR", usage: "media" },
-    "iCloud": { price: 0.99, frequency: "monthly", currency: "EUR", usage: "alta" },
-    "Google Drive": { price: 1.99, frequency: "monthly", currency: "EUR", usage: "media" },
-    "Amazon Prime": { price: 4.99, frequency: "monthly", currency: "EUR", usage: "media" },
-    "HBO Max": { price: 9.99, frequency: "monthly", currency: "EUR", usage: "media" },
-    "Suno": { price: 10, frequency: "monthly", currency: "EUR", usage: "media" },
-    "Moises": { price: 5.99, frequency: "monthly", currency: "EUR", usage: "media" }
+    "Spotify": { price:11.99, frequency:"monthly", usage:"alta" },
+    "Netflix": { price:12.99, frequency:"monthly", usage:"media" },
+    "ChatGPT": { price:20, frequency:"monthly", usage:"media" },
+    "Canva": { price:120, frequency:"yearly", usage:"media" },
+    "Amazon Prime": { price:4.99, frequency:"monthly", usage:"media" },
+    "Disney+": { price:8.99, frequency:"monthly", usage:"media" },
+    "HBO Max": { price:9.99, frequency:"monthly", usage:"media" },
+    "Suno": { price:10, frequency:"monthly", usage:"media" },
+    "Moises": { price:5.99, frequency:"monthly", usage:"media" }
   };
 
   const data = map[name];
   if(!data) return;
 
-  const exists = subs.some(s => s.name.toLowerCase() === name.toLowerCase());
-  if(exists) return;
-
-  const date = new Date();
-  date.setDate(date.getDate() + (data.frequency === "yearly" ? 365 : 30));
+  if(subs.some(s => s.name.toLowerCase() === name.toLowerCase())) return;
 
   subs.unshift({
     id: Date.now().toString(),
     name,
-    plan:"Estimado rápido",
     price:data.price,
-    currency:data.currency,
     frequency:data.frequency,
-    date:date.toISOString().split("T")[0],
     usage:data.usage,
-    notes:"Agregado con botones rápidos",
+    date: nextDate(data.frequency === "yearly" ? 365 : 30),
     source:"Rápido"
   });
 
   save();
   render();
-  markQuickButtons();
 }
 
-function parseSpanishDate(text){
-  const now = new Date();
+function parseDate(text){
   const lower = text.toLowerCase();
+  const match = lower.match(/(\d{1,2})[\/\-](\d{1,2})/);
 
-  const numeric = lower.match(/(\d{1,2})[\/\-](\d{1,2})/);
-  if(numeric){
-    const d = Number(numeric[1]);
-    const m = Number(numeric[2]) - 1;
-    return new Date(now.getFullYear(), m, d).toISOString().split("T")[0];
-  }
-
-  const months = {
-    enero:0,febrero:1,marzo:2,abril:3,mayo:4,junio:5,
-    julio:6,agosto:7,septiembre:8,octubre:9,noviembre:10,diciembre:11
-  };
-
-  for(const [month, index] of Object.entries(months)){
-    const regex = new RegExp("(\\d{1,2})\\s+de\\s+" + month);
-    const match = lower.match(regex);
-    if(match){
-      return new Date(now.getFullYear(), index, Number(match[1])).toISOString().split("T")[0];
-    }
+  if(match){
+    const d = Number(match[1]);
+    const m = Number(match[2]) - 1;
+    return new Date(new Date().getFullYear(), m, d).toISOString().split("T")[0];
   }
 
   return "";
@@ -407,9 +456,8 @@ function parseSpanishDate(text){
 function cleanName(line){
   return line
     .replace(/\d+[,.]?\d*/g,"")
-    .replace(/usd|eur|€|\$/gi,"")
     .replace(/mensual|anual|renueva|renovación|renovacion|fecha|de|el|\/|\-/gi,"")
-    .replace(/\d{1,2}\s+de\s+\w+/gi,"")
+    .replace(/eur|usd|€|\$/gi,"")
     .trim()
     .split(" ")
     .filter(Boolean)
@@ -425,124 +473,58 @@ function parseAI(){
   let added = 0;
 
   lines.forEach(line => {
-    const lower = line.toLowerCase();
-    const priceMatch = lower.match(/(\d+[,.]?\d*)/);
+    const priceMatch = line.match(/(\d+[,.]?\d*)/);
     if(!priceMatch) return;
 
-    const price = Number(priceMatch[1].replace(",","."));
     const name = cleanName(line);
     if(!name) return;
 
     if(subs.some(s => s.name.toLowerCase() === name.toLowerCase())) return;
 
+    const lower = line.toLowerCase();
     const frequency = lower.includes("anual") ? "yearly" : "monthly";
-    const currency = "EUR";
-    const date = parseSpanishDate(line);
+    const price = Number(priceMatch[1].replace(",","."));
 
     subs.unshift({
       id: Date.now().toString() + Math.random(),
       name,
-      plan:"Detectado por IA",
       price,
-      currency,
       frequency,
-      date,
       usage:"media",
-      notes:"Agregado con IA",
+      date: parseDate(line) || nextDate(frequency === "yearly" ? 365 : 30),
       source:"IA"
     });
 
     added++;
   });
 
+  $("aiInput").value = "";
   save();
   render();
-  markQuickButtons();
   showAnswer(`Cargué ${added} suscripción/es.`);
 }
 
-function render(){
-  const search = $("search").value.toLowerCase();
-  const filtered = subs.filter(s => s.name.toLowerCase().includes(search));
+function addManual(){
+  const name = $("mName").value.trim();
+  const price = Number($("mPrice").value);
+  const date = $("mDate").value;
+  const frequency = $("mFrequency").value;
+  const usage = $("mUsage").value;
 
-  const total = subs.reduce((a,s)=>a + monthlyEUR(s),0);
-  const yearly = total * 12;
+  if(!name || !price) return;
 
-  $("total").innerText = moneyEUR(total);
-  $("yearlyTotal").innerText = moneyEUR(yearly) + " al año";
+  subs.unshift({
+    id: Date.now().toString(),
+    name, price, date, frequency, usage, source:"Manual"
+  });
 
-  const totalEl = $("total");
-  if(total < 10) totalEl.style.color = "#4ade80";
-  else if(total <= 15) totalEl.style.color = "#facc15";
-  else totalEl.style.color = "#f87171";
+  $("mName").value = "";
+  $("mPrice").value = "";
+  $("mDate").value = "";
+  $("manualBox").style.display = "none";
 
-  const week = subs.filter(s => {
-    const d = daysUntil(s.date);
-    return d !== null && d >= 0 && d <= 7;
-  }).reduce((a,s)=>a + monthlyEUR(s),0);
-
-  $("weekTotal").innerText = moneyEUR(week);
-
-  const saving = subs.filter(s => score(s) >= 4)
-    .reduce((a,s)=>a + monthlyEUR(s),0);
-
-  $("savingTotal").innerText = moneyEUR(saving);
-  $("count").innerText = `${subs.length} activas`;
-
-  $("rankList").innerHTML = subs.length ? `
-    <p><b>Top gastos:</b></p>
-    ${[...subs].sort((a,b)=>monthlyEUR(b)-monthlyEUR(a)).slice(0,3).map(s=>`
-      <p><b>${s.name}</b> — ${moneyEUR(monthlyEUR(s))}/mes</p>
-    `).join("")}
-    <p><b>Prioridad de revisión:</b></p>
-    ${[...subs].sort((a,b)=>score(b)-score(a)).slice(0,3).map(s=>`
-      <p><b>${s.name}</b> — Score ${score(s)}/10</p>
-    `).join("")}
-  ` : `<p>Agregá suscripciones para ver recomendaciones.</p>`;
-
-  $("subsList").innerHTML = filtered.length ? filtered.map(s => {
-    const dec = decision(s);
-    const d = daysUntil(s.date);
-    const renewal = d === null ? "Sin fecha de renovación" :
-      d === 0 ? "Hoy te cobran" :
-      d === 1 ? "Mañana te cobran" :
-      `En ${d} días · ${formatDate(s.date)}`;
-
-    return `
-      <div class="subCard">
-        <div class="subTop">
-          <div>
-            <h3>${s.name}</h3>
-            <p>${s.source || "Manual"}</p>
-          </div>
-          <div class="price">
-            ${Number(s.price).toLocaleString("es-ES",{minimumFractionDigits:2})} €
-            <br><small>/${s.frequency === "yearly" ? "año" : "mes"}</small>
-          </div>
-        </div>
-
-        <div class="status ${dec.cls}">${dec.dot} ${dec.text}</div>
-
-        <div class="chips">
-          <span class="chip">${s.frequency === "yearly" ? "Anual" : "Mensual"}</span>
-          <span class="chip">Uso: ${s.usage}</span>
-        </div>
-
-        <p>🔔 <b>${renewal}</b></p>
-        <p><b>Coste mensual real:</b> ${moneyEUR(monthlyEUR(s))}</p>
-        <p><b>Score:</b> ${score(s)}/10</p>
-        <p>${explain(s)}</p>
-
-        <div class="actions">
-          <button class="danger" onclick="deleteSub('${s.id}')">Eliminar</button>
-          <button class="review" onclick="setUsage('${s.id}','media')">Revisar</button>
-          <button class="keep" onclick="setUsage('${s.id}','alta')">Mantener</button>
-        </div>
-      </div>
-    `;
-  }).join("") : `<div class="card"><p>No hay suscripciones cargadas.</p></div>`;
-
-  markQuickButtons();
+  save();
+  render();
 }
 
 function deleteSub(id){
@@ -557,48 +539,122 @@ function setUsage(id, usage){
   render();
 }
 
+function render(){
+  const total = subs.reduce((a,s)=>a + monthlyCost(s),0);
+  $("total").innerText = money(total);
+  $("yearlyTotal").innerText = money(total * 12) + " al año";
+
+  const totalEl = $("total");
+  if(total < 10) totalEl.style.color = "#4ade80";
+  else if(total <= 15) totalEl.style.color = "#facc15";
+  else totalEl.style.color = "#fb7185";
+
+  const next = [...subs]
+    .filter(s => daysUntil(s.date) !== null && daysUntil(s.date) >= 0)
+    .sort((a,b)=>daysUntil(a.date)-daysUntil(b.date))[0];
+
+  $("nextCharge").innerText = next ? `${next.name}` : "—";
+
+  const saving = subs.filter(s => score(s) >= 4)
+    .reduce((a,s)=>a + monthlyCost(s),0);
+
+  $("savingTotal").innerText = money(saving);
+  $("count").innerText = `${subs.length} activas`;
+
+  const search = $("search").value.toLowerCase();
+  const filtered = subs.filter(s => s.name.toLowerCase().includes(search));
+
+  $("subsList").innerHTML = filtered.length ? filtered.map(s => {
+    const dec = decision(s);
+    const d = daysUntil(s.date);
+    const renewal = d === null ? "Sin fecha" :
+      d === 0 ? "Hoy" :
+      d === 1 ? "Mañana" :
+      `En ${d} días · ${formatDate(s.date)}`;
+
+    return `
+      <article class="subCard">
+        <div class="subTop">
+          <div>
+            <div class="subName">${s.name}</div>
+            <div class="muted">${renewal}</div>
+          </div>
+          <div class="subPrice">${money(s.price)}<div class="muted">/${s.frequency === "yearly" ? "año" : "mes"}</div></div>
+        </div>
+
+        <div class="badge ${dec.cls}">${dec.icon} ${dec.label}</div>
+
+        <p><b>Mensual real:</b> ${money(monthlyCost(s))}</p>
+        <p><b>Score IA:</b> ${score(s)}/10</p>
+
+        <div class="actions">
+          <button class="red" onclick="deleteSub('${s.id}')">Eliminar</button>
+          <button class="yellow" onclick="setUsage('${s.id}','media')">Revisar</button>
+          <button class="green" onclick="setUsage('${s.id}','alta')">Mantener</button>
+        </div>
+      </article>
+    `;
+  }).join("") : `<div class="empty">No hay suscripciones cargadas.</div>`;
+
+  markQuickButtons();
+}
+
+function markQuickButtons(){
+  document.querySelectorAll(".quickGrid button").forEach(btn => {
+    const label = btn.textContent.replace("✓","").trim();
+    const real = label === "Prime" ? "Amazon Prime" : label === "HBO" ? "HBO Max" : label;
+    const exists = subs.some(s => s.name.toLowerCase() === real.toLowerCase());
+
+    btn.textContent = exists ? "✓ " + label : label;
+    btn.classList.toggle("selected", exists);
+    btn.disabled = exists;
+  });
+}
+
 function showAnswer(text){
   $("answer").style.display = "block";
   $("answer").innerText = text;
 }
 
-function showUpcoming(){
-  const upcoming = subs.filter(s => {
-    const d = daysUntil(s.date);
-    return d !== null && d >= 0 && d <= 30;
-  });
-
-  if(!upcoming.length){
-    showAnswer("No hay cobros próximos cargados.");
-    return;
-  }
-
-  showAnswer("Próximos cobros:\n\n" + upcoming.map(s => {
-    const d = daysUntil(s.date);
-    return `• ${s.name}: ${d === 0 ? "hoy" : "en " + d + " días"} · ${formatDate(s.date)}`;
-  }).join("\n"));
-}
-
-function analyzeAdvisor(){
-  const total = subs.reduce((a,s)=>a + monthlyEUR(s),0);
-  const candidates = [...subs].sort((a,b)=>score(b)-score(a)).filter(s=>score(s)>=4);
-
+function askAI(type){
   if(!subs.length){
     showAnswer("Todavía no cargaste suscripciones.");
     return;
   }
 
-  if(!candidates.length){
-    showAnswer(`Gastás aproximadamente ${moneyEUR(total)} al mes.\n\nNo veo una cancelación urgente.`);
+  const total = subs.reduce((a,s)=>a + monthlyCost(s),0);
+  const candidates = [...subs].filter(s=>score(s)>=4).sort((a,b)=>score(b)-score(a));
+
+  if(type === "proximos"){
+    const upcoming = [...subs]
+      .filter(s => daysUntil(s.date) !== null && daysUntil(s.date) <= 30)
+      .sort((a,b)=>daysUntil(a.date)-daysUntil(b.date));
+
+    showAnswer(upcoming.length ?
+      upcoming.map(s=>`• ${s.name}: ${daysUntil(s.date) === 0 ? "hoy" : "en " + daysUntil(s.date) + " días"}`).join("\n")
+      : "No hay cobros próximos."
+    );
     return;
   }
 
-  showAnswer(
-    `Gastás aproximadamente ${moneyEUR(total)} al mes.\n\n` +
-    `Primero revisaría: ${candidates[0].name}.\n` +
-    `Score: ${score(candidates[0])}/10.\n\n` +
-    explain(candidates[0]).replaceAll("<br>","\n")
-  );
+  if(!candidates.length){
+    showAnswer(`Pagás ${money(total)} al mes.\n\nNo veo cancelaciones urgentes.`);
+    return;
+  }
+
+  if(type === "ahorrar"){
+    const possible = candidates.reduce((a,s)=>a + monthlyCost(s),0);
+    showAnswer(`Podrías revisar ${candidates.length} suscripción/es.\n\nAhorro potencial: ${money(possible)} al mes.`);
+    return;
+  }
+
+  const first = candidates[0];
+  showAnswer(`Primero revisaría: ${first.name}\n\nScore IA: ${score(first)}/10\nAhorro posible: ${money(monthlyCost(first))} al mes.`);
+}
+
+function showUpcoming(){
+  askAI("proximos");
+  showTab("ai");
 }
 
 async function activateNotifications(){
@@ -608,51 +664,50 @@ async function activateNotifications(){
   }
 
   const permission = await Notification.requestPermission();
-
   if(permission !== "granted"){
     showAnswer("No se activaron las notificaciones.");
     return;
   }
 
   const reg = await navigator.serviceWorker.ready;
-
   reg.showNotification("SubAlert activado 🔔", {
     body:"Las notificaciones ya están listas.",
-    icon:"/icon-192.png",
-    badge:"/icon-192.png"
+    icon:"/icon-192.png"
   });
 
   showAnswer("Notificaciones activadas correctamente.");
 }
 
-function checkAlerts(){
-  const alerts = [];
+function showTab(tab){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
 
-  subs.forEach(s => {
-    const d = daysUntil(s.date);
-    if(d === 0) alerts.push(`⚠️ Hoy se cobra ${s.name}`);
-    else if(d === 1) alerts.push(`⏳ Mañana se cobra ${s.name}`);
-    else if(d > 1 && d <= 3) alerts.push(`📅 En ${d} días se cobra ${s.name}`);
-  });
-
-  if(alerts.length){
-    showAnswer("🔔 ALERTA DE COBROS\n\n" + alerts.join("\n"));
+  if(tab === "home"){
+    $("homeScreen").classList.add("active");
+    document.querySelectorAll(".nav button")[0].classList.add("active");
   }
+
+  if(tab === "list"){
+    $("listScreen").classList.add("active");
+    document.querySelectorAll(".nav button")[1].classList.add("active");
+  }
+
+  if(tab === "ai"){
+    $("aiScreen").classList.add("active");
+    document.querySelectorAll(".nav button")[2].classList.add("active");
+  }
+
+  window.scrollTo({top:0, behavior:"smooth"});
 }
 
 $("aiBtn").addEventListener("click", parseAI);
+$("manualOpenBtn").addEventListener("click", () => {
+  $("manualBox").style.display = $("manualBox").style.display === "none" ? "block" : "none";
+});
+$("manualBtn").addEventListener("click", addManual);
 $("search").addEventListener("input", render);
-$("upcomingBtn").addEventListener("click", showUpcoming);
-$("advisorBtn").addEventListener("click", analyzeAdvisor);
 $("notifyBtn").addEventListener("click", activateNotifications);
-
-$("mailBtn").addEventListener("click", () => {
-  window.location.href = "mailto:?subject=Buscar suscripciones&body=Revisá correos de Spotify, Netflix, Apple, Google, Amazon, Canva, ChatGPT.";
-});
-
-$("smsBtn").addEventListener("click", () => {
-  window.location.href = "sms:";
-});
+$("upcomingBtn").addEventListener("click", showUpcoming);
 
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("/service-worker.js").catch(console.error);
@@ -660,10 +715,8 @@ if("serviceWorker" in navigator){
 
 try{
   render();
-  markQuickButtons();
-  checkAlerts();
 }catch(e){
-  document.body.innerHTML = "<pre style='color:red;padding:20px'>" + e + "</pre>";
+  document.body.innerHTML = "<pre style='color:red;padding:20px'>" + e.message + "</pre>";
 }
 </script>
 </body>
