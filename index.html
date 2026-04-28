@@ -1,709 +1,360 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#35106c">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="SubAlert">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>SubAlert</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SubAlert</title>
 
-<style>
-*{box-sizing:border-box}
-:root{
-  --muted:#c8bde3;
-  --purple:#833cff;
-  --purple2:#6723d8;
-  --green:#66ff99;
-  --yellow:#ffd166;
-  --red:#ff6b7a;
-}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:radial-gradient(circle at top,#35106c,#070510 62%);
-  color:white;
-  padding:calc(28px + env(safe-area-inset-top)) 18px calc(170px + env(safe-area-inset-bottom));
-  overflow-x:hidden;
-}
-.app{max-width:520px;margin:0 auto}
-.glass{
-  background:rgba(255,255,255,.075);
-  border:1px solid rgba(255,255,255,.14);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  box-shadow:0 18px 50px rgba(0,0,0,.28);
-}
-.hero{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
-.kicker{letter-spacing:4px;text-transform:uppercase;color:#b99cff;font-weight:900;font-size:12px}
-h1{font-size:54px;line-height:.9;margin:8px 0 12px}
-.sub{color:var(--muted);font-size:18px;line-height:1.35}
-.plus{
-  width:64px;height:64px;border-radius:22px;border:1px solid rgba(255,255,255,.18);
-  background:linear-gradient(135deg,#933cff,#5d1fd1);color:white;font-size:38px;font-weight:900
-}
-.dashboard{display:grid;gap:12px;margin:24px 0 18px}
-.totalBox{border-radius:30px;padding:24px}
-.totalBox span,.mini span{color:var(--muted);font-weight:800}
-.total{font-size:52px;font-weight:950;margin-top:8px}
-.yearly{color:#d8ccff;font-size:17px;font-weight:800;margin-top:8px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.mini{border-radius:24px;padding:16px}
-.mini strong{display:block;font-size:26px;margin-top:8px}
-.saving{background:rgba(255,80,130,.14);border-color:rgba(255,120,170,.28)}
-.aiBox,.manual,.advisor,.rankBox{border-radius:30px;padding:18px;margin:18px 0}
-textarea,input,select{
-  width:100%;border:0;outline:0;background:transparent;color:white;font-size:17px
-}
-textarea{min-height:110px;resize:none}
-textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
-.primary{
-  width:100%;border:0;border-radius:22px;padding:17px;
-  background:linear-gradient(90deg,#963cff,#6723d8);color:white;font-size:17px;font-weight:950;margin-top:12px
-}
-.quick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
-.quick button{
-  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);
-  color:white;border-radius:22px;padding:17px;font-weight:950;font-size:16px
-}
-.search{border-radius:24px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);padding:17px;margin:18px 0 24px}
-.section{display:flex;justify-content:space-between;align-items:center;margin:26px 0 14px}
-.section h2{font-size:34px;margin:0}
-.section span{color:var(--muted);font-weight:900}
-.card{border-radius:32px;padding:22px;margin-bottom:16px;position:relative;overflow:hidden}
-.cardHead{display:flex;justify-content:space-between;gap:14px}
-.name{font-size:30px;font-weight:950;letter-spacing:-.6px}
-.source{color:var(--muted);margin-top:8px;font-weight:800}
-.price{text-align:right;font-size:31px;font-weight:950;white-space:nowrap}
-.price small{display:block;color:var(--muted);font-size:16px;margin-top:5px}
-.status{margin:18px 0 14px;padding:14px 16px;border-radius:20px;background:rgba(255,255,255,.08);font-size:18px;font-weight:950}
-.ok{color:var(--green)}.warn{color:var(--yellow)}.danger{color:var(--red)}
-.meta{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.pill{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.09);color:#d8ccff;font-weight:900;font-size:13px}
-.renewal{margin:16px 0 10px;color:#ffd7dc;font-size:18px;font-weight:950}
-.details{color:var(--muted);font-size:15px;line-height:1.45}
-.details b{color:#d8ccff}
-.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px}
-.action{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);border-radius:16px;padding:12px 7px;font-weight:950;color:white;font-size:13px}
-.delete{color:var(--red)}.review{color:var(--yellow)}.keep{color:var(--green)}.edit{color:#d8ccff}
-.manual{display:none}
-.manual input,.manual select{
-  margin-bottom:10px;padding:15px;border-radius:18px;border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.07);color:white;font-size:16px
-}
-.manual option{color:black}
-.empty{border-radius:28px;padding:28px;text-align:center;color:var(--muted)}
-.rankItem{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
-.rankItem:last-child{border-bottom:0}
-.rankItem strong{font-size:16px}
-.rankItem span{color:var(--muted);font-weight:800;text-align:right}
-.insight{
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.1);
-  padding:14px;
-  border-radius:18px;
-  margin:10px 0;
-  color:#d8ccff;
-  line-height:1.35;
-  font-weight:750;
-}
-.answerBox{
-  display:none;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:22px;
-  padding:16px;
-  margin-top:14px;
-  color:#f2ecff;
-  line-height:1.45;
-  white-space:pre-line;
-}
-.nav{
-  position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));
-  max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);
-  border-radius:26px;overflow:hidden;background:rgba(18,12,32,.9);
-  border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);z-index:50
-}
-.nav button{border:0;background:transparent;color:#d9ccff;padding:14px 8px;font-size:12px;font-weight:950}
-</style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2b0b55">
+
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,#32105f,#08040f);
+      color:white;
+      padding:34px 18px 110px;
+    }
+    .app{max-width:520px;margin:auto}
+    h1{font-size:38px;margin:30px 0 6px}
+    h2{font-size:26px;margin:34px 0 12px}
+    p{color:#d7c8ff;font-size:18px}
+    .quickGrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    .quickGrid button{
+      border:none;
+      border-radius:999px;
+      padding:8px 16px;
+      font-size:16px;
+      background:#eee;
+      color:#111;
+    }
+    .quickGrid button.selected{
+      background:#7c3aed;
+      color:white;
+      opacity:.75;
+    }
+    .card{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:30px;
+      padding:26px;
+      margin-top:28px;
+    }
+    .totalLabel{text-align:center;color:#d7c8ff;font-size:18px}
+    .total{
+      text-align:center;
+      font-size:56px;
+      font-weight:800;
+      margin:8px 0;
+    }
+    .totalSub{text-align:center;color:#d7c8ff;font-size:18px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .mini{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.15);
+      border-radius:24px;
+      padding:18px;
+      margin-top:16px;
+    }
+    .mini span{color:#d7c8ff;font-weight:700}
+    .mini strong{display:block;font-size:28px;margin-top:10px}
+    textarea,input,select{
+      width:100%;
+      margin-top:12px;
+      padding:18px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.08);
+      color:white;
+      font-size:18px;
+    }
+    button.primary{
+      width:100%;
+      margin-top:16px;
+      padding:18px;
+      border-radius:26px;
+      border:none;
+      background:linear-gradient(90deg,#9333ea,#6d28d9);
+      color:white;
+      font-size:20px;
+      font-weight:800;
+    }
+    .quick{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+    .quick button{
+      padding:18px;
+      border-radius:24px;
+      background:rgba(255,255,255,.08);
+      color:white;
+      border:1px solid rgba(255,255,255,.18);
+      font-size:18px;
+      font-weight:700;
+    }
+    .sectionTitle{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:34px;
+    }
+    .sectionTitle h2{margin:0;font-size:34px}
+    .subCard{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:30px;
+      padding:24px;
+      margin-top:18px;
+    }
+    .subTop{display:flex;justify-content:space-between;gap:12px}
+    .subTop h3{font-size:30px;margin:0}
+    .price{text-align:right;font-size:30px;font-weight:800}
+    .status{
+      margin:20px 0;
+      background:rgba(255,255,255,.08);
+      border-radius:20px;
+      padding:14px;
+      font-size:22px;
+      font-weight:800;
+    }
+    .green{color:#4ade80}
+    .yellow{color:#facc15}
+    .red{color:#f87171}
+    .chips{display:flex;gap:10px;flex-wrap:wrap}
+    .chip{
+      background:rgba(255,255,255,.10);
+      padding:8px 14px;
+      border-radius:999px;
+      color:#d7c8ff;
+      font-weight:700;
+    }
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .actions button{
+      padding:12px 16px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.08);
+      color:white;
+      font-weight:800;
+    }
+    .danger{color:#fb7185!important}
+    .keep{color:#4ade80!important}
+    .review{color:#facc15!important}
+    .answer{
+      margin-top:16px;
+      padding:18px;
+      border-radius:20px;
+      background:rgba(255,255,255,.09);
+      color:#eee;
+      white-space:pre-wrap;
+      font-size:17px;
+    }
+    .nav{
+      position:fixed;
+      left:18px;
+      right:18px;
+      bottom:18px;
+      max-width:520px;
+      margin:auto;
+      display:flex;
+      justify-content:space-around;
+      padding:14px;
+      border-radius:26px;
+      background:rgba(13,7,25,.92);
+      border:1px solid rgba(255,255,255,.15);
+      backdrop-filter:blur(12px);
+      z-index:20;
+    }
+    .nav a{color:#d7c8ff;text-decoration:none;font-weight:800}
+  </style>
 </head>
 
 <body>
 <div class="app">
 
-<header class="hero" id="home">
-  <div>
-    
-    <h1 style="font-size:28px; margin-bottom:6px;">SubAlert</h1>
-<p style="opacity:0.7; font-size:14px;">
-Descubrí tus gastos invisibles
-</p>
-  
-</header>
+  <header id="home">
+    <h1>SubAlert</h1>
+    <p>Descubrí tus gastos invisibles</p>
+  </header>
 
+  <section class="quickAdd">
+    <h2>Descubrí en qué se te va la plata</h2>
+    <p>Elegí lo que usás</p>
 
-<div class="quickAdd">
-  <h2>Descubrí en qué se te va la plata</h2>
-  <p style="opacity:.7">Elegí lo que usás</p>
+    <div class="quickGrid">
+      <button onclick="quickAdd('Spotify')">Spotify</button>
+      <button onclick="quickAdd('Netflix')">Netflix</button>
+      <button onclick="quickAdd('ChatGPT')">ChatGPT</button>
+      <button onclick="quickAdd('Canva')">Canva</button>
+      <button onclick="quickAdd('Disney+')">Disney+</button>
+      <button onclick="quickAdd('YouTube')">YouTube</button>
+      <button onclick="quickAdd('iCloud')">iCloud</button>
+      <button onclick="quickAdd('Google Drive')">Drive</button>
+      <button onclick="quickAdd('Amazon Prime')">Prime</button>
+      <button onclick="quickAdd('HBO Max')">HBO</button>
+      <button onclick="quickAdd('Suno')">Suno</button>
+      <button onclick="quickAdd('Moises')">Moises</button>
+    </div>
+  </section>
 
-  <div class="quickGrid">
-    <button onclick="quickAdd('Spotify')">Spotify</button>
-    <button onclick="quickAdd('Netflix')">Netflix</button>
-    <button onclick="quickAdd('ChatGPT')">ChatGPT</button>
-    <button onclick="quickAdd('Canva')">Canva</button>
+  <section class="card">
+    <div class="totalLabel">Estás perdiendo</div>
+    <div class="total" id="total">0,00 €</div>
+    <div class="totalSub">al mes</div>
+    <div class="totalSub" id="yearlyTotal">0,00 € al año</div>
+  </section>
 
-    <button onclick="quickAdd('Disney+')">Disney+</button>
-    <button onclick="quickAdd('YouTube')">YouTube</button>
-    <button onclick="quickAdd('iCloud')">iCloud</button>
-    <button onclick="quickAdd('Google Drive')">Drive</button>
-
-    <button onclick="quickAdd('Amazon Prime')">Prime</button>
-    <button onclick="quickAdd('HBO Max')">HBO</button>
-    <button onclick="quickAdd('Suno')">Suno</button>
-    <button onclick="quickAdd('Moises')">Moises</button>
-  </div>
-</div>
-  <section class="dashboard">
-  <div class="totalBox glass">
-    <div style="text-align:center;">
-
-  <div style="opacity:0.7; font-size:14px;">
-    Estás perdiendo
-  </div>
-
-  <div id="total" style="font-size:40px; font-weight:700; margin:6px 0;">
-    0,00 €
-  </div>
-
-  <div style="opacity:0.6;">
-    al mes
-  </div>
-
-</div>
-  </div>
-
-  <div class="grid">
-    <div class="mini glass">
+  <section class="grid">
+    <div class="mini">
       <span>Próximos 7 días</span>
       <strong id="weekTotal">0,00 €</strong>
     </div>
-    <div class="mini glass saving">
+    <div class="mini">
       <span>Ahorro potencial</span>
       <strong id="savingTotal">0,00 €</strong>
     </div>
+  </section>
+
+  <section class="card" id="ia">
+    <textarea id="aiInput" rows="5" placeholder="Ej: Spotify 11.99 mensual renovación 9/5&#10;ChatGPT 20 mensual renueva 15 de mayo&#10;Canva 120 anual"></textarea>
+    <button class="primary" id="aiBtn">✨ Cargar con IA</button>
+  </section>
+
+  <div class="quick">
+    <button id="mailBtn">🔍 Correo</button>
+    <button id="smsBtn">📱 SMS</button>
   </div>
-</section>
-<section class="aiBox glass" id="ia">
-  <textarea id="aiInput" placeholder="Ej: Spotify 11.99 mensual renovación 9/5&#10;ChatGPT 20 USD mensual renueva el 15 de mayo&#10;Canva 120 anual"></textarea>
-  <button class="primary" id="aiBtn">✨ Cargar con IA</button>
-</section>
 
-<section class="manual glass" id="manualPanel">
-  <input id="mName" placeholder="Nombre">
-  <input id="mPrice" type="number" step="0.01" placeholder="Precio">
-  <input id="mDate" type="date">
-  <select id="mFrequency">
-    <option value="monthly">Mensual</option>
-    <option value="yearly">Anual</option>
-    <option value="trial">Trial</option>
-  </select>
-  <select id="mUsage">
-    <option value="alta">Uso alto</option>
-    <option value="media">Uso medio</option>
-    <option value="baja">Uso bajo</option>
-  </select>
-  <button class="primary" id="manualBtn">Guardar</button>
-</section>
+  <button class="primary" id="notifyBtn">🔔 Activar notificaciones</button>
+  <button class="primary" id="upcomingBtn">🔔 Ver próximos cobros</button>
 
-<div class="quick">
-  <button id="mailBtn">🔍 Correo</button>
-  <button id="smsBtn">📱 SMS</button>
-</div>
-  
-<button class="primary" id="notifyBtn">🔔 Activar notificaciones</button>
-  
-</div>
-<button class="primary" id="upcomingBtn">🔔 Ver próximos cobros</button>
+  <section class="card">
+    <h2>Resumen inteligente</h2>
+    <div id="rankList"></div>
+  </section>
 
-<section class="rankBox glass" id="rankBox">
-  <div class="section" style="margin-top:0">
-    <h2 style="font-size:24px">Resumen inteligente</h2>
-  </div>
-  <div id="rankList"></div>
-</section>
+  <section class="card">
+    <h2>Preguntale a SubAlert</h2>
+    <input id="advisorInput" placeholder="Ej: ¿Qué debería cancelar?">
+    <button class="primary" id="advisorBtn">🤖 Analizar mis gastos</button>
+    <div id="answer" class="answer" style="display:none"></div>
+  </section>
 
-<section class="advisor glass" id="advisor">
-  <div class="section" style="margin-top:0">
-    <h2 style="font-size:24px">Preguntale a SubAlert</h2>
-  </div>
-  <input class="search" id="advisorInput" placeholder="Ej: ¿Qué debería cancelar?">
-  <button class="primary" id="advisorBtn">🤖 Analizar mis gastos</button>
-  <div class="answerBox" id="answerBox"></div>
-</section>
+  <input id="search" placeholder="Buscar suscripción...">
 
-<input class="search" id="search" placeholder="Buscar suscripción...">
-
-<div class="section" id="listSection">
-  <h2>Suscripciones</h2>
-  <span id="count">0 activas</span>
-</div>
-
-<div id="list"></div>
+  <section id="list">
+    <div class="sectionTitle">
+      <h2>Suscripciones</h2>
+      <strong id="count">0 activas</strong>
+    </div>
+    <div id="subsList"></div>
+  </section>
 
 </div>
 
 <nav class="nav">
-  <button data-nav="home">Inicio</button>
-  <button data-nav="ia">IA</button>
-  <button id="navAdd">Agregar</button>
-  <button data-nav="listSection">Lista</button>
+  <a href="#home">Inicio</a>
+  <a href="#ia">IA</a>
+  <a href="#ia">Agregar</a>
+  <a href="#list">Lista</a>
 </nav>
 
 <script>
 let subs = JSON.parse(localStorage.getItem("subs") || "[]");
-let editingId = null;
 
 const $ = id => document.getElementById(id);
 
-const EXCHANGE = { EUR:1, USD:0.93 };
-
-function toEUR(amount, currency="EUR"){
-  return Number(amount || 0) * (EXCHANGE[currency] || 1);
-}
-
-const brandMap = {
-  spotify:"Spotify",
-  netflix:"Netflix",
-  chatgpt:"ChatGPT",
-  openai:"OpenAI",
-  canva:"Canva",
-  disney:"Disney+",
-  disneyplus:"Disney+",
-  amazon:"Amazon",
-  prime:"Amazon Prime",
-  suno:"Suno",
-  moises:"Moises",
-  afa:"AFA Play",
-  youtube:"YouTube",
-  google:"Google"
-};
-
-const categories = {
-  music:["spotify","youtube music","apple music","deezer","tidal"],
-  video:["netflix","disney","prime","amazon prime","hbo","max","skyshowtime"],
-  ai:["chatgpt","openai","suno"],
-  design:["canva","adobe"],
-  audio:["moises","suno"],
-  cloud:["google","icloud","dropbox"]
-};
-
-const monthMap = {
-  enero:1, febrero:2, marzo:3, abril:4, mayo:5, junio:6,
-  julio:7, agosto:8, septiembre:9, setiembre:9, octubre:10,
-  noviembre:11, diciembre:12
-};
-
-const numberWords = {
-  "uno":1,"una":1,"dos":2,"tres":3,"cuatro":4,"cinco":5,"seis":6,"siete":7,
-  "ocho":8,"nueve":9,"diez":10,"once":11,"doce":12,"trece":13,"catorce":14,
-  "quince":15,"dieciseis":16,"dieciséis":16,"diecisiete":17,"dieciocho":18,
-  "diecinueve":19,"veinte":20,"veintiuno":21,"veintidos":22,"veintidós":22,
-  "veintitres":23,"veintitrés":23,"veinticuatro":24,"veinticinco":25,
-  "veintiseis":26,"veintiséis":26,"veintisiete":27,"veintiocho":28,
-  "veintinueve":29,"treinta":30,"treinta y uno":31
-};
-
-function save(){ localStorage.setItem("subs", JSON.stringify(subs)); }
-
-function normalizeText(text){
-  return String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-}
-
-function money(n, currency="EUR"){
-  const symbol = currency === "USD" ? "$" : "€";
-  return Number(n || 0).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + symbol;
+function save(){
+  localStorage.setItem("subs", JSON.stringify(subs));
 }
 
 function moneyEUR(n){
-  return Number(n || 0).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2}) + " €";
-}
-
-function monthlyCost(s){
-  const price = Number(s.price || 0);
-  if(s.frequency === "yearly") return price / 12;
-  return price;
+  return Number(n || 0).toLocaleString("es-ES", {
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  }) + " €";
 }
 
 function monthlyEUR(s){
-  return toEUR(monthlyCost(s), s.currency || "EUR");
+  const price = Number(s.price || 0);
+  const converted = s.currency === "USD" ? price * 0.93 : price;
+
+  if(s.frequency === "yearly") return converted / 12;
+  if(s.frequency === "trial") return 0;
+  return converted;
 }
 
-function displayMonthlyCost(s){
-  const base = money(monthlyCost(s), s.currency || "EUR");
-  if((s.currency || "EUR") !== "EUR"){
-    return `${base} (~${moneyEUR(monthlyEUR(s))})`;
-  }
-  return base;
-}
-
-function daysUntil(date){
-  if(!date) return null;
+function daysUntil(dateStr){
+  if(!dateStr) return null;
   const today = new Date();
-  const target = new Date(date + "T00:00:00");
+  const target = new Date(dateStr + "T00:00:00");
   today.setHours(0,0,0,0);
-  return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+  return Math.ceil((target - today) / (1000*60*60*24));
 }
 
-function formatDate(date){
-  if(!date) return "";
-  return new Date(date + "T00:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"short"});
-}
-
-function makeDate(day, month){
-  const today = new Date();
-  let year = today.getFullYear();
-  const candidate = new Date(year, month - 1, day);
-  const cleanToday = new Date();
-  cleanToday.setHours(0,0,0,0);
-  if(candidate < cleanToday) year++;
-  return `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-}
-
-function parseDate(text){
-  const lower = normalizeText(text);
-  let m = lower.match(/(\d{1,2})[\/\-](\d{1,2})/);
-  if(m) return makeDate(Number(m[1]), Number(m[2]));
-
-  m = lower.match(/(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)/);
-  if(m) return makeDate(Number(m[1]), monthMap[m[2]]);
-
-  for(const word in numberWords){
-    for(const month in monthMap){
-      if(lower.includes(`${word} de ${month}`)){
-        return makeDate(numberWords[word], monthMap[month]);
-      }
-    }
-  }
-  return "";
-}
-
-function parseCurrency(text){
-  const lower = normalizeText(text);
-  if(lower.includes("usd") || lower.includes("dolar") || lower.includes("$")) return "USD";
-  return "EUR";
-}
-
-function parseFrequency(text){
-  const lower = normalizeText(text);
-  if(lower.includes("anual") || lower.includes("año") || lower.includes("year")) return "yearly";
-  if(lower.includes("trial") || lower.includes("prueba")) return "trial";
-  return "monthly";
-}
-
-function normalizeBrand(name){
-  const key = normalizeText(name).replace(/\s+/g,"");
-  return brandMap[key] || name;
-}
-
-function detectUsage(name){
-  const n = normalizeText(name);
-  if(n.includes("spotify") || n.includes("netflix") || n.includes("disney")) return "alta";
-  if(n.includes("chatgpt") || n.includes("canva") || n.includes("suno") || n.includes("moises")) return "media";
-  return "baja";
-}
-
-function getCategory(name){
-  const n = normalizeText(name);
-  for(const cat in categories){
-    if(categories[cat].some(item => n.includes(item))) return cat;
-  }
-  return "other";
-}
-
-function cleanName(text){
-  let name = normalizeText(text);
-  name = name
-    .replace(/\d+([.,]\d+)?/g,"")
-    .replace(/\d{1,2}[\/\-]\d{1,2}/g,"")
-    .replace(/\d{1,2}\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)/gi,"")
-    .replace(/mensual|mes|anual|año|yearly|monthly|trial|prueba/gi,"")
-    .replace(/usd|eur|euro|euros|dolar|dolares|\$|€/gi,"")
-    .replace(/renovacion|renueva|renueva el|fecha|cobro|proximo|próximo/gi,"");
-
-  Object.keys(monthMap).forEach(month=>{
-    name = name.replace(new RegExp(month,"gi"),"");
-  });
-
-  Object.keys(numberWords).forEach(word=>{
-    name = name.replace(new RegExp("\\b"+word+"\\b","gi"),"");
-  });
-
-  name = name
-    .replace(/\bde\b|\bel\b|\bla\b|\blos\b|\blas\b|\by\b/gi,"")
-    .replace(/[^\w\s]/gi,"")
-    .replace(/\s+/g," ")
-    .trim()
-    .replace(/\b\w/g,c=>c.toUpperCase());
-
-  return normalizeBrand(name);
-}
-
-function duplicateExists(name, ignoreId=null){
-  const n = normalizeText(name);
-  return subs.some(s => {
-    if(ignoreId && s.id === ignoreId) return false;
-    const existing = normalizeText(s.name);
-    return existing.includes(n) || n.includes(existing);
-  });
+function formatDate(dateStr){
+  if(!dateStr) return "Sin fecha de renovación";
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("es-ES", { day:"numeric", month:"short" });
 }
 
 function score(s){
-  let n = 0;
-  if(s.usage === "baja") n += 5;
-  if(s.usage === "media") n += 2;
-  if(monthlyEUR(s) > 10) n += 2;
-  if(monthlyEUR(s) > 20) n += 3;
-  if(s.frequency === "yearly") n += 1;
-  if(!s.date) n += 1;
-
-  const cat = getCategory(s.name);
-  const sameCategory = subs.filter(x => getCategory(x.name) === cat && cat !== "other");
-  if(sameCategory.length > 1) n += 1;
-
-  return Math.min(n,10);
-}
-
-function label(n){
-  if(n >= 7) return ["danger","🔴 Cancelar pronto"];
-  if(n >= 4) return ["warn","🟡 Revisar"];
-  return ["ok","🟢 Mantener"];
-}
-
-function explainSub(s){
-  const reasons = [];
+  let points = 0;
   const m = monthlyEUR(s);
-  const cat = getCategory(s.name);
-  const sameCategory = subs.filter(x => getCategory(x.name) === cat && cat !== "other");
 
-  if(s.usage === "alta") reasons.push("La marcaste como uso alto, por eso no parece una cancelación urgente.");
-  if(s.usage === "media") reasons.push("Tiene uso medio: conviene revisar si realmente la aprovechás.");
-  if(s.usage === "baja") reasons.push("Tiene uso bajo: es candidata fuerte a cancelación.");
+  if(s.usage === "baja") points += 5;
+  if(s.usage === "media") points += 2;
+  if(m > 10) points += 2;
+  if(m > 15) points += 2;
+  if(!s.date) points += 1;
 
-  if(m > 20) reasons.push("Tiene un coste mensual alto.");
-  else if(m > 10) reasons.push("Tiene un coste mensual medio/alto.");
-  else reasons.push("Su coste mensual no es especialmente alto.");
-
-  if(s.frequency === "yearly") reasons.push("Es anual: puede doler menos mes a mes, pero suma en el año.");
-  if(!s.date) reasons.push("No tiene fecha de renovación cargada, así que hay menos control.");
-  if(sameCategory.length > 1) reasons.push("Puede solaparse parcialmente con otra herramienta de la misma familia.");
-
-  return reasons;
+  return Math.min(points, 10);
 }
 
-function renewalText(s){
-  const d = daysUntil(s.date);
-  if(d === null) return "Sin fecha de renovación";
-  if(d === 0) return "Hoy te cobran";
-  if(d > 0) return `En ${d} días · ${formatDate(s.date)}`;
-  return "Fecha pasada";
+function decision(s){
+  const sc = score(s);
+  if(sc >= 7) return { text:"Cancelar", cls:"red", dot:"🔴" };
+  if(sc >= 4) return { text:"Revisar", cls:"yellow", dot:"🟡" };
+  return { text:"Mantener", cls:"green", dot:"🟢" };
 }
 
-function splitEntries(raw){
-  return raw.split(/\n|;|,(?=\s*[A-Za-zÁÉÍÓÚáéíóúÑñ])/).map(x=>x.trim()).filter(Boolean);
+function explain(s){
+  const arr = [];
+  if(s.usage === "alta") arr.push("La marcaste como uso alto, por eso no parece urgente cancelarla.");
+  if(s.usage === "media") arr.push("Tiene uso medio: conviene revisar si realmente la aprovechás.");
+  if(s.usage === "baja") arr.push("Tiene uso bajo: candidata fuerte a cancelar.");
+  if(monthlyEUR(s) > 15) arr.push("Tiene un coste mensual alto.");
+  else if(monthlyEUR(s) > 10) arr.push("Tiene un coste mensual medio/alto.");
+  else arr.push("Su coste mensual no es especialmente alto.");
+  if(!s.date) arr.push("No tiene fecha de renovación cargada.");
+  return arr.map(x => "• " + x).join("<br>");
 }
 
-function parseAI(){
-  const raw = $("aiInput").value.trim();
-  if(!raw) return showAnswer("Escribí una suscripción primero.");
+function normalizeButtonName(label){
+  if(label === "Prime") return "Amazon Prime";
+  if(label === "Drive") return "Google Drive";
+  if(label === "HBO") return "HBO Max";
+  return label;
+}
 
-  const parts = splitEntries(raw);
-  let added = 0;
+function markQuickButtons(){
+  document.querySelectorAll(".quickGrid button").forEach(btn => {
+    const clean = btn.textContent.replace("✓","").trim();
+    const realName = normalizeButtonName(clean);
+    const exists = subs.some(s => s.name.toLowerCase() === realName.toLowerCase());
 
-  parts.forEach(line=>{
-    const priceMatch = line.match(/\d+([.,]\d+)?/);
-    if(!priceMatch) return;
-
-    const price = Number(priceMatch[0].replace(",","."));
-    const name = cleanName(line);
-    const date = parseDate(line);
-    const currency = parseCurrency(line);
-    const frequency = parseFrequency(line);
-    const usage = detectUsage(name);
-
-    if(!name || !price) return;
-    if(duplicateExists(name)) return;
-
-    subs.unshift({
-      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()),
-      name, price, currency, frequency, date, usage, source:"IA"
-    });
-
-    added++;
+    if(exists){
+      btn.textContent = "✓ " + clean;
+      btn.classList.add("selected");
+      btn.disabled = true;
+    } else {
+      btn.textContent = clean;
+      btn.classList.remove("selected");
+      btn.disabled = false;
+    }
   });
-
-  $("aiInput").value = "";
-  save();
-  render();
-
-  showAnswer(added ? `Cargué ${added} suscripción/es.` : "No encontré suscripciones nuevas o ya estaban cargadas.");
 }
 
-function addManual(){
-  const name = normalizeBrand($("mName").value.trim());
-  const price = Number($("mPrice").value);
-  const date = $("mDate").value;
-  const usage = $("mUsage").value;
-  const frequency = $("mFrequency").value;
-
-  if(!name) return showAnswer("Falta el nombre.");
-  if(!price) return showAnswer("Falta el precio.");
-
-  if(editingId){
-    subs = subs.map(s => s.id === editingId ? {...s, name, price, date, usage, frequency, currency:s.currency || "EUR"} : s);
-    editingId = null;
-  } else {
-    if(duplicateExists(name)) return showAnswer("Ya existe una suscripción parecida.");
-    subs.unshift({
-      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()),
-      name, price, date, usage, frequency, currency:"EUR", source:"Manual"
-    });
-  }
-
-  clearManual();
-  $("manualPanel").style.display = "none";
-  save();
-  render();
-}
-
-function clearManual(){
-  $("mName").value = "";
-  $("mPrice").value = "";
-  $("mDate").value = "";
-  $("mUsage").value = "media";
-  $("mFrequency").value = "monthly";
-}
-
-function editSub(id){
-  const s = subs.find(x => x.id === id);
-  if(!s) return;
-
-  editingId = id;
-  $("mName").value = s.name;
-  $("mPrice").value = s.price;
-  $("mDate").value = s.date || "";
-  $("mUsage").value = s.usage || "media";
-  $("mFrequency").value = s.frequency || "monthly";
-  $("manualPanel").style.display = "block";
-  $("manualPanel").scrollIntoView({behavior:"smooth", block:"center"});
-}
-
-function getInsights(){
-  const total = subs.reduce((a,s)=>a + monthlyEUR(s), 0);
-  const yearly = total * 12;
-
-  const topExpenses = [...subs].sort((a,b)=>monthlyEUR(b) - monthlyEUR(a)).slice(0,3);
-  const cancelCandidates = [...subs].sort((a,b)=>score(b) - score(a)).slice(0,3);
-
-  const duplicateCategories = [];
-  Object.keys(categories).forEach(cat=>{
-    const group = subs.filter(s => getCategory(s.name) === cat);
-    if(group.length > 1) duplicateCategories.push({cat, group});
-  });
-
-  return {total, yearly, topExpenses, cancelCandidates, duplicateCategories};
-}
-
-function renderRankings(){
-  const insights = getInsights();
-  let html = "";
-
-  if(insights.topExpenses.length){
-    html += `<div class="details"><b>Top gastos:</b></div>`;
-    insights.topExpenses.forEach(s=>{
-      html += `<div class="rankItem"><strong>${escapeHTML(s.name)}</strong><span>${displayMonthlyCost(s)}/mes</span></div>`;
-    });
-  }
-
-  if(insights.cancelCandidates.length){
-    html += `<div class="details" style="margin-top:14px"><b>Prioridad de revisión:</b></div>`;
-    insights.cancelCandidates.forEach(s=>{
-      html += `<div class="rankItem"><strong>${escapeHTML(s.name)}</strong><span>Score ${score(s)}/10</span></div>`;
-    });
-  }
-
-  if(insights.duplicateCategories.length){
-    html += `<div class="details" style="margin-top:14px"><b>Posibles solapamientos:</b></div>`;
-    insights.duplicateCategories.forEach(item=>{
-      html += `<div class="insight">Tenés varias herramientas de ${item.cat}: ${item.group.map(x=>x.name).join(", ")}. Pueden solaparse parcialmente, pero no necesariamente reemplazarse.</div>`;
-    });
-  }
-
-  $("rankList").innerHTML = html || `<div class="details">Agregá suscripciones para ver recomendaciones.</div>`;
-}
-
-function showAnswer(text){
-  const box = $("answerBox");
-  box.style.display = "block";
-  box.textContent = text;
-  box.scrollIntoView({behavior:"smooth", block:"center"});
-}
-
-function askAdvisor(){
-  if(!subs.length) return showAnswer("Todavía no hay suscripciones para analizar.");
-
-  const question = normalizeText($("advisorInput").value);
-  const insights = getInsights();
-  const reviewList = insights.cancelCandidates.filter(s => score(s) >= 4);
-  const urgentList = insights.cancelCandidates.filter(s => score(s) >= 7);
-  const top = insights.topExpenses[0];
-  const worst = reviewList[0] || insights.cancelCandidates[0];
-
-  let msg = `Gastás aproximadamente ${moneyEUR(insights.total)} al mes (${moneyEUR(insights.yearly)} al año).\n\n`;
-
-  if(question.includes("cancel") || question.includes("eliminar") || question.includes("quitar")){
-    if(urgentList.length){
-      const s = urgentList[0];
-      msg += `La primera candidata a cancelar sería ${s.name}.\nScore: ${score(s)}/10.\n\n`;
-      msg += explainSub(s).map(r=>`• ${r}`).join("\n");
-      msg += `\n\nAhorro estimado: ${moneyEUR(monthlyEUR(s))} al mes.`;
-    } else if(reviewList.length){
-      const s = reviewList[0];
-      msg += `No veo una cancelación urgente, pero revisaría primero ${s.name}.\nScore: ${score(s)}/10.\n\n`;
-      msg += explainSub(s).map(r=>`• ${r}`).join("\n");
-      msg += `\n\nAhorro posible: ${moneyEUR(monthlyEUR(s))} al mes.`;
-    } else {
-      msg += "No veo ninguna suscripción claramente cancelable ahora mismo.";
-    }
-  } else if(question.includes("car") || question.includes("gasto")){
-    msg += `Tu mayor gasto es ${top.name}: ${displayMonthlyCost(top)} al mes.\n\n`;
-    msg += explainSub(top).map(r=>`• ${r}`).join("\n");
-  } else if(question.includes("ahorrar")){
-    const options = reviewList;
-    const possible = options.reduce((a,s)=>a + monthlyEUR(s), 0);
-    msg += `Podrías revisar ${options.length} suscripción/es y liberar aproximadamente ${moneyEUR(possible)} al mes.\n\n`;
-    msg += options.map(s=>`• ${s.name}: ${displayMonthlyCost(s)}/mes · Score ${score(s)}/10`).join("\n");
-  } else if(question.includes("repet") || question.includes("solap") || question.includes("duplic")){
-    if(insights.duplicateCategories.length){
-      const dup = insights.duplicateCategories[0];
-      msg += `Detecté posible solapamiento en ${dup.cat}: ${dup.group.map(x=>x.name).join(", ")}.\n\n`;
-      msg += "Pueden compartir parte del uso, pero no necesariamente reemplazarse. Conviene comparar qué función cumple cada una.";
-    } else {
-      msg += "No veo suscripciones claramente repetidas.";
-    }
-  } else {
-    if(worst){
-      msg += `La revisión más razonable sería ${worst.name}: score ${score(worst)}/10.\n\n`;
-      msg += explainSub(worst).map(r=>`• ${r}`).join("\n");
-    } else {
-      msg += "No veo una cancelación urgente. Revisaría las que tengan uso bajo, coste alto o fecha de renovación cercana.";
-    }
-  }
-
-  showAnswer(msg);
-}
-ffunction quickAdd(name){
+function quickAdd(name){
   const map = {
     "Spotify": { price: 11.99, frequency: "monthly", currency: "EUR", usage: "alta" },
     "Netflix": { price: 12.99, frequency: "monthly", currency: "EUR", usage: "media" },
@@ -730,58 +381,313 @@ ffunction quickAdd(name){
 
   subs.unshift({
     id: Date.now().toString(),
-    name: name,
-    plan: "Estimado rápido",
-    price: data.price,
-    currency: data.currency,
-    frequency: data.frequency,
-    date: date.toISOString().split("T")[0],
-    usage: data.usage,
-    notes: "Agregado con botones rápidos",
-    source: "Rápido"
+    name,
+    plan:"Estimado rápido",
+    price:data.price,
+    currency:data.currency,
+    frequency:data.frequency,
+    date:date.toISOString().split("T")[0],
+    usage:data.usage,
+    notes:"Agregado con botones rápidos",
+    source:"Rápido"
   });
 
   save();
   render();
+  markQuickButtons();
 }
+
+function parseSpanishDate(text){
+  const now = new Date();
+  const lower = text.toLowerCase();
+
+  const numeric = lower.match(/(\d{1,2})[\/\-](\d{1,2})/);
+  if(numeric){
+    const d = Number(numeric[1]);
+    const m = Number(numeric[2]) - 1;
+    return new Date(now.getFullYear(), m, d).toISOString().split("T")[0];
+  }
+
+  const months = {
+    enero:0,febrero:1,marzo:2,abril:3,mayo:4,junio:5,
+    julio:6,agosto:7,septiembre:8,octubre:9,noviembre:10,diciembre:11
+  };
+
+  for(const [month, index] of Object.entries(months)){
+    const regex = new RegExp("(\\d{1,2})\\s+de\\s+" + month);
+    const match = lower.match(regex);
+    if(match){
+      return new Date(now.getFullYear(), index, Number(match[1])).toISOString().split("T")[0];
+    }
+  }
+
+  return "";
+}
+
+function cleanName(line){
+  return line
+    .replace(/\d+[,.]?\d*/g,"")
+    .replace(/usd|eur|€|\$/gi,"")
+    .replace(/mensual|anual|renueva|renovación|renovacion|fecha|de|el|\/|\-/gi,"")
+    .replace(/\d{1,2}\s+de\s+\w+/gi,"")
+    .trim()
+    .split(" ")
+    .filter(Boolean)
+    .slice(0,3)
+    .join(" ");
+}
+
+function parseAI(){
+  const text = $("aiInput").value.trim();
+  if(!text) return;
+
+  const lines = text.split("\n").filter(Boolean);
+  let added = 0;
+
+  lines.forEach(line => {
+    const lower = line.toLowerCase();
+    const priceMatch = lower.match(/(\d+[,.]?\d*)/);
+    if(!priceMatch) return;
+
+    const price = Number(priceMatch[1].replace(",","."));
+    const name = cleanName(line);
+    if(!name) return;
+
+    if(subs.some(s => s.name.toLowerCase() === name.toLowerCase())) return;
+
+    const frequency = lower.includes("anual") ? "yearly" : "monthly";
+    const currency = lower.includes("usd") || lower.includes("$") ? "USD" : "EUR";
+    const date = parseSpanishDate(line);
+
+    subs.unshift({
+      id: Date.now().toString() + Math.random(),
+      name,
+      plan:"Detectado por IA",
+      price,
+      currency,
+      frequency,
+      date,
+      usage:"media",
+      notes:"Agregado con IA",
+      source:"IA"
+    });
+
+    added++;
+  });
+
+  save();
   render();
-});
+  markQuickButtons();
+  showAnswer(`Cargué ${added} suscripción/es.`);
+}
+
+function render(){
+  const search = $("search").value.toLowerCase();
+
+  const filtered = subs.filter(s =>
+    s.name.toLowerCase().includes(search)
+  );
+
+  const total = subs.reduce((a,s)=>a + monthlyEUR(s),0);
+  const yearly = total * 12;
+
+  $("total").innerText = moneyEUR(total);
+  $("yearlyTotal").innerText = moneyEUR(yearly) + " al año";
+
+  const totalEl = $("total");
+  if(total < 10) totalEl.style.color = "#4ade80";
+  else if(total <= 15) totalEl.style.color = "#facc15";
+  else totalEl.style.color = "#f87171";
+
+  const week = subs.filter(s => {
+    const d = daysUntil(s.date);
+    return d !== null && d >= 0 && d <= 7;
+  }).reduce((a,s)=>a + monthlyEUR(s),0);
+
+  $("weekTotal").innerText = moneyEUR(week);
+
+  const saving = subs.filter(s => score(s) >= 4)
+    .reduce((a,s)=>a + monthlyEUR(s),0);
+
+  $("savingTotal").innerText = moneyEUR(saving);
+  $("count").innerText = `${subs.length} activas`;
+
+  $("rankList").innerHTML = subs.length ? `
+    <p><b>Top gastos:</b></p>
+    ${[...subs].sort((a,b)=>monthlyEUR(b)-monthlyEUR(a)).slice(0,3).map(s=>`
+      <p><b>${s.name}</b> — ${moneyEUR(monthlyEUR(s))}/mes</p>
+    `).join("")}
+    <p><b>Prioridad de revisión:</b></p>
+    ${[...subs].sort((a,b)=>score(b)-score(a)).slice(0,3).map(s=>`
+      <p><b>${s.name}</b> — Score ${score(s)}/10</p>
+    `).join("")}
+  ` : `<p>Agregá suscripciones para ver recomendaciones.</p>`;
+
+  $("subsList").innerHTML = filtered.length ? filtered.map(s => {
+    const dec = decision(s);
+    const d = daysUntil(s.date);
+    const renewal = d === null ? "Sin fecha de renovación" :
+      d === 0 ? "Hoy te cobran" :
+      d === 1 ? "Mañana te cobran" :
+      `En ${d} días · ${formatDate(s.date)}`;
+
+    return `
+      <div class="subCard">
+        <div class="subTop">
+          <div>
+            <h3>${s.name}</h3>
+            <p>${s.source || "Manual"}</p>
+          </div>
+          <div class="price">
+            ${Number(s.price).toLocaleString("es-ES",{minimumFractionDigits:2})} ${s.currency === "USD" ? "$" : "€"}
+            <br><small>/${s.frequency === "yearly" ? "año" : "mes"}</small>
+          </div>
+        </div>
+
+        <div class="status ${dec.cls}">${dec.dot} ${dec.text}</div>
+
+        <div class="chips">
+          <span class="chip">${s.frequency === "yearly" ? "Anual" : "Mensual"}</span>
+          <span class="chip">Uso: ${s.usage}</span>
+        </div>
+
+        <p>🔔 <b>${renewal}</b></p>
+        <p><b>Coste mensual real:</b> ${moneyEUR(monthlyEUR(s))}</p>
+        <p><b>Score:</b> ${score(s)}/10</p>
+        <p>${explain(s)}</p>
+
+        <div class="actions">
+          <button class="danger" onclick="deleteSub('${s.id}')">Eliminar</button>
+          <button class="review" onclick="setUsage('${s.id}','media')">Revisar</button>
+          <button class="keep" onclick="setUsage('${s.id}','alta')">Mantener</button>
+        </div>
+      </div>
+    `;
+  }).join("") : `<div class="card"><p>No hay suscripciones cargadas.</p></div>`;
+
+  markQuickButtons();
+}
+
+function deleteSub(id){
+  subs = subs.filter(s => s.id !== id);
+  save();
+  render();
+}
+
+function setUsage(id, usage){
+  subs = subs.map(s => s.id === id ? {...s, usage} : s);
+  save();
+  render();
+}
+
+function showAnswer(text){
+  $("answer").style.display = "block";
+  $("answer").innerText = text;
+}
+
+function showUpcoming(){
+  const upcoming = subs.filter(s => {
+    const d = daysUntil(s.date);
+    return d !== null && d >= 0 && d <= 30;
+  });
+
+  if(!upcoming.length){
+    showAnswer("No hay cobros próximos cargados.");
+    return;
+  }
+
+  showAnswer("Próximos cobros:\n\n" + upcoming.map(s => {
+    const d = daysUntil(s.date);
+    return `• ${s.name}: ${d === 0 ? "hoy" : "en " + d + " días"} · ${formatDate(s.date)}`;
+  }).join("\n"));
+}
+
+function analyzeAdvisor(){
+  const total = subs.reduce((a,s)=>a + monthlyEUR(s),0);
+  const candidates = [...subs].sort((a,b)=>score(b)-score(a)).filter(s=>score(s)>=4);
+
+  if(!subs.length){
+    showAnswer("Todavía no cargaste suscripciones.");
+    return;
+  }
+
+  if(!candidates.length){
+    showAnswer(`Gastás aproximadamente ${moneyEUR(total)} al mes.\n\nNo veo una cancelación urgente.`);
+    return;
+  }
+
+  showAnswer(
+    `Gastás aproximadamente ${moneyEUR(total)} al mes.\n\n` +
+    `Primero revisaría: ${candidates[0].name}.\n` +
+    `Score: ${score(candidates[0])}/10.\n\n` +
+    explain(candidates[0]).replaceAll("<br>","\n")
+  );
+}
+
+async function activateNotifications(){
+  if(!("Notification" in window)){
+    showAnswer("Este dispositivo no soporta notificaciones web.");
+    return;
+  }
+
+  const permission = await Notification.requestPermission();
+
+  if(permission !== "granted"){
+    showAnswer("No se activaron las notificaciones.");
+    return;
+  }
+
+  const reg = await navigator.serviceWorker.ready;
+
+  reg.showNotification("SubAlert activado 🔔", {
+    body:"Las notificaciones ya están listas.",
+    icon:"/icon-192.png",
+    badge:"/icon-192.png"
+  });
+
+  showAnswer("Notificaciones activadas correctamente.");
+}
+
 function checkAlerts(){
-  const today = new Date();
   const alerts = [];
 
-  subs.forEach(sub => {
-    if(!sub.date) return;
-
-    const renewalDate = new Date(sub.date + "T00:00:00");
-    const diffTime = renewalDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if(diffDays === 0){
-      alerts.push(`⚠️ Hoy se cobra ${sub.name}`);
-    } else if(diffDays === 1){
-      alerts.push(`⏳ Mañana se cobra ${sub.name}`);
-    } else if(diffDays > 1 && diffDays <= 3){
-      alerts.push(`📅 En ${diffDays} días se cobra ${sub.name}`);
-    }
+  subs.forEach(s => {
+    const d = daysUntil(s.date);
+    if(d === 0) alerts.push(`⚠️ Hoy se cobra ${s.name}`);
+    else if(d === 1) alerts.push(`⏳ Mañana se cobra ${s.name}`);
+    else if(d > 1 && d <= 3) alerts.push(`📅 En ${d} días se cobra ${s.name}`);
   });
 
   if(alerts.length){
-    showAnswer("Alertas próximas:\n\n" + alerts.join("\n"));
+    showAnswer("🔔 ALERTA DE COBROS\n\n" + alerts.join("\n"));
   }
 }
+
+$("aiBtn").addEventListener("click", parseAI);
+$("search").addEventListener("input", render);
+$("upcomingBtn").addEventListener("click", showUpcoming);
+$("advisorBtn").addEventListener("click", analyzeAdvisor);
+$("notifyBtn").addEventListener("click", activateNotifications);
+
+$("mailBtn").addEventListener("click", () => {
+  window.location.href = "mailto:?subject=Buscar suscripciones&body=Revisá correos de Spotify, Netflix, Apple, Google, Amazon, Canva, ChatGPT.";
+});
+
+$("smsBtn").addEventListener("click", () => {
+  window.location.href = "sms:";
+});
+
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("/service-worker.js").catch(console.error);
+}
+
 try{
   render();
   markQuickButtons();
   checkAlerts();
 }catch(e){
-  document.body.innerHTML = "<pre style='color:red'>" + e + "</pre>";
+  document.body.innerHTML = "<pre style='color:red;padding:20px'>" + e + "</pre>";
 }
- if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/service-worker.js")
-    .then(() => console.log("Service Worker registrado"))
-    .catch(err => console.error("Error SW:", err));
-} 
 </script>
 </body>
 </html>
