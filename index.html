@@ -1,271 +1,759 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>SubAlert</title>
 
 <style>
 *{box-sizing:border-box}
 
+:root{
+  --bg:#070510;
+  --card:rgba(255,255,255,.075);
+  --card2:rgba(255,255,255,.11);
+  --border:rgba(255,255,255,.14);
+  --muted:#bdb3d8;
+  --purple:#823cff;
+  --purple2:#5d1fd1;
+  --green:#6dff9c;
+  --yellow:#ffd166;
+  --red:#ff6b7a;
+}
+
 body{
-margin:0;
-font-family:-apple-system, BlinkMacSystemFont, sans-serif;
-background: radial-gradient(circle at top,#2a0d5a,#070510 60%);
-color:white;
-padding:20px 16px 120px;
+  margin:0;
+  min-height:100vh;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
+  color:white;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(136,60,255,.38), transparent 34%),
+    radial-gradient(circle at 90% 10%, rgba(255,80,180,.16), transparent 28%),
+    linear-gradient(180deg,#120726 0%,#070510 55%,#05030b 100%);
+  padding:calc(24px + env(safe-area-inset-top)) 18px calc(130px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
 }
 
-/* TITULO */
+.app{
+  max-width:520px;
+  margin:0 auto;
+}
+
+.hero{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.kicker{
+  color:#b99cff;
+  letter-spacing:4px;
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+
 h1{
-font-size:38px;
-margin:10px 0 20px;
-font-weight:800;
+  margin:0;
+  font-size:52px;
+  line-height:.92;
+  letter-spacing:-2px;
 }
 
-/* INPUT */
+.subtitle{
+  color:var(--muted);
+  font-size:17px;
+  margin-top:12px;
+  line-height:1.3;
+}
+
+.iconBtn{
+  width:64px;
+  height:64px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(135deg,#8a3cff,#5d1fd1);
+  color:white;
+  font-size:36px;
+  font-weight:900;
+  box-shadow:0 18px 45px rgba(126,60,255,.28);
+}
+
+.glass{
+  background:var(--card);
+  border:1px solid var(--border);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  box-shadow:0 18px 60px rgba(0,0,0,.28);
+}
+
+.dashboard{
+  display:grid;
+  gap:12px;
+  margin:20px 0 18px;
+}
+
+.totalCard{
+  border-radius:30px;
+  padding:24px;
+}
+
+.totalCard span,
+.mini span{
+  color:var(--muted);
+  font-size:15px;
+  font-weight:700;
+}
+
+.total{
+  font-size:48px;
+  font-weight:950;
+  letter-spacing:-1px;
+  margin-top:6px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.mini{
+  border-radius:24px;
+  padding:16px;
+}
+
+.mini strong{
+  display:block;
+  margin-top:8px;
+  font-size:24px;
+}
+
+.mini.saving{
+  background:rgba(255,80,120,.13);
+  border-color:rgba(255,120,160,.28);
+}
+
+.aiBox{
+  border-radius:30px;
+  padding:16px;
+  margin:18px 0;
+}
+
 textarea{
-width:100%;
-padding:16px;
-border-radius:18px;
-border:1px solid rgba(255,255,255,.15);
-background:rgba(255,255,255,.06);
-color:white;
-font-size:16px;
-margin-bottom:12px;
+  width:100%;
+  min-height:92px;
+  border:0;
+  outline:0;
+  resize:none;
+  color:white;
+  background:transparent;
+  font-size:17px;
+  line-height:1.4;
 }
 
-/* BOTON PRINCIPAL */
+textarea::placeholder{color:rgba(255,255,255,.48)}
+
 .primary{
-width:100%;
-padding:16px;
-border-radius:18px;
-border:0;
-background:linear-gradient(90deg,#8a3cff,#6a22d6);
-color:white;
-font-weight:800;
-font-size:16px;
+  width:100%;
+  margin-top:12px;
+  border:0;
+  border-radius:22px;
+  padding:17px;
+  color:white;
+  font-size:17px;
+  font-weight:900;
+  background:linear-gradient(90deg,#933cff,#6623d8);
+  box-shadow:0 16px 40px rgba(126,60,255,.22);
 }
 
-/* CARD */
+.quickActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:14px 0;
+}
+
+.quick{
+  border-radius:22px;
+  padding:16px 12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.065);
+  color:white;
+  font-size:15px;
+  font-weight:900;
+}
+
+.search{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:17px;
+  margin:18px 0 24px;
+  background:rgba(255,255,255,.07);
+  color:white;
+  font-size:17px;
+  outline:0;
+}
+
+.search::placeholder{color:rgba(255,255,255,.45)}
+
+.section{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+
+.section h2{
+  margin:0;
+  font-size:34px;
+  letter-spacing:-1px;
+}
+
+.section span{
+  color:var(--muted);
+  font-weight:800;
+  font-size:17px;
+}
+
 .card{
-background:rgba(255,255,255,.08);
-border:1px solid rgba(255,255,255,.12);
-border-radius:26px;
-padding:18px;
-margin-top:16px;
-backdrop-filter:blur(12px);
+  position:relative;
+  border-radius:32px;
+  padding:22px;
+  margin-bottom:16px;
+  overflow:hidden;
 }
 
-/* HEADER CARD */
-.head{
-display:flex;
-justify-content:space-between;
-align-items:flex-start;
+.card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.07),transparent 60%);
+  pointer-events:none;
+}
+
+.cardInner{
+  position:relative;
+  z-index:1;
+}
+
+.cardHead{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:flex-start;
 }
 
 .name{
-font-size:24px;
-font-weight:900;
+  margin:0;
+  font-size:30px;
+  line-height:1.05;
+  letter-spacing:-.8px;
+}
+
+.source{
+  color:var(--muted);
+  margin-top:8px;
+  font-size:15px;
+  font-weight:700;
 }
 
 .price{
-font-size:22px;
-font-weight:900;
-text-align:right;
+  text-align:right;
+  font-size:30px;
+  line-height:1;
+  font-weight:950;
+  white-space:nowrap;
 }
 
-.price span{
-display:block;
-font-size:14px;
-color:#bbb;
+.price small{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:16px;
 }
 
-/* STATUS */
 .status{
-margin:12px 0;
-padding:10px 14px;
-border-radius:14px;
-background:rgba(255,255,255,.07);
-font-weight:700;
+  margin:18px 0 14px;
+  padding:13px 15px;
+  border-radius:20px;
+  background:rgba(255,255,255,.08);
+  font-size:18px;
+  font-weight:950;
 }
 
-/* COLORES */
-.ok{color:#63ffb0}
-.warn{color:#ffd166}
-.danger{color:#ff6b7a}
+.ok{color:var(--green)}
+.warn{color:var(--yellow)}
+.danger{color:var(--red)}
 
-/* FECHA */
-.date{
-font-weight:700;
-margin-top:6px;
+.meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:12px 0;
 }
 
-/* BOTONES */
+.pill{
+  background:rgba(255,255,255,.09);
+  color:#d8ccff;
+  border:1px solid rgba(255,255,255,.08);
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:900;
+}
+
+.renewal{
+  margin:16px 0 10px;
+  font-size:18px;
+  font-weight:950;
+  color:#ffd7dc;
+}
+
+.details{
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.45;
+}
+
+.details b{color:#d8ccff}
+
 .actions{
-display:flex;
-gap:8px;
-margin-top:14px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin-top:18px;
 }
 
-.btn{
-padding:10px 12px;
-border-radius:12px;
-border:1px solid rgba(255,255,255,.12);
-background:rgba(255,255,255,.06);
-color:white;
-font-weight:700;
-font-size:13px;
+.action{
+  border:1px solid rgba(255,255,255,.13);
+  background:rgba(255,255,255,.07);
+  color:white;
+  border-radius:16px;
+  padding:12px 10px;
+  font-size:14px;
+  font-weight:950;
 }
 
+.action.delete{color:var(--red)}
+.action.review{color:var(--yellow)}
+.action.keep{color:var(--green)}
+.action.cancel{color:#ffb3c0}
+
+.empty{
+  border-radius:28px;
+  padding:28px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.nav{
+  position:fixed;
+  left:14px;
+  right:14px;
+  bottom:calc(14px + env(safe-area-inset-bottom));
+  max-width:520px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border-radius:26px;
+  overflow:hidden;
+  background:rgba(18,12,32,.86);
+  border:1px solid rgba(255,255,255,.13);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  z-index:20;
+  box-shadow:0 12px 40px rgba(0,0,0,.42);
+}
+
+.nav button{
+  border:0;
+  background:transparent;
+  color:#d9ccff;
+  padding:14px 8px;
+  font-size:12px;
+  font-weight:950;
+}
+
+.manualPanel{
+  display:none;
+  border-radius:30px;
+  padding:18px;
+  margin:16px 0;
+}
+
+.manualPanel h3{
+  margin:0 0 12px;
+  font-size:24px;
+}
+
+.input{
+  width:100%;
+  margin-bottom:10px;
+  padding:15px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.07);
+  color:white;
+  outline:0;
+  font-size:16px;
+}
+
+select.input option{color:black}
+
+@media(max-width:390px){
+  h1{font-size:46px}
+  .name{font-size:27px}
+  .price{font-size:26px}
+}
 </style>
 </head>
 
 <body>
+<div class="app">
 
-<h1>SubAlert</h1>
+  <header class="hero" id="home">
+    <div>
+      <div class="kicker">Memoria digital</div>
+      <h1>SubAlert</h1>
+      <div class="subtitle">Detectá, ordená y decidí qué suscripciones valen la pena.</div>
+    </div>
+    <button class="iconBtn" onclick="toggleManual()">+</button>
+  </header>
 
-<textarea id="input" placeholder="Ej: Spotify 11.99 mensual renovación 9/5"></textarea>
-<button class="primary" onclick="parse()">✨ Cargar con IA</button>
+  <section class="dashboard">
+    <div class="totalCard glass">
+      <span>Total mensual estimado</span>
+      <div class="total" id="total">0,00 €</div>
+    </div>
 
-<div id="list"></div>
+    <div class="grid">
+      <div class="mini glass">
+        <span>Próximos 7 días</span>
+        <strong id="weekTotal">0,00 €</strong>
+      </div>
+      <div class="mini glass saving">
+        <span>Ahorro potencial</span>
+        <strong id="savingTotal">0,00 €</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="aiBox glass" id="ia">
+    <textarea id="aiInput" placeholder="Ej: Spotify 11.99 mensual renovación 9/5"></textarea>
+    <button class="primary" onclick="parseAI()">✨ Cargar con IA</button>
+  </section>
+
+  <section class="manualPanel glass" id="manualPanel">
+    <h3>Agregar manualmente</h3>
+    <input class="input" id="mName" placeholder="Nombre">
+    <input class="input" id="mPrice" type="number" step="0.01" placeholder="Precio">
+    <input class="input" id="mDate" type="date">
+    <select class="input" id="mUsage">
+      <option value="alta">Uso alto</option>
+      <option value="media">Uso medio</option>
+      <option value="baja">Uso bajo</option>
+    </select>
+    <button class="primary" onclick="addManual()">Guardar</button>
+  </section>
+
+  <div class="quickActions">
+    <button class="quick" onclick="toast('Correo conectado en próxima versión')">🔍 Correo</button>
+    <button class="quick" onclick="toast('SMS en prueba')">📱 SMS</button>
+  </div>
+
+  <button class="primary" onclick="showUpcoming()">🔔 Ver próximos cobros</button>
+
+  <input class="search" id="search" placeholder="Buscar suscripción..." oninput="render()">
+
+  <div class="section" id="listSection">
+    <h2>Suscripciones</h2>
+    <span id="count">0 activas</span>
+  </div>
+
+  <div id="list"></div>
+
+</div>
+
+<nav class="nav">
+  <button onclick="scrollToId('home')">Inicio</button>
+  <button onclick="scrollToId('ia')">IA</button>
+  <button onclick="toggleManual()">Agregar</button>
+  <button onclick="scrollToId('listSection')">Lista</button>
+</nav>
 
 <script>
-
-/* DATA */
-let subs = JSON.parse(localStorage.getItem("subs") || "[]")
+let subs = JSON.parse(localStorage.getItem("subs") || "[]");
 
 function save(){
-localStorage.setItem("subs",JSON.stringify(subs))
+  localStorage.setItem("subs", JSON.stringify(subs));
 }
 
-/* LIMPIAR NOMBRE */
-function cleanName(text){
-return text
-.replace(/\d+([.,]\d+)?/g,"")
-.replace(/mensual|anual|usd|eur|renovación|renovacion|fecha|\/|\d+/gi,"")
-.trim()
+function money(n){
+  return Number(n || 0).toLocaleString("es-ES", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }) + " €";
 }
 
-/* FECHA */
+function monthlyCost(s){
+  return Number(s.price || 0);
+}
+
 function parseDate(text){
-const m = text.match(/(\d{1,2})\/(\d{1,2})/)
-if(!m) return ""
+  const m = text.match(/(\d{1,2})[\/\-](\d{1,2})/);
+  if(!m) return "";
 
-const now = new Date()
-return `${now.getFullYear()}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`
+  const today = new Date();
+  let year = today.getFullYear();
+  const candidate = new Date(year, Number(m[2]) - 1, Number(m[1]));
+  today.setHours(0,0,0,0);
+
+  if(candidate < today) year++;
+
+  return `${year}-${String(m[2]).padStart(2,"0")}-${String(m[1]).padStart(2,"0")}`;
 }
 
-/* IA */
-function parse(){
-const lines = document.getElementById("input").value.split(",")
-
-lines.forEach(l=>{
-const t = l.trim()
-if(!t) return
-
-const priceMatch = t.match(/\d+([.,]\d+)?/)
-if(!priceMatch) return
-
-const price = Number(priceMatch[0].replace(",","."))
-const name = cleanName(t)
-const date = parseDate(t)
-
-/* evitar duplicados */
-if(subs.some(s=>s.name.toLowerCase()===name.toLowerCase())) return
-
-subs.push({
-id:Date.now()+Math.random(),
-name,
-price,
-date,
-usage:"media"
-})
-})
-
-save()
-render()
+function formatDate(date){
+  if(!date) return "";
+  const d = new Date(date + "T00:00:00");
+  return d.toLocaleDateString("es-ES", {day:"numeric", month:"short"});
 }
 
-/* SCORE */
+function daysUntil(date){
+  if(!date) return null;
+  const today = new Date();
+  const target = new Date(date + "T00:00:00");
+  today.setHours(0,0,0,0);
+  return Math.ceil((target - today) / (1000*60*60*24));
+}
+
+function cleanName(text){
+  return text
+    .toLowerCase()
+    .replace(/\d+([.,]\d+)?/g,"")
+    .replace(/mensual|mes|anual|año|usd|eur|euros|dólares|dolares|renovación|renovacion|fecha|de|el/gi,"")
+    .replace(/\d{1,2}[\/\-]\d{1,2}/g,"")
+    .replace(/[^\w\s]/gi,"")
+    .replace(/\s+/g," ")
+    .trim()
+    .replace(/\b\w/g,c=>c.toUpperCase());
+}
+
+function parseAI(){
+  const raw = document.getElementById("aiInput").value.trim();
+  if(!raw) return toast("Escribí una suscripción primero");
+
+  const parts = raw.split(/\n|;|,(?=\s*[A-Za-zÁÉÍÓÚáéíóúÑñ])/).map(x=>x.trim()).filter(Boolean);
+
+  parts.forEach(line=>{
+    const priceMatch = line.match(/\d+([.,]\d+)?/);
+    if(!priceMatch) return;
+
+    const price = Number(priceMatch[0].replace(",","."));
+    const name = cleanName(line);
+    const date = parseDate(line);
+
+    if(!name || !price) return;
+
+    const exists = subs.some(s => s.name.toLowerCase() === name.toLowerCase());
+    if(exists) return;
+
+    subs.unshift({
+      id: Date.now() + Math.random(),
+      name,
+      price,
+      date,
+      usage:"media",
+      source:"IA"
+    });
+  });
+
+  document.getElementById("aiInput").value = "";
+  save();
+  render();
+}
+
+function addManual(){
+  const name = document.getElementById("mName").value.trim();
+  const price = Number(document.getElementById("mPrice").value);
+  const date = document.getElementById("mDate").value;
+  const usage = document.getElementById("mUsage").value;
+
+  if(!name) return toast("Falta el nombre");
+  if(!price) return toast("Falta el precio");
+
+  subs.unshift({
+    id: Date.now() + Math.random(),
+    name,
+    price,
+    date,
+    usage,
+    source:"Manual"
+  });
+
+  document.getElementById("mName").value = "";
+  document.getElementById("mPrice").value = "";
+  document.getElementById("mDate").value = "";
+  document.getElementById("manualPanel").style.display = "none";
+
+  save();
+  render();
+}
+
 function score(s){
-let n=0
-if(s.usage==="baja") n+=5
-if(s.usage==="media") n+=2
-if(s.price>10) n+=2
-if(s.price>20) n+=3
-return Math.min(n,10)
+  let n = 0;
+  if(s.usage === "baja") n += 5;
+  if(s.usage === "media") n += 2;
+  if(Number(s.price) > 10) n += 2;
+  if(Number(s.price) > 20) n += 3;
+  if(!s.date) n += 1;
+  return Math.min(n,10);
 }
 
-/* LABEL */
 function label(n){
-if(n>=8) return ["danger","🔴 Cancelar ya"]
-if(n>=5) return ["warn","🟡 Revisar"]
-return ["ok","🟢 Mantener"]
+  if(n >= 8) return ["danger","🔴 Cancelar ya"];
+  if(n >= 5) return ["warn","🟡 Revisar"];
+  return ["ok","🟢 Mantener"];
 }
 
-/* RENDER */
+function renewalText(s){
+  const d = daysUntil(s.date);
+  if(d === null) return "Sin fecha de renovación";
+  if(d === 0) return "Hoy te cobran";
+  if(d > 0) return `En ${d} días · ${formatDate(s.date)}`;
+  return "Fecha pasada";
+}
+
 function render(){
-const list=document.getElementById("list")
-list.innerHTML=""
+  const list = document.getElementById("list");
+  const search = document.getElementById("search").value.toLowerCase();
 
-subs.forEach(s=>{
-const sc = score(s)
-const [cls,text] = label(sc)
+  const filtered = subs.filter(s => s.name.toLowerCase().includes(search));
 
-const el=document.createElement("div")
-el.className="card"
+  const total = subs.reduce((a,s)=>a+monthlyCost(s),0);
+  const week = subs
+    .filter(s=>{
+      const d=daysUntil(s.date);
+      return d!==null && d>=0 && d<=7;
+    })
+    .reduce((a,s)=>a+monthlyCost(s),0);
 
-el.innerHTML=`
-<div class="head">
-<div class="name">${s.name}</div>
-<div class="price">${s.price} €<span>/ mes</span></div>
-</div>
+  const saving = subs
+    .filter(s=>s.usage==="baja")
+    .reduce((a,s)=>a+monthlyCost(s),0);
 
-<div class="status ${cls}">${text}</div>
+  document.getElementById("total").innerText = money(total);
+  document.getElementById("weekTotal").innerText = money(week);
+  document.getElementById("savingTotal").innerText = money(saving);
+  document.getElementById("count").innerText = `${subs.length} activas`;
 
-<div class="date">
-${s.date ? "Renueva: "+s.date : "Sin fecha"}
-</div>
+  if(!filtered.length){
+    list.innerHTML = `<div class="empty glass">No hay suscripciones cargadas.</div>`;
+    return;
+  }
 
-<div class="actions">
-<button class="btn" onclick="remove(${s.id})">Eliminar</button>
-<button class="btn" onclick="analyze(${s.id})">Analizar</button>
-</div>
-`
+  list.innerHTML = filtered.map(s=>{
+    const sc = score(s);
+    const [cls,txt] = label(sc);
 
-list.appendChild(el)
-})
+    return `
+      <article class="card glass">
+        <div class="cardInner">
+          <div class="cardHead">
+            <div>
+              <h3 class="name">${escapeHTML(s.name)}</h3>
+              <div class="source">${s.source || "Manual"}</div>
+            </div>
+            <div class="price">${money(s.price)}<small>/ mes</small></div>
+          </div>
+
+          <div class="status ${cls}">${txt}</div>
+
+          <div class="meta">
+            <span class="pill">Mensual</span>
+            <span class="pill">Uso: ${s.usage}</span>
+          </div>
+
+          <div class="renewal">🔔 ${renewalText(s)}</div>
+
+          <div class="details">
+            <div><b>Coste mensual:</b> ${money(s.price)}</div>
+            <div><b>Score:</b> ${sc}/10</div>
+          </div>
+
+          <div class="actions">
+            <button class="action delete" onclick="removeSub(${s.id})">Eliminar</button>
+            <button class="action review" onclick="markReview(${s.id})">Revisar</button>
+            <button class="action keep" onclick="markKeep(${s.id})">Mantener</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
-/* ELIMINAR */
-function remove(id){
-subs = subs.filter(s=>s.id!==id)
-save()
-render()
+function removeSub(id){
+  subs = subs.filter(s=>s.id!==id);
+  save();
+  render();
 }
 
-/* ANALIZAR */
-function analyze(id){
-const s = subs.find(x=>x.id===id)
-const sc = score(s)
-
-let msg = `Score cancelación: ${sc}/10\n\n`
-
-if(sc>=8){
-msg += "Cancelar ya"
-}else if(sc>=5){
-msg += "Podrías revisarla"
-}else{
-msg += "Vale la pena mantenerla"
+function markReview(id){
+  subs = subs.map(s=>s.id===id ? {...s,usage:"baja"} : s);
+  save();
+  render();
 }
 
-alert(msg)
+function markKeep(id){
+  subs = subs.map(s=>s.id===id ? {...s,usage:"alta"} : s);
+  save();
+  render();
 }
 
-render()
+function showUpcoming(){
+  const upcoming = subs
+    .filter(s=>{
+      const d=daysUntil(s.date);
+      return d!==null && d>=0 && d<=14;
+    })
+    .map(s=>`• ${s.name}: ${renewalText(s)}`)
+    .join("\n");
 
+  alert(upcoming ? "Próximos cobros:\n\n"+upcoming : "No tenés cobros próximos cargados.");
+}
+
+function toggleManual(){
+  const box = document.getElementById("manualPanel");
+  box.style.display = box.style.display === "block" ? "none" : "block";
+  if(box.style.display === "block"){
+    box.scrollIntoView({behavior:"smooth",block:"center"});
+  }
+}
+
+function scrollToId(id){
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+function toast(msg){
+  alert(msg);
+}
+
+function escapeHTML(str){
+  return String(str || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+render();
 </script>
-
 </body>
 </html>
