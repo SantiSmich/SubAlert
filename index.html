@@ -9,13 +9,13 @@
     * { box-sizing: border-box; }
 
     body {
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
       font-family: Arial, sans-serif;
       background: radial-gradient(circle at top left, #32155f, #080711 55%);
       color: white;
-      padding: 38px 22px;
+      padding: 34px 20px 110px;
     }
 
     .top {
@@ -29,54 +29,58 @@
       color: #b79cff;
       letter-spacing: 4px;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     h1 {
-      font-size: 54px;
-      margin: 10px 0 8px;
+      font-size: 50px;
+      margin: 10px 0 6px;
+      line-height: .95;
     }
 
     .subtitle {
       color: #bfb6d8;
-      font-size: 22px;
-      margin-bottom: 28px;
+      font-size: 20px;
+      margin-bottom: 22px;
     }
 
     .add {
-      width: 72px;
-      height: 72px;
-      border-radius: 24px;
+      width: 66px;
+      height: 66px;
+      border-radius: 22px;
       border: 0;
       background: #7c35ff;
       color: white;
-      font-size: 42px;
+      font-size: 38px;
       font-weight: bold;
       flex-shrink: 0;
     }
 
     .dashboard {
       display: grid;
-      gap: 14px;
-      margin: 24px 0;
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    .summary, .miniCard, .panel, .card {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.13);
+      backdrop-filter: blur(14px);
     }
 
     .summary {
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
       border-radius: 30px;
-      padding: 26px;
+      padding: 24px;
     }
 
-    .summary p {
+    .summary p, .miniCard span {
       color: #bfb6d8;
-      font-size: 19px;
-      margin: 0 0 10px;
+      margin: 0 0 8px;
     }
 
     .total {
-      font-size: 48px;
-      font-weight: bold;
+      font-size: 46px;
+      font-weight: 800;
     }
 
     .miniGrid {
@@ -86,17 +90,8 @@
     }
 
     .miniCard {
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 24px;
-      padding: 18px;
-    }
-
-    .miniCard span {
-      display: block;
-      color: #bfb6d8;
-      font-size: 14px;
-      margin-bottom: 8px;
+      border-radius: 22px;
+      padding: 16px;
     }
 
     .miniCard strong {
@@ -104,87 +99,79 @@
     }
 
     .saving {
-      background: rgba(255, 90, 110, .18);
+      background: rgba(255, 90, 110, .16);
       border-color: rgba(255, 120, 140, .25);
     }
 
     .onboarding {
-      margin: 20px 0;
-      padding: 22px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
+      margin: 18px 0;
+      padding: 20px;
       border-radius: 24px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.13);
     }
 
     .onboarding p {
       color: #bfb6d8;
-      font-size: 18px;
+      font-size: 17px;
       line-height: 1.35;
     }
 
-    .onboarding button {
-      padding: 14px 18px;
-      border-radius: 14px;
-      background: #7c35ff;
-      color: white;
+    .primary {
+      width: 100%;
       border: 0;
-      font-weight: bold;
-      font-size: 16px;
+      border-radius: 20px;
+      padding: 17px;
+      background: linear-gradient(90deg, #8a3cff, #6723d4);
+      color: white;
+      font-weight: 800;
+      font-size: 17px;
     }
 
     .actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 12px;
+      margin: 16px 0;
     }
 
-    .btn, .reminder {
+    .btn {
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
       color: white;
       border-radius: 22px;
-      padding: 18px;
-      font-weight: bold;
+      padding: 17px 12px;
+      font-weight: 800;
       font-size: 16px;
       text-align: center;
       text-decoration: none;
-      display: block;
     }
 
-    .reminder {
-      margin: 18px 0;
-      background: linear-gradient(90deg, #8a3cff, #6723d4);
-      border: 0;
-      width: 100%;
-    }
-
-    .manualBox {
+    .panel {
       display: none;
-      margin: 22px 0;
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 28px;
-      padding: 20px;
+      margin: 18px 0;
+      border-radius: 26px;
+      padding: 18px;
     }
 
-    .manualBox h2 {
-      margin-top: 0;
-      font-size: 26px;
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 17px;
-      border-radius: 18px;
+      padding: 16px;
+      border-radius: 17px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
       color: white;
-      font-size: 17px;
-      margin-bottom: 12px;
+      font-size: 16px;
+      margin-bottom: 11px;
     }
 
     textarea {
-      min-height: 80px;
+      min-height: 88px;
       resize: vertical;
     }
 
@@ -196,15 +183,19 @@
       color: black;
     }
 
+    .search {
+      margin-top: 18px;
+    }
+
     .sectionTitle {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 26px;
+      margin: 28px 0 12px;
     }
 
     .sectionTitle h2 {
-      font-size: 28px;
+      font-size: 32px;
       margin: 0;
     }
 
@@ -214,114 +205,147 @@
     }
 
     .empty {
-      margin-top: 18px;
       padding: 28px;
       text-align: center;
       color: #bfb6d8;
       background: rgba(255,255,255,.07);
-      border-radius: 28px;
-    }
-
-    .card {
-      margin-top: 16px;
-      padding: 22px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
       border-radius: 26px;
     }
 
-    .card.low {
-      border-color: rgba(255, 120, 140, .45);
-      background: rgba(255, 80, 110, .12);
+    .card {
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 16px;
     }
 
-    .cardTop {
+    .card.low {
+      background: rgba(255, 80, 110, .12);
+      border-color: rgba(255, 120, 140, .42);
+    }
+
+    .cardHead {
       display: flex;
       justify-content: space-between;
       gap: 14px;
+      align-items: flex-start;
     }
 
-    .card h3 {
-      margin: 0 0 8px;
-      font-size: 24px;
+    .name {
+      font-size: 26px;
+      font-weight: 900;
+      margin: 0 0 6px;
     }
 
-    .card p {
+    .plan {
       color: #bfb6d8;
-      margin: 5px 0;
-    }
-
-    .score {
-      margin: 8px 0 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.08);
-      color: #d8ccff;
-      font-weight: bold;
-      line-height: 1.25;
+      font-size: 17px;
+      margin: 0;
     }
 
     .price {
       text-align: right;
-      font-size: 22px;
-      font-weight: bold;
-      min-width: 90px;
+      font-size: 25px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .price small {
+      display: block;
+      color: #bfb6d8;
+      font-size: 16px;
+      margin-top: 3px;
+    }
+
+    .score {
+      margin: 14px 0 12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.08);
+      color: #d8ccff;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .pill {
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.1);
+      color: #d7ccff;
+      font-size: 13px;
+      font-weight: 800;
     }
 
     .renewal {
-      margin-top: 14px;
+      margin: 12px 0;
       color: #ffd7dc;
-      font-weight: bold;
-    }
-
-    .suggestion {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 16px;
-      background: rgba(255, 180, 60, .15);
-      color: #ffe2a8;
-      font-weight: bold;
+      font-weight: 900;
+      font-size: 18px;
     }
 
     .details {
-      margin-top: 12px;
-      font-size: 14px;
       color: #bfb6d8;
+      font-size: 15px;
+      line-height: 1.45;
+      margin-top: 10px;
+    }
+
+    .details b {
+      color: #d8ccff;
     }
 
     .cardActions {
       display: flex;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 8px;
+      margin-top: 16px;
       flex-wrap: wrap;
     }
 
     .smallBtn {
-      padding: 10px 14px;
+      padding: 10px 13px;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
+      background: rgba(255,255,255,.07);
       color: white;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 800;
       cursor: pointer;
+      font-size: 14px;
     }
 
     .cancelBtn { color: #ffb3c0; }
     .reviewBtn { color: #ffe2a8; }
     .keepBtn { color: #a7ffca; }
     .deleteBtn { color: #ff6b7a; }
-    .aiBtn { color: #cbb7ff; border-color: rgba(124, 92, 255, .6); }
 
-    .pill {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.1);
-      color: #d7ccff;
-      font-size: 13px;
-      font-weight: bold;
+    .bottomNav {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      background: rgba(20,16,35,.9);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      overflow: hidden;
+      backdrop-filter: blur(18px);
+      z-index: 10;
+    }
+
+    .bottomNav button {
+      border: 0;
+      background: transparent;
+      color: #d8ccff;
+      padding: 13px 6px;
+      font-weight: 800;
+      font-size: 12px;
     }
   </style>
 </head>
@@ -331,13 +355,12 @@
     <div>
       <div class="label">MEMORIA DIGITAL</div>
       <h1>SubAlert</h1>
-      <div class="subtitle">Nunca más una suscripción sorpresa.</div>
+      <div class="subtitle">Tus gastos recurrentes, claros y bajo control.</div>
     </div>
-
     <button class="add" onclick="openManual()">+</button>
   </div>
 
-  <div class="dashboard">
+  <div class="dashboard" id="home">
     <div class="summary">
       <p>Total mensual estimado</p>
       <div class="total" id="total">0,00 €</div>
@@ -348,7 +371,6 @@
         <span>Próximos 7 días</span>
         <strong id="weekTotal">0,00 €</strong>
       </div>
-
       <div class="miniCard saving">
         <span>Ahorro potencial</span>
         <strong id="savingTotal">0,00 €</strong>
@@ -358,62 +380,62 @@
 
   <div id="onboarding" class="onboarding">
     <p style="margin:0 0 10px;font-weight:bold;color:white;">Empezá en 10 segundos 👇</p>
-    <p style="margin:0 0 14px;">Agregá al menos 1 suscripción para ver tu gasto real.</p>
-    <button onclick="openManual()">+ Agregar primera suscripción</button>
+    <p style="margin:0 0 14px;">Escribí tus suscripciones o agregalas manualmente. SubAlert las ordena por vos.</p>
+    <button class="primary" onclick="openAI()">✨ Cargar con IA</button>
   </div>
 
   <div class="actions">
-    <div style="margin: 18px 0;">
-  <textarea id="aiInput" placeholder="Escribí tus suscripciones: Netflix 6.99 mensual, ChatGPT 20 USD, Canva anual..." 
-  style="min-height:90px;"></textarea>
-
-  <button class="reminder" onclick="parseAI()">✨ Cargar con IA</button>
-</div>
-    <a class="btn" href="/api/auth/google">🔍 Buscar en correo</a>
-    <button class="btn" onclick="demoSMS()">📱 Buscar por SMS</button>
+    <a class="btn" href="/api/auth/google">🔍 Correo</a>
+    <button class="btn" onclick="demoSMS()">📱 SMS</button>
   </div>
 
-  <button class="reminder" onclick="activateReminders()">🔔 Activar recordatorios</button>
+  <button class="primary" onclick="activateReminders()">🔔 Activar recordatorios</button>
 
-  <div class="manualBox" id="manualBox">
+  <div class="panel" id="aiPanel">
+    <h2>Cargar con IA</h2>
+    <textarea id="aiInput" placeholder="Ejemplo: Spotify 11.99 mensual renovación 9 de mayo, ChatGPT 20 USD mensual, Canva 120 anual"></textarea>
+    <button class="primary" onclick="parseAI()">✨ Crear suscripciones</button>
+  </div>
+
+  <div class="panel" id="manualBox">
     <h2>Agregar suscripción</h2>
-
     <input id="name" placeholder="Nombre: Netflix, Canva, ChatGPT..." />
     <input id="plan" placeholder="Plan: Premium, Pro, Plus..." />
     <input id="price" type="number" step="0.01" placeholder="Precio" />
-
     <select id="currency">
       <option value="EUR">EUR (€)</option>
       <option value="USD">USD ($)</option>
     </select>
-
     <select id="frequency">
       <option value="monthly">Mensual</option>
       <option value="yearly">Anual</option>
       <option value="trial">Trial / prueba</option>
     </select>
-
     <input id="date" type="date" />
-
     <select id="usage">
       <option value="alta">Uso alto</option>
       <option value="media">Uso medio</option>
       <option value="baja">Uso bajo / casi no la uso</option>
     </select>
-
     <textarea id="notes" placeholder="Notas: cuenta asociada, tarjeta, motivo, etc."></textarea>
-
-    <button class="reminder" onclick="addManual()">Guardar suscripción</button>
+    <button class="primary" onclick="addManual()">Guardar suscripción</button>
   </div>
 
-  <input id="search" placeholder="Buscar suscripción..." oninput="render()" />
+  <input class="search" id="search" placeholder="Buscar suscripción..." oninput="render()" />
 
-  <div class="sectionTitle">
+  <div class="sectionTitle" id="subs">
     <h2>Suscripciones</h2>
     <div class="count" id="count">0 activas</div>
   </div>
 
   <div id="list"></div>
+
+  <div class="bottomNav">
+    <button onclick="scrollToId('home')">Inicio</button>
+    <button onclick="openAI()">IA</button>
+    <button onclick="openManual()">Agregar</button>
+    <button onclick="scrollToId('subs')">Lista</button>
+  </div>
 
   <script>
     const cancelLinks = {
@@ -426,11 +448,11 @@
       disney: "https://www.disneyplus.com/account",
       moises: "https://moises.ai/account",
       suno: "https://suno.com/account",
+      spotify: "https://www.spotify.com/account/subscription/",
       youtube: "https://www.youtube.com/paid_memberships",
       google: "https://myaccount.google.com/payments-and-subscriptions",
       apple: "https://support.apple.com/billing",
-      afa: "https://afaplay.tv",
-      prime: "https://www.amazon.es/gp/primecentral"
+      afa: "https://afaplay.tv"
     };
 
     let subs = JSON.parse(localStorage.getItem("subs") || "[]");
@@ -455,39 +477,29 @@
 
     function daysUntil(date) {
       if (!date) return null;
-
       const today = new Date();
       const target = new Date(date);
-
       today.setHours(0,0,0,0);
       target.setHours(0,0,0,0);
-
       return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
     }
 
     function getCancelUrl(name) {
       const text = (name || "").toLowerCase();
-
       for (const key in cancelLinks) {
         if (text.includes(key)) return cancelLinks[key];
       }
-
       return "";
     }
 
     function getCancelScore(s) {
       let score = 0;
-
       if (s.usage === "baja") score += 5;
       if (s.usage === "media") score += 2;
-
       if (Number(s.price) > 10) score += 2;
       if (Number(s.price) > 20) score += 3;
-
       if (s.frequency === "yearly") score += 2;
-
       if (!s.date) score += 1;
-
       return Math.min(score, 10);
     }
 
@@ -497,10 +509,50 @@
       return "🟢 Vale la pena mantenerla";
     }
 
+    function getRenewalText(s) {
+      const d = daysUntil(s.date);
+      if (s.frequency === "trial") {
+        if (d === null) return "Trial sin fecha";
+        if (d === 0) return "Hoy termina el trial";
+        if (d > 0) return `Trial: cobro posible en ${d} días`;
+        return "Trial vencido";
+      }
+      if (d === null) return "Sin fecha de renovación";
+      if (d === 0) return "Hoy te cobran";
+      if (d > 0) return `En ${d} días`;
+      return "Fecha pasada";
+    }
+
+    function formatDateNice(date) {
+      if (!date) return "";
+      const d = new Date(date + "T00:00:00");
+      return d.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+    }
+
     function openManual() {
-      const box = document.getElementById("manualBox");
-      if (!box) return;
-      box.style.display = box.style.display === "none" || box.style.display === "" ? "block" : "none";
+      closePanelsExcept("manualBox");
+      togglePanel("manualBox");
+    }
+
+    function openAI() {
+      closePanelsExcept("aiPanel");
+      togglePanel("aiPanel");
+    }
+
+    function togglePanel(id) {
+      const box = document.getElementById(id);
+      box.style.display = box.style.display === "block" ? "none" : "block";
+      if (box.style.display === "block") box.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function closePanelsExcept(id) {
+      ["manualBox", "aiPanel"].forEach(panel => {
+        if (panel !== id) document.getElementById(panel).style.display = "none";
+      });
+    }
+
+    function scrollToId(id) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
     }
 
     function addManual() {
@@ -520,24 +572,17 @@
       if (!item.price) return toast("Poné un precio");
 
       addDetected(item);
-
-      document.getElementById("name").value = "";
-      document.getElementById("plan").value = "";
-      document.getElementById("price").value = "";
-      document.getElementById("date").value = "";
-      document.getElementById("notes").value = "";
+      clearManual();
       document.getElementById("manualBox").style.display = "none";
     }
 
-    function addDetected(item) {
-      const exists = subs.some(s =>
-        s.name.toLowerCase() === item.name.toLowerCase()
-      );
+    function clearManual() {
+      ["name","plan","price","date","notes"].forEach(id => document.getElementById(id).value = "");
+    }
 
-      if (exists) {
-        toast("Ya existe una suscripción parecida");
-        return;
-      }
+    function addDetected(item) {
+      const exists = subs.some(s => s.name.toLowerCase() === item.name.toLowerCase());
+      if (exists) return toast("Ya existe una suscripción parecida");
 
       const cancelUrl = getCancelUrl(item.name + " " + item.plan);
 
@@ -551,7 +596,6 @@
 
       save();
       render();
-      toast(`Detectamos ${item.name}`);
     }
 
     function deleteSub(id) {
@@ -562,116 +606,122 @@
     }
 
     function markReview(id) {
-      subs = subs.map(s =>
-        s.id === id ? { ...s, reviewed: true, keep: false, usage: "baja" } : s
-      );
-
+      subs = subs.map(s => s.id === id ? { ...s, reviewed: true, keep: false, usage: "baja" } : s);
       save();
       render();
-      toast("Marcada como posible gasto innecesario");
     }
 
     function markKeep(id) {
-      subs = subs.map(s =>
-        s.id === id ? { ...s, keep: true, reviewed: false } : s
-      );
-
+      subs = subs.map(s => s.id === id ? { ...s, keep: true, reviewed: false } : s);
       save();
       render();
-      toast("Marcada como mantener");
     }
 
-    function analyzeUsage(id) {
-      const sub = subs.find(s => s.id === id);
+    function parseSpanishDate(text) {
+      const months = {
+        enero: 1, febrero: 2, marzo: 3, abril: 4, mayo: 5, junio: 6,
+        julio: 7, agosto: 8, septiembre: 9, setiembre: 9, octubre: 10,
+        noviembre: 11, diciembre: 12
+      };
 
-      if (!sub) {
-        toast("No se encontró la suscripción");
-        return;
+      const numberWords = {
+        uno: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6,
+        siete: 7, ocho: 8, nueve: 9, diez: 10, once: 11, doce: 12,
+        trece: 13, catorce: 14, quince: 15, dieciseis: 16, dieciséis: 16,
+        diecisiete: 17, dieciocho: 18, diecinueve: 19, veinte: 20,
+        veintiuno: 21, veintidos: 22, veintidós: 22, veintitres: 23,
+        veintitrés: 23, veinticuatro: 24, veinticinco: 25, veintiseis: 26,
+        veintiséis: 26, veintisiete: 27, veintiocho: 28, veintinueve: 29,
+        treinta: 30, treinta y uno: 31
+      };
+
+      const lower = text.toLowerCase();
+
+      let match = lower.match(/(\d{1,2})[\/\-](\d{1,2})/);
+      if (match) return makeDate(Number(match[1]), Number(match[2]));
+
+      match = lower.match(/(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)/);
+      if (match) return makeDate(Number(match[1]), months[match[2]]);
+
+      for (const word in numberWords) {
+        for (const month in months) {
+          if (lower.includes(`${word} de ${month}`)) {
+            return makeDate(numberWords[word], months[month]);
+          }
+        }
       }
 
-      const score = getCancelScore(sub);
-
-      let message = `Score de cancelación: ${score}/10\n\n`;
-
-      if (score >= 7) {
-        message += `🚨 CANCELAR YA.\nEstás perdiendo dinero con ${sub.name}.`;
-      } else if (score >= 4) {
-        message += `⚠️ Revisar ${sub.name}.\nPodrías ahorrar dinero.`;
-      } else {
-        message += `✅ ${sub.name} está OK.\nNo es prioridad cancelarla.`;
-      }
-
-      alert(message);
-    }
-
-    function getRenewalText(s) {
-      const d = daysUntil(s.date);
-
-      if (s.frequency === "trial") {
-        if (d === null) return "Trial sin fecha de cobro";
-        if (d === 0) return "Hoy termina el trial";
-        if (d > 0) return `Trial: te pueden cobrar en ${d} días`;
-        return "Trial vencido";
-      }
-
-      if (d === null) return "Sin fecha de renovación";
-      if (d === 0) return "Hoy te cobran";
-      if (d > 0) return `En ${d} días`;
-      return "Fecha pasada";
-    }
-
-    function getSuggestion(s) {
-      if (s.keep) return "✅ Marcada como importante. Mantener.";
-      if (s.reviewed) return "⚠️ Marcada como posible gasto innecesario.";
-      if (s.usage === "baja") return `💸 Uso bajo: podrías ahorrar ${money(monthlyCost(s), s.currency)} al mes.`;
-      if (s.frequency === "trial") return "🔥 Trial activo: revisá antes de que te cobren.";
       return "";
     }
-function parseAI() {
-  const text = document.getElementById("aiInput").value;
 
-  if (!text.trim()) return toast("Escribí algo primero");
+    function makeDate(day, month) {
+      const now = new Date();
+      let year = now.getFullYear();
+      const candidate = new Date(year, month - 1, day);
+      const today = new Date();
+      today.setHours(0,0,0,0);
 
-  const lines = text.split(",");
+      if (candidate < today) year += 1;
 
-  lines.forEach(line => {
-    const lower = line.toLowerCase();
+      return `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+    }
 
-    const priceMatch = line.match(/(\d+([.,]\d+)?)/);
-    const price = priceMatch ? Number(priceMatch[0].replace(",", ".")) : 0;
+    function cleanName(line) {
+      return line
+        .replace(/(\d+([.,]\d+)?)/g, "")
+        .replace(/\bmensual\b|\bmes\b|\banual\b|\byearly\b|\btrial\b|\bprueba\b/gi, "")
+        .replace(/\busd\b|\beur\b|\bdolares\b|\bdólares\b|\beuros\b|\$/gi, "")
+        .replace(/renovaci[oó]n:?/gi, "")
+        .replace(/renueva el/gi, "")
+        .replace(/fecha/gi, "")
+        .replace(/\d{1,2}[\/\-]\d{1,2}/g, "")
+        .replace(/\d{1,2}\s+de\s+\w+/gi, "")
+        .replace(/uno|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce|trece|catorce|quince|dieciséis|dieciseis|diecisiete|dieciocho|diecinueve|veinte|veintiuno|veintidós|veintidos|veintitrés|veintitres|veinticuatro|veinticinco|veintiséis|veintiseis|veintisiete|veintiocho|veintinueve|treinta|treinta y uno/gi, "")
+        .replace(/enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre/gi, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
 
-    const isYearly = lower.includes("anual") || lower.includes("year");
-    const isTrial = lower.includes("trial") || lower.includes("prueba");
+    function parseAI() {
+      const text = document.getElementById("aiInput").value;
+      if (!text.trim()) return toast("Escribí algo primero");
 
-    let frequency = "monthly";
-    if (isYearly) frequency = "yearly";
-    if (isTrial) frequency = "trial";
+      const parts = text.split(/,|\n/).map(x => x.trim()).filter(Boolean);
 
-    const currency = lower.includes("usd") || lower.includes("$") ? "USD" : "EUR";
+      parts.forEach(line => {
+        const lower = line.toLowerCase();
+        const priceMatch = line.match(/(\d+([.,]\d+)?)/);
+        const price = priceMatch ? Number(priceMatch[0].replace(",", ".")) : 0;
 
-    const name = line
-      .replace(/(\d+([.,]\d+)?)/g, "")
-      .replace(/mensual|anual|usd|eur|dolares|euros/gi, "")
-      .trim();
+        const isYearly = lower.includes("anual") || lower.includes("yearly");
+        const isTrial = lower.includes("trial") || lower.includes("prueba");
 
-    if (!name) return;
+        const frequency = isTrial ? "trial" : isYearly ? "yearly" : "monthly";
+        const currency = lower.includes("usd") || lower.includes("$") || lower.includes("dólares") || lower.includes("dolares") ? "USD" : "EUR";
+        const date = parseSpanishDate(line);
+        const name = cleanName(line);
 
-    addDetected({
-      name,
-      plan: "Detectado por IA",
-      price,
-      currency,
-      frequency,
-      date: "",
-      usage: "media",
-      notes: "Agregado con IA",
-      source: "IA"
-    });
-  });
+        if (!name || !price) return;
 
-  document.getElementById("aiInput").value = "";
-  toast("Suscripciones cargadas 🚀");
-}
+        addDetected({
+          name,
+          plan: "Detectado por IA",
+          price,
+          currency,
+          frequency,
+          date,
+          usage: "media",
+          notes: "Agregado con IA",
+          source: "IA"
+        });
+      });
+
+      document.getElementById("aiInput").value = "";
+      document.getElementById("aiPanel").style.display = "none";
+      render();
+      toast("Suscripciones cargadas 🚀");
+    }
+
     function render() {
       const list = document.getElementById("list");
       const search = document.getElementById("search").value.toLowerCase();
@@ -699,10 +749,7 @@ function parseAI() {
       document.getElementById("savingTotal").innerText = money(savingTotal);
       document.getElementById("count").innerText = `${subs.length} activas`;
 
-      const onboarding = document.getElementById("onboarding");
-      if (onboarding) {
-        onboarding.style.display = subs.length === 0 ? "block" : "none";
-      }
+      document.getElementById("onboarding").style.display = subs.length === 0 ? "block" : "none";
 
       if (!filtered.length) {
         list.innerHTML = `<div class="empty">No hay suscripciones cargadas.</div>`;
@@ -711,48 +758,42 @@ function parseAI() {
 
       list.innerHTML = filtered.map(s => {
         const cancelUrl = s.cancelUrl || getCancelUrl(s.name + " " + s.plan);
-        const suggestion = getSuggestion(s);
         const cancelScore = getCancelScore(s);
         const scoreLabel = getScoreLabel(cancelScore);
 
         return `
           <article class="card ${s.usage === "baja" || s.reviewed ? "low" : ""}">
-            <div class="cardTop">
+            <div class="cardHead">
               <div>
-                <h3>${escapeHTML(s.name)}</h3>
-
-                <div class="score">
-                  ${scoreLabel}
-                </div>
-
-                <p>${escapeHTML(s.plan || "Sin plan indicado")}</p>
-                <span class="pill">${s.frequency === "yearly" ? "Anual" : s.frequency === "trial" ? "Trial" : "Mensual"}</span>
-                <span class="pill">Uso: ${s.usage || "media"}</span>
+                <h3 class="name">${escapeHTML(s.name)}</h3>
+                <p class="plan">${escapeHTML(s.plan || "Sin plan indicado")}</p>
               </div>
-
               <div class="price">
                 ${money(s.price, s.currency)}
-                <p>${s.frequency === "yearly" ? "año" : s.frequency === "trial" ? "trial" : "mes"}</p>
+                <small>${s.frequency === "yearly" ? "año" : s.frequency === "trial" ? "trial" : "mes"}</small>
               </div>
             </div>
 
-            <div class="renewal">🔔 ${getRenewalText(s)}</div>
+            <div class="score">${scoreLabel}</div>
 
-            ${suggestion ? `<div class="suggestion">${suggestion}</div>` : ""}
+            <div class="meta">
+              <span class="pill">${s.frequency === "yearly" ? "Anual" : s.frequency === "trial" ? "Trial" : "Mensual"}</span>
+              <span class="pill">Uso: ${s.usage || "media"}</span>
+            </div>
+
+            <div class="renewal">🔔 ${getRenewalText(s)} ${s.date ? `· ${formatDateNice(s.date)}` : ""}</div>
 
             <div class="details">
-              <p><b>Origen:</b> ${s.source || "Manual"}</p>
-              <p><b>Coste mensual estimado:</b> ${money(monthlyCost(s), s.currency)}</p>
-              ${s.date ? `<p><b>Próximo cobro:</b> ${s.date}</p>` : ""}
-              ${s.notes ? `<p><b>Notas:</b> ${escapeHTML(s.notes)}</p>` : ""}
+              <div><b>Origen:</b> ${s.source || "Manual"}</div>
+              <div><b>Coste mensual:</b> ${money(monthlyCost(s), s.currency)}</div>
+              ${s.notes ? `<div><b>Notas:</b> ${escapeHTML(s.notes)}</div>` : ""}
             </div>
 
             <div class="cardActions">
               ${cancelUrl ? `<a class="smallBtn cancelBtn" href="${cancelUrl}" target="_blank">Cancelar</a>` : ""}
-              <button class="smallBtn reviewBtn" onclick="markReview('${s.id}')">No la uso</button>
+              <button class="smallBtn reviewBtn" onclick="markReview('${s.id}')">Revisar</button>
               <button class="smallBtn keepBtn" onclick="markKeep('${s.id}')">Mantener</button>
               <button class="smallBtn deleteBtn" onclick="deleteSub('${s.id}')">Eliminar</button>
-              <button class="smallBtn aiBtn" onclick="analyzeUsage('${s.id}')">🤖 Analizar</button>
             </div>
           </article>
         `;
@@ -769,17 +810,10 @@ function parseAI() {
     }
 
     function activateReminders() {
-      if (!("Notification" in window)) {
-        toast("Tu navegador no soporta notificaciones");
-        return;
-      }
+      if (!("Notification" in window)) return toast("Tu navegador no soporta notificaciones");
 
       Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-          toast("Recordatorios activados");
-        } else {
-          toast("No se activaron los permisos de notificación");
-        }
+        toast(permission === "granted" ? "Recordatorios activados" : "No se activaron los permisos");
       });
     }
 
@@ -797,7 +831,6 @@ function parseAI() {
     if (data) {
       try {
         const detected = JSON.parse(decodeURIComponent(data));
-
         detected.forEach(s => {
           addDetected({
             name: s.from || "Suscripción detectada",
@@ -811,7 +844,6 @@ function parseAI() {
             source: "Correo"
           });
         });
-
         window.history.replaceState({}, document.title, "/");
       } catch (e) {
         console.error(e);
