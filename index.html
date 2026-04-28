@@ -746,7 +746,23 @@ function quickAdd(name){
 
   const total = subs.reduce((a,s)=>a + monthlyEUR(s), 0);
   showAnswer(`Agregué ${name}.\n\nAhora estás registrando aproximadamente ${moneyEUR(total)} al mes en suscripciones.`);
+  document.querySelectorAll(".quickGrid button").forEach(btn => {
+  const label = btn.textContent.trim().replace("✓ ", "");
+
+  const matches =
+    label.toLowerCase() === name.toLowerCase() ||
+    (name === "Amazon Prime" && label === "Prime") ||
+    (name === "Google Drive" && label === "Drive") ||
+    (name === "HBO Max" && label === "HBO");
+
+  if (matches) {
+    btn.textContent = "✓ " + label;
+    btn.disabled = true;
+    btn.style.opacity = "0.55";
+  }
+});
 }
+  
 function render(){
   const search = $("search").value.toLowerCase();
   const filtered = subs.filter(s => s.name.toLowerCase().includes(search));
