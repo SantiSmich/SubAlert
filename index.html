@@ -602,7 +602,7 @@ const score = s.usage === "alta"
             <div class="renewal">🔔 ${getRenewalText(s)}</div>
 
             ${suggestion ? `<div class="suggestion">${suggestion}</div>` : ""}
-
+${warning}
             <div class="details">
               <p><b>Origen:</b> ${s.source || "Manual"}</p>
               <p><b>Coste mensual estimado:</b> ${money(monthlyCost(s), s.currency)}</p>
