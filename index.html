@@ -703,11 +703,11 @@ function askAdvisor(){
 
   showAnswer(msg);
 }
-function quickAdd(name){
+ffunction quickAdd(name){
   const map = {
     "Spotify": { price: 11.99, frequency: "monthly", currency: "EUR", usage: "alta" },
     "Netflix": { price: 12.99, frequency: "monthly", currency: "EUR", usage: "media" },
-    "ChatGPT": { price: 20, frequency: "monthly", currency: "USD", usage: "media" },
+    "ChatGPT": { price: 20, frequency: "monthly", currency: "EUR", usage: "media" },
     "Canva": { price: 120, frequency: "yearly", currency: "EUR", usage: "media" },
     "Disney+": { price: 8.99, frequency: "monthly", currency: "EUR", usage: "media" },
     "YouTube": { price: 11.99, frequency: "monthly", currency: "EUR", usage: "media" },
@@ -722,18 +722,15 @@ function quickAdd(name){
   const data = map[name];
   if(!data) return;
 
-  const already = subs.some(s => s.name.toLowerCase() === name.toLowerCase());
-  if(already){
-    markQuickButtons();
-    return;
-  }
+  const exists = subs.some(s => s.name.toLowerCase() === name.toLowerCase());
+  if(exists) return;
 
   const date = new Date();
   date.setDate(date.getDate() + (data.frequency === "yearly" ? 365 : 30));
 
   subs.unshift({
-    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
-    name,
+    id: Date.now().toString(),
+    name: name,
     plan: "Estimado rápido",
     price: data.price,
     currency: data.currency,
@@ -746,208 +743,7 @@ function quickAdd(name){
 
   save();
   render();
-  markQuickButtons();
 }
-
-function markQuickButtons(){
-  const aliases = {
-    "Prime": "Amazon Prime",
-    "Drive": "Google Drive",
-    "HBO": "HBO Max"
-  };
-
-  document.querySelectorAll(".quickGrid button").forEach(btn => {
-    let label = btn.textContent.trim().replace("✓ ", "");
-    const realName = aliases[label] || label;
-
-    const exists = subs.some(s => s.name.toLowerCase() === realName.toLowerCase());
-
-    if(exists){
-      btn.textContent = "✓ " + label;
-      btn.disabled = true;
-      btn.style.opacity = "0.55";
-    }
-  });
-}
-
-  save();
-  render();
-
-  document.querySelectorAll(".quickGrid button").forEach(btn => {
-    const label = btn.textContent.trim().replace("✓ ", "");
-
-    const matches =
-      label.toLowerCase() === name.toLowerCase() ||
-      (name === "Amazon Prime" && label === "Prime") ||
-      (name === "Google Drive" && label === "Drive") ||
-      (name === "HBO Max" && label === "HBO");
-
-    if(matches){
-      btn.textContent = "✓ " + label;
-      btn.disabled = true;
-      btn.style.opacity = "0.55";
-    }
-  });
-}
-  
-function render(){
-  const search = $("search").value.toLowerCase();
-  const filtered = subs.filter(s => s.name.toLowerCase().includes(search));
-
-  const total = subs.reduce((a,s)=>a + monthlyEUR(s), 0);
-  const week = subs.filter(s=>{
-    const d = daysUntil(s.date);
-    return d !== null && d >= 0 && d <= 7;
-  }).reduce((a,s)=>a + monthlyEUR(s), 0);
-
-  const saving = subs.filter(s=>score(s) >= 4).reduce((a,s)=>a + monthlyEUR(s), 0);
-
-  $("total").innerText = moneyEUR(total);
-  const totalEl = $("total");
-
-if (total < 10) {
-  totalEl.style.color = "#4ade80"; // verde
-} else if (total >= 10 && total <= 15) {
-  totalEl.style.color = "#facc15"; // amarillo
-} else {
-  totalEl.style.color = "#f87171"; // rojo
-}
-  $("yearlyTotal").innerText = `${moneyEUR(total * 12)} al año`;
-  $("weekTotal").innerText = moneyEUR(week);
-  $("savingTotal").innerText = moneyEUR(saving);
-  $("count").innerText = `${subs.length} activas`;
-
-  renderRankings();
-
-  if(!filtered.length){
-    $("list").innerHTML = `<div class="empty glass">No hay suscripciones cargadas.</div>`;
-    return;
-  }
-
-  $("list").innerHTML = filtered.map(s=>{
-    const sc = score(s);
-    const [cls,txt] = label(sc);
-    const freqLabel = s.frequency === "yearly" ? "Anual" : s.frequency === "trial" ? "Trial" : "Mensual";
-    const pricePeriod = s.frequency === "yearly" ? "/ año" : s.frequency === "trial" ? "/ trial" : "/ mes";
-    const reasons = explainSub(s).slice(0,2).map(r=>`<div>• ${escapeHTML(r)}</div>`).join("");
-
-    return `
-      <article class="card glass">
-        <div class="cardHead">
-          <div>
-            <div class="name">${escapeHTML(s.name)}</div>
-            <div class="source">${escapeHTML(s.source || "Manual")}</div>
-          </div>
-          <div class="price">${money(s.price, s.currency)}<small>${pricePeriod}</small></div>
-        </div>
-        <div class="status ${cls}">${txt}</div>
-        <div class="meta">
-          <span class="pill">${freqLabel}</span>
-          <span class="pill">Uso: ${s.usage}</span>
-        </div>
-        <div class="renewal">🔔 ${renewalText(s)}</div>
-        <div class="details">
-          <div><b>Coste mensual real:</b> ${displayMonthlyCost(s)}</div>
-          <div><b>Score:</b> ${sc}/10</div>
-          <div style="margin-top:8px">${reasons}</div>
-        </div>
-        <div class="actions">
-          <button class="action delete" data-action="delete" data-id="${s.id}">Eliminar</button>
-          <button class="action review" data-action="review" data-id="${s.id}">Revisar</button>
-          <button class="action keep" data-action="keep" data-id="${s.id}">Mantener</button>
-          <button class="action edit" data-action="edit" data-id="${s.id}">Editar</button>
-        </div>
-      </article>`;
-  }).join("");
-}
-
-function escapeHTML(str){
-  return String(str || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function showUpcoming(){
-  const upcoming = subs.filter(s=>{
-    const d = daysUntil(s.date);
-    return d !== null && d >= 0 && d <= 30;
-  }).map(s=>`• ${s.name}: ${renewalText(s)}`).join("\n");
-
-  showAnswer(upcoming ? "Próximos cobros:\n\n" + upcoming : "No tenés cobros próximos cargados.");
-}
-
-function toggleManual(){
-  const box = $("manualPanel");
-  box.style.display = box.style.display === "block" ? "none" : "block";
-  if(box.style.display === "block"){
-    box.scrollIntoView({behavior:"smooth", block:"center"});
-  }
-}
-async function activateNotifications(){
-  const isStandalone =
-    window.navigator.standalone === true ||
-    window.matchMedia("(display-mode: standalone)").matches;
-
-  if(!isStandalone){
-    showAnswer("Abrí SubAlert desde el icono instalado en la pantalla de inicio para activar notificaciones.");
-    return;
-  }
-
-  if(!("Notification" in window)){
-    showAnswer("Este dispositivo no soporta notificaciones web.");
-    return;
-  }
-
-  const permission = await Notification.requestPermission();
-
-  if(permission !== "granted"){
-    showAnswer("No se activaron las notificaciones. Revisá los permisos del iPhone.");
-    return;
-  }
-
-  const reg = await navigator.serviceWorker.ready;
-
-  reg.showNotification("SubAlert activado 🔔", {
-    body: "Las notificaciones ya están listas.",
-    icon: "/icon-192.png",
-    badge: "/icon-192.png"
-  });
-
-  showAnswer("Notificaciones activadas correctamente.");
-}
-$("aiBtn").addEventListener("click", parseAI);
-$("plusBtn").addEventListener("click", toggleManual);
-$("navAdd").addEventListener("click", toggleManual);
-$("manualBtn").addEventListener("click", addManual);
-  $("notifyBtn").addEventListener("click", activateNotifications);
-$("upcomingBtn").addEventListener("click", showUpcoming);
-$("advisorBtn").addEventListener("click", askAdvisor);
-$("mailBtn").addEventListener("click", ()=>showAnswer("Correo conectado en próxima versión."));
-$("smsBtn").addEventListener("click", ()=>showAnswer("SMS en prueba."));
-$("search").addEventListener("input", render);
-
-document.querySelectorAll("[data-nav]").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    $(btn.dataset.nav).scrollIntoView({behavior:"smooth"});
-  });
-});
-
-$("list").addEventListener("click", e=>{
-  const btn = e.target.closest("button[data-action]");
-  if(!btn) return;
-
-  const id = btn.dataset.id;
-  const action = btn.dataset.action;
-
-  if(action === "delete") subs = subs.filter(s=>s.id !== id);
-  if(action === "review") subs = subs.map(s=>s.id === id ? {...s, usage:"baja"} : s);
-  if(action === "keep") subs = subs.map(s=>s.id === id ? {...s, usage:"alta"} : s);
-  if(action === "edit") return editSub(id);
-
-  save();
   render();
 });
 function checkAlerts(){
