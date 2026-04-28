@@ -976,6 +976,7 @@ function checkAlerts(){
 }
 try{
   render();
+  markQuickButtons();
   checkAlerts();
 }catch(e){
   document.body.innerHTML = "<pre style='color:red'>" + e + "</pre>";
