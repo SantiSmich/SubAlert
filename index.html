@@ -668,26 +668,28 @@
     }
 
     function cleanName(line) {
-      return line
-        .replace(/(\d+([.,]\d+)?)/g, "")
-        .replace(/\bmensual\b|\bmes\b|\banual\b|\byearly\b|\btrial\b|\bprueba\b/gi, "")
-        .replace(/\busd\b|\beur\b|\bdolares\b|\bdólares\b|\beuros\b|\$/gi, "")
-        .replace(/renovaci[oó]n:?/gi, "")
-        .replace(/renueva el/gi, "")
-        .replace(/fecha/gi, "")
-        .replace(/\d{1,2}[\/\-]\d{1,2}/g, "")
-        .replace(/\d{1,2}\s+de\s+\w+/gi, "")
-        .replace(/uno|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce|trece|catorce|quince|dieciséis|dieciseis|diecisiete|dieciocho|diecinueve|veinte|veintiuno|veintidós|veintidos|veintitrés|veintitres|veinticuatro|veinticinco|veintiséis|veintiseis|veintisiete|veintiocho|veintinueve|treinta|treinta y uno/gi, "")
-        .replace(/enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre/gi, "")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
+  return line
+    .toLowerCase()
+
+    .replace(/\d+([.,]\d+)?\s?(€|eur)?/gi, "")
+    .replace(/mensual|monthly|anual|yearly/gi, "")
+    .replace(/renovaci[oó]n|fecha/gi, "")
+    .replace(/\d{1,2}\/\d{1,2}/g, "")
+    .replace(/enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre/gi, "")
+    .replace(/y$/gi, "")
+    .replace(/[^\w\s]/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
     function parseAI() {
       const text = document.getElementById("aiInput").value;
       if (!text.trim()) return toast("Escribí algo primero");
 
-      const parts = text.split(/,|\n/).map(x => x.trim()).filter(Boolean);
+      const parts = text
+  .split(/\n|;|,(?=\s*[A-Za-zÁÉÍÓÚáéíóúÑñ])/)
+  .map(x => x.trim())
+  .filter(Boolean);
 
       parts.forEach(line => {
         const lower = line.toLowerCase();
