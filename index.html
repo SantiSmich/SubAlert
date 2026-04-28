@@ -6,118 +6,40 @@
 <title>SubAlert</title>
 
 <style>
-*{box-sizing:border-box}
-
 body{
-margin:0;
-font-family:-apple-system, BlinkMacSystemFont, sans-serif;
-background: radial-gradient(circle at top,#2a0d5a,#070510 60%);
-color:white;
-padding:20px 16px 120px;
+  margin:0;
+  font-family:Arial;
+  background:#0b0715;
+  color:white;
+  padding:20px 16px 120px;
 }
-
-/* TITULO */
-h1{
-font-size:38px;
-margin:10px 0 20px;
-font-weight:800;
-}
-
-/* INPUT */
-textarea{
-width:100%;
-padding:16px;
-border-radius:18px;
-border:1px solid rgba(255,255,255,.15);
-background:rgba(255,255,255,.06);
-color:white;
-font-size:16px;
-margin-bottom:12px;
-}
-
-/* BOTON PRINCIPAL */
-.primary{
-width:100%;
-padding:16px;
-border-radius:18px;
-border:0;
-background:linear-gradient(90deg,#8a3cff,#6a22d6);
-color:white;
-font-weight:800;
-font-size:16px;
-}
-
-/* CARD */
+h1{font-size:34px;margin:0}
 .card{
-background:rgba(255,255,255,.08);
-border:1px solid rgba(255,255,255,.12);
-border-radius:26px;
-padding:18px;
-margin-top:16px;
-backdrop-filter:blur(12px);
+  background:#1a142a;
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:14px;
 }
-
-/* HEADER CARD */
-.head{
-display:flex;
-justify-content:space-between;
-align-items:flex-start;
+button{
+  border:0;
+  border-radius:12px;
+  padding:10px 14px;
+  font-weight:bold;
 }
-
-.name{
-font-size:24px;
-font-weight:900;
-}
-
-.price{
-font-size:22px;
-font-weight:900;
-text-align:right;
-}
-
-.price span{
-display:block;
-font-size:14px;
-color:#bbb;
-}
-
-/* STATUS */
-.status{
-margin:12px 0;
-padding:10px 14px;
-border-radius:14px;
-background:rgba(255,255,255,.07);
-font-weight:700;
-}
-
-/* COLORES */
-.ok{color:#63ffb0}
-.warn{color:#ffd166}
+.primary{background:#7b3cff;color:white;width:100%;margin-top:10px}
+.small{background:#2a203d;color:white}
 .danger{color:#ff6b7a}
-
-/* FECHA */
-.date{
-font-weight:700;
-margin-top:6px;
+.good{color:#5dffb3}
+.warn{color:#ffd166}
+input,textarea{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #333;
+  background:#120c1f;
+  color:white;
+  margin-bottom:10px;
 }
-
-/* BOTONES */
-.actions{
-display:flex;
-gap:8px;
-margin-top:14px;
-}
-
-.btn{
-padding:10px 12px;
-border-radius:12px;
-border:1px solid rgba(255,255,255,.12);
-background:rgba(255,255,255,.06);
-color:white;
-font-weight:700;
-font-size:13px;
-}
-
 </style>
 </head>
 
@@ -125,146 +47,127 @@ font-size:13px;
 
 <h1>SubAlert</h1>
 
-<textarea id="input" placeholder="Ej: Spotify 11.99 mensual renovación 9/5"></textarea>
-<button class="primary" onclick="parse()">✨ Cargar con IA</button>
+<textarea id="aiInput" placeholder="Ej: Spotify 11.99 mensual renovación 9/5"></textarea>
+<button class="primary" onclick="parseAI()">✨ Cargar con IA</button>
 
 <div id="list"></div>
 
 <script>
-
-/* DATA */
-let subs = JSON.parse(localStorage.getItem("subs") || "[]")
+let subs = JSON.parse(localStorage.getItem("subs")||"[]")
 
 function save(){
-localStorage.setItem("subs",JSON.stringify(subs))
+  localStorage.setItem("subs",JSON.stringify(subs))
 }
 
-/* LIMPIAR NOMBRE */
-function cleanName(text){
-return text
-.replace(/\d+([.,]\d+)?/g,"")
-.replace(/mensual|anual|usd|eur|renovación|renovacion|fecha|\/|\d+/gi,"")
-.trim()
+function cleanName(line){
+  return line
+    .replace(/\d+([.,]\d+)?/g,"")
+    .replace(/mensual|anual|usd|eur|renovación|renovacion|fecha|\/|\d+/gi,"")
+    .trim()
 }
 
-/* FECHA */
-function parseDate(text){
-const m = text.match(/(\d{1,2})\/(\d{1,2})/)
-if(!m) return ""
-
-const now = new Date()
-return `${now.getFullYear()}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`
+function parseDate(line){
+  const m = line.match(/(\d{1,2})\/(\d{1,2})/)
+  if(!m) return ""
+  const d = new Date()
+  const year = d.getFullYear()
+  return `${year}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`
 }
 
-/* IA */
-function parse(){
-const lines = document.getElementById("input").value.split(",")
+function parseAI(){
+  const lines = document.getElementById("aiInput").value.split(",")
+  lines.forEach(l=>{
+    const line = l.trim()
+    if(!line) return
 
-lines.forEach(l=>{
-const t = l.trim()
-if(!t) return
+    const priceMatch = line.match(/\d+([.,]\d+)?/)
+    if(!priceMatch) return
 
-const priceMatch = t.match(/\d+([.,]\d+)?/)
-if(!priceMatch) return
+    const price = Number(priceMatch[0].replace(",","."))
+    const name = cleanName(line)
+    const date = parseDate(line)
 
-const price = Number(priceMatch[0].replace(",","."))
-const name = cleanName(t)
-const date = parseDate(t)
+    // evitar duplicados
+    const exists = subs.some(s=>s.name.toLowerCase()===name.toLowerCase())
+    if(exists) return
 
-/* evitar duplicados */
-if(subs.some(s=>s.name.toLowerCase()===name.toLowerCase())) return
+    subs.push({
+      id:Date.now()+Math.random(),
+      name,
+      price,
+      frequency:"monthly",
+      usage:"media",
+      date,
+      source:"IA"
+    })
+  })
 
-subs.push({
-id:Date.now()+Math.random(),
-name,
-price,
-date,
-usage:"media"
-})
-})
-
-save()
-render()
+  save()
+  render()
 }
 
-/* SCORE */
-function score(s){
-let n=0
-if(s.usage==="baja") n+=5
-if(s.usage==="media") n+=2
-if(s.price>10) n+=2
-if(s.price>20) n+=3
-return Math.min(n,10)
+function getScore(s){
+  let score=0
+  if(s.usage==="baja") score+=5
+  if(s.usage==="media") score+=2
+  if(s.price>10) score+=2
+  if(s.price>20) score+=3
+  return Math.min(score,10)
 }
 
-/* LABEL */
-function label(n){
-if(n>=8) return ["danger","🔴 Cancelar ya"]
-if(n>=5) return ["warn","🟡 Revisar"]
-return ["ok","🟢 Mantener"]
+function getLabel(score){
+  if(score>=8) return "🔴 Cancelar ya"
+  if(score>=5) return "🟡 Revisar"
+  return "🟢 Mantener"
 }
 
-/* RENDER */
 function render(){
-const list=document.getElementById("list")
-list.innerHTML=""
+  const list=document.getElementById("list")
+  list.innerHTML=""
 
-subs.forEach(s=>{
-const sc = score(s)
-const [cls,text] = label(sc)
+  subs.forEach(s=>{
+    const score=getScore(s)
 
-const el=document.createElement("div")
-el.className="card"
+    const div=document.createElement("div")
+    div.className="card"
 
-el.innerHTML=`
-<div class="head">
-<div class="name">${s.name}</div>
-<div class="price">${s.price} €<span>/ mes</span></div>
-</div>
+    div.innerHTML=`
+      <h2>${s.name}</h2>
+      <p>${s.price} € / mes</p>
+      <p class="${score>=8?"danger":score>=5?"warn":"good"}">${getLabel(score)}</p>
+      <p>${s.date ? "Renueva: "+s.date : "Sin fecha"}</p>
 
-<div class="status ${cls}">${text}</div>
-
-<div class="date">
-${s.date ? "Renueva: "+s.date : "Sin fecha"}
-</div>
-
-<div class="actions">
-<button class="btn" onclick="remove(${s.id})">Eliminar</button>
-<button class="btn" onclick="analyze(${s.id})">Analizar</button>
-</div>
-`
-
-list.appendChild(el)
-})
+      <button class="small" onclick="remove(${s.id})">Eliminar</button>
+      <button class="small" onclick="analyze(${s.id})">Analizar</button>
+    `
+    list.appendChild(div)
+  })
 }
 
-/* ELIMINAR */
 function remove(id){
-subs = subs.filter(s=>s.id!==id)
-save()
-render()
+  subs=subs.filter(s=>s.id!==id)
+  save()
+  render()
 }
 
-/* ANALIZAR */
 function analyze(id){
-const s = subs.find(x=>x.id===id)
-const sc = score(s)
+  const s=subs.find(x=>x.id===id)
+  const score=getScore(s)
 
-let msg = `Score cancelación: ${sc}/10\n\n`
+  let msg="Score cancelación: "+score+"/10\n\n"
 
-if(sc>=8){
-msg += "Cancelar ya"
-}else if(sc>=5){
-msg += "Podrías revisarla"
-}else{
-msg += "Vale la pena mantenerla"
-}
+  if(score>=8){
+    msg+="CANCELAR YA"
+  }else if(score>=5){
+    msg+="Podrías revisarla"
+  }else{
+    msg+="Vale la pena mantenerla"
+  }
 
-alert(msg)
+  alert(msg)
 }
 
 render()
-
 </script>
 
 </body>
