@@ -678,6 +678,26 @@ if (onboarding) {
     }
 
     render();
+    function analyzeUsage(id){
+  const sub = subs.find(s => s.id === id);
+
+  if(!sub){
+    toast("No se encontró la suscripción");
+    return;
+  }
+
+  let message = "";
+
+  if(sub.usage === "alta"){
+    message = `Usás ${sub.name} bastante. ✔️ Conviene mantenerla.`;
+  } else if(sub.usage === "media"){
+    message = `Usás ${sub.name} a veces. 🤔 Podrías evaluar si vale la pena.`;
+  } else {
+    message = `Casi no usás ${sub.name}. ⚠️ Estás tirando dinero: ${money(sub.price)}/mes`;
+  }
+
+  alert(message);
+}
   </script>
 </body>
 </html>
