@@ -2,7 +2,17 @@
 let subs = JSON.parse(localStorage.getItem("subs") || "[]");
 let editingId = null;
 
-const $ = id => document.getElementById(id);
+function safe(id){
+  return document.getElementById(id) || {
+    addEventListener:()=>{},
+    innerText:"",
+    value:"",
+    style:{},
+    scrollIntoView:()=>{}
+  };
+}
+
+const $ = safe;
 
 const EXCHANGE = {
   EUR: 1,
