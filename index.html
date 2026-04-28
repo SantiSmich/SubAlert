@@ -19,8 +19,36 @@
     }
     .app{max-width:520px;margin:auto}
     h1{font-size:38px;margin:30px 0 6px}
-    h2{font-size:26px;margin:34px 0 12px}
+    h2{font-size:26px;margin:28px 0 12px}
     p{color:#d7c8ff;font-size:18px}
+    .mainCTA{
+      margin-top:28px;
+      padding:22px;
+      border-radius:30px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.18);
+    }
+    button.primary{
+      width:100%;
+      margin-top:16px;
+      padding:18px;
+      border-radius:26px;
+      border:none;
+      background:linear-gradient(90deg,#9333ea,#6d28d9);
+      color:white;
+      font-size:20px;
+      font-weight:800;
+    }
+    .card{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:30px;
+      padding:26px;
+      margin-top:28px;
+    }
+    .totalLabel{text-align:center;color:#d7c8ff;font-size:18px}
+    .total{text-align:center;font-size:56px;font-weight:800;margin:8px 0}
+    .totalSub{text-align:center;color:#d7c8ff;font-size:18px}
     .quickGrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
     .quickGrid button{
       border:none;
@@ -35,21 +63,6 @@
       color:white;
       opacity:.75;
     }
-    .card{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:30px;
-      padding:26px;
-      margin-top:28px;
-    }
-    .totalLabel{text-align:center;color:#d7c8ff;font-size:18px}
-    .total{
-      text-align:center;
-      font-size:56px;
-      font-weight:800;
-      margin:8px 0;
-    }
-    .totalSub{text-align:center;color:#d7c8ff;font-size:18px}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .mini{
       background:rgba(255,255,255,.08);
@@ -60,7 +73,7 @@
     }
     .mini span{color:#d7c8ff;font-weight:700}
     .mini strong{display:block;font-size:28px;margin-top:10px}
-    textarea,input,select{
+    textarea,input{
       width:100%;
       margin-top:12px;
       padding:18px;
@@ -69,17 +82,6 @@
       background:rgba(255,255,255,.08);
       color:white;
       font-size:18px;
-    }
-    button.primary{
-      width:100%;
-      margin-top:16px;
-      padding:18px;
-      border-radius:26px;
-      border:none;
-      background:linear-gradient(90deg,#9333ea,#6d28d9);
-      color:white;
-      font-size:20px;
-      font-weight:800;
     }
     .quick{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
     .quick button{
@@ -176,9 +178,24 @@
     <p>Descubrí tus gastos invisibles</p>
   </header>
 
+  <section class="mainCTA" id="ia">
+    <h2>Detectá tus suscripciones automáticamente</h2>
+    <p>Pegá tus gastos, correos o recordatorios y SubAlert arma tu lista.</p>
+
+    <textarea id="aiInput" rows="5" placeholder="Ej: Spotify 11.99 mensual renovación 9/5&#10;ChatGPT 20 mensual renueva 15 de mayo&#10;Canva 120 anual"></textarea>
+    <button class="primary" id="aiBtn">✨ Detectar mis suscripciones</button>
+  </section>
+
+  <section class="card">
+    <div class="totalLabel">Estás perdiendo</div>
+    <div class="total" id="total">0,00 €</div>
+    <div class="totalSub">al mes</div>
+    <div class="totalSub" id="yearlyTotal">0,00 € al año</div>
+  </section>
+
   <section class="quickAdd">
-    <h2>¿En qué se te va la plata?</h2>
-    <p>Elegí lo que usás</p>
+    <h2>También podés elegir manualmente</h2>
+    <p>Tocá las apps que usás</p>
 
     <div class="quickGrid">
       <button onclick="quickAdd('Spotify')">Spotify</button>
@@ -196,13 +213,6 @@
     </div>
   </section>
 
-  <section class="card">
-    <div class="totalLabel">Estás perdiendo</div>
-    <div class="total" id="total">0,00 €</div>
-    <div class="totalSub">al mes</div>
-    <div class="totalSub" id="yearlyTotal">0,00 € al año</div>
-  </section>
-
   <section class="grid">
     <div class="mini">
       <span>Próximos 7 días</span>
@@ -212,11 +222,6 @@
       <span>Ahorro potencial</span>
       <strong id="savingTotal">0,00 €</strong>
     </div>
-  </section>
-
-  <section class="card" id="ia">
-    <textarea id="aiInput" rows="5" placeholder="Ej: Spotify 11.99 mensual renovación 9/5&#10;ChatGPT 20 mensual renueva 15 de mayo&#10;Canva 120 anual"></textarea>
-    <button class="primary" id="aiBtn">✨ Cargar con IA</button>
   </section>
 
   <div class="quick">
@@ -277,7 +282,6 @@ function moneyEUR(n){
 function monthlyEUR(s){
   const price = Number(s.price || 0);
   const converted = s.currency === "USD" ? price * 0.93 : price;
-
   if(s.frequency === "yearly") return converted / 12;
   if(s.frequency === "trial") return 0;
   return converted;
@@ -456,7 +460,7 @@ function parseAI(){
     if(subs.some(s => s.name.toLowerCase() === name.toLowerCase())) return;
 
     const frequency = lower.includes("anual") ? "yearly" : "monthly";
-    const currency = lower.includes("usd") || lower.includes("$") ? "USD" : "EUR";
+    const currency = "EUR";
     const date = parseSpanishDate(line);
 
     subs.unshift({
@@ -483,10 +487,7 @@ function parseAI(){
 
 function render(){
   const search = $("search").value.toLowerCase();
-
-  const filtered = subs.filter(s =>
-    s.name.toLowerCase().includes(search)
-  );
+  const filtered = subs.filter(s => s.name.toLowerCase().includes(search));
 
   const total = subs.reduce((a,s)=>a + monthlyEUR(s),0);
   const yearly = total * 12;
@@ -539,7 +540,7 @@ function render(){
             <p>${s.source || "Manual"}</p>
           </div>
           <div class="price">
-            ${Number(s.price).toLocaleString("es-ES",{minimumFractionDigits:2})} ${s.currency === "USD" ? "$" : "€"}
+            ${Number(s.price).toLocaleString("es-ES",{minimumFractionDigits:2})} €
             <br><small>/${s.frequency === "yearly" ? "año" : "mes"}</small>
           </div>
         </div>
