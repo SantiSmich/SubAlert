@@ -7,32 +7,63 @@
 
 <style>
 *{box-sizing:border-box}
-:root{--muted:#c8bde3;--purple:#833cff;--green:#66ff99;--yellow:#ffd166;--red:#ff6b7a}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at top,#35106c,#070510 62%);color:white;padding:calc(28px + env(safe-area-inset-top)) 18px calc(150px + env(safe-area-inset-bottom));overflow-x:hidden}
+:root{
+  --muted:#c8bde3;
+  --purple:#833cff;
+  --purple2:#6723d8;
+  --green:#66ff99;
+  --yellow:#ffd166;
+  --red:#ff6b7a;
+}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:radial-gradient(circle at top,#35106c,#070510 62%);
+  color:white;
+  padding:calc(28px + env(safe-area-inset-top)) 18px calc(160px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
+}
 .app{max-width:520px;margin:0 auto}
+.glass{
+  background:rgba(255,255,255,.075);
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(18px);
+  box-shadow:0 18px 50px rgba(0,0,0,.28);
+}
 .hero{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
 .kicker{letter-spacing:4px;text-transform:uppercase;color:#b99cff;font-weight:900;font-size:12px}
 h1{font-size:54px;line-height:.9;margin:8px 0 12px}
 .sub{color:var(--muted);font-size:18px;line-height:1.35}
-.plus{width:64px;height:64px;border-radius:22px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(135deg,#933cff,#5d1fd1);color:white;font-size:38px;font-weight:900}
-.glass{background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.28)}
+.plus{
+  width:64px;height:64px;border-radius:22px;border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(135deg,#933cff,#5d1fd1);color:white;font-size:38px;font-weight:900
+}
 .dashboard{display:grid;gap:12px;margin:24px 0 18px}
 .totalBox{border-radius:30px;padding:24px}
 .totalBox span,.mini span{color:var(--muted);font-weight:800}
 .total{font-size:52px;font-weight:950;margin-top:8px}
+.yearly{color:#d8ccff;font-size:17px;font-weight:800;margin-top:8px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .mini{border-radius:24px;padding:16px}
 .mini strong{display:block;font-size:26px;margin-top:8px}
 .saving{background:rgba(255,80,130,.14);border-color:rgba(255,120,170,.28)}
-.aiBox{border-radius:30px;padding:18px;margin:18px 0}
-textarea,input{width:100%;border:0;outline:0;background:transparent;color:white;font-size:17px}
+.aiBox,.manual,.advisor,.rankBox{border-radius:30px;padding:18px;margin:18px 0}
+textarea,input,select{
+  width:100%;border:0;outline:0;background:transparent;color:white;font-size:17px
+}
 textarea{min-height:110px;resize:none}
 textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
-.primary{width:100%;border:0;border-radius:22px;padding:17px;background:linear-gradient(90deg,#963cff,#6723d8);color:white;font-size:17px;font-weight:950;margin-top:12px}
+.primary{
+  width:100%;border:0;border-radius:22px;padding:17px;
+  background:linear-gradient(90deg,#963cff,#6723d8);color:white;font-size:17px;font-weight:950;margin-top:12px
+}
 .quick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
-.quick button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:white;border-radius:22px;padding:17px;font-weight:950;font-size:16px}
+.quick button{
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);
+  color:white;border-radius:22px;padding:17px;font-weight:950;font-size:16px
+}
 .search{border-radius:24px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);padding:17px;margin:18px 0 24px}
-.section{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.section{display:flex;justify-content:space-between;align-items:center;margin:26px 0 14px}
 .section h2{font-size:34px;margin:0}
 .section span{color:var(--muted);font-weight:900}
 .card{border-radius:32px;padding:22px;margin-bottom:16px;position:relative;overflow:hidden}
@@ -48,20 +79,34 @@ textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
 .renewal{margin:16px 0 10px;color:#ffd7dc;font-size:18px;font-weight:950}
 .details{color:var(--muted);font-size:15px;line-height:1.45}
 .details b{color:#d8ccff}
-.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px}
-.action{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);border-radius:16px;padding:12px 8px;font-weight:950;color:white}
-.delete{color:var(--red)}.review{color:var(--yellow)}.keep{color:var(--green)}
-.manual{display:none;border-radius:30px;padding:18px;margin:16px 0}
-.manual input,.manual select{width:100%;margin-bottom:10px;padding:15px;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:white;font-size:16px}
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px}
+.action{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);border-radius:16px;padding:12px 7px;font-weight:950;color:white;font-size:13px}
+.delete{color:var(--red)}.review{color:var(--yellow)}.keep{color:var(--green)}.edit{color:#d8ccff}
+.manual{display:none}
+.manual input,.manual select{
+  margin-bottom:10px;padding:15px;border-radius:18px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.07);color:white;font-size:16px
+}
 .manual option{color:black}
 .empty{border-radius:28px;padding:28px;text-align:center;color:var(--muted)}
-.nav{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);border-radius:26px;overflow:hidden;background:rgba(18,12,32,.9);border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(22px);z-index:50}
+.rankItem{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.rankItem:last-child{border-bottom:0}
+.rankItem strong{font-size:16px}
+.rankItem span{color:var(--muted);font-weight:800}
+.alertBadge{display:inline-block;margin-left:6px;color:#ffd7dc}
+.nav{
+  position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));
+  max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);
+  border-radius:26px;overflow:hidden;background:rgba(18,12,32,.9);
+  border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(22px);z-index:50
+}
 .nav button{border:0;background:transparent;color:#d9ccff;padding:14px 8px;font-size:12px;font-weight:950}
 </style>
 </head>
 
 <body>
 <div class="app">
+
 <header class="hero" id="home">
   <div>
     <div class="kicker">Memoria digital</div>
@@ -75,10 +120,18 @@ textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
   <div class="totalBox glass">
     <span>Total mensual estimado</span>
     <div class="total" id="total">0,00 €</div>
+    <div class="yearly" id="yearlyTotal">0,00 € al año</div>
   </div>
+
   <div class="grid">
-    <div class="mini glass"><span>Próximos 7 días</span><strong id="weekTotal">0,00 €</strong></div>
-    <div class="mini glass saving"><span>Ahorro potencial</span><strong id="savingTotal">0,00 €</strong></div>
+    <div class="mini glass">
+      <span>Próximos 7 días</span>
+      <strong id="weekTotal">0,00 €</strong>
+    </div>
+    <div class="mini glass saving">
+      <span>Ahorro potencial</span>
+      <strong id="savingTotal">0,00 €</strong>
+    </div>
   </div>
 </section>
 
@@ -111,6 +164,21 @@ textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
 
 <button class="primary" id="upcomingBtn">🔔 Ver próximos cobros</button>
 
+<section class="rankBox glass" id="rankBox">
+  <div class="section" style="margin-top:0">
+    <h2 style="font-size:24px">Resumen inteligente</h2>
+  </div>
+  <div id="rankList"></div>
+</section>
+
+<section class="advisor glass" id="advisor">
+  <div class="section" style="margin-top:0">
+    <h2 style="font-size:24px">Preguntale a SubAlert</h2>
+  </div>
+  <input class="search" id="advisorInput" placeholder="Ej: ¿Qué debería cancelar?">
+  <button class="primary" id="advisorBtn">🤖 Analizar mis gastos</button>
+</section>
+
 <input class="search" id="search" placeholder="Buscar suscripción...">
 
 <div class="section" id="listSection">
@@ -119,6 +187,7 @@ textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
 </div>
 
 <div id="list"></div>
+
 </div>
 
 <nav class="nav">
@@ -130,8 +199,26 @@ textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
 
 <script>
 let subs = JSON.parse(localStorage.getItem("subs") || "[]");
+let editingId = null;
 
 const $ = id => document.getElementById(id);
+
+const brandMap = {
+  spotify:"Spotify",
+  netflix:"Netflix",
+  chatgpt:"ChatGPT",
+  openai:"OpenAI",
+  canva:"Canva",
+  disney:"Disney+",
+  disneyplus:"Disney+",
+  amazon:"Amazon",
+  prime:"Amazon Prime",
+  suno:"Suno",
+  moises:"Moises",
+  afa:"AFA Play",
+  youtube:"YouTube",
+  google:"Google"
+};
 
 const monthMap = {
   enero:1, febrero:2, marzo:3, abril:4, mayo:5, junio:6,
@@ -150,6 +237,10 @@ const numberWords = {
 };
 
 function save(){ localStorage.setItem("subs", JSON.stringify(subs)); }
+
+function normalizeText(text){
+  return String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
 
 function money(n, currency="EUR"){
   const symbol = currency === "USD" ? "$" : "€";
@@ -205,13 +296,6 @@ function parseDate(text){
   return "";
 }
 
-function normalizeText(text){
-  return String(text || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"");
-}
-
 function parseCurrency(text){
   const lower = normalizeText(text);
   if(lower.includes("usd") || lower.includes("dolar") || lower.includes("$")) return "USD";
@@ -223,6 +307,18 @@ function parseFrequency(text){
   if(lower.includes("anual") || lower.includes("año") || lower.includes("year")) return "yearly";
   if(lower.includes("trial") || lower.includes("prueba")) return "trial";
   return "monthly";
+}
+
+function normalizeBrand(name){
+  const key = normalizeText(name).replace(/\s+/g,"");
+  return brandMap[key] || name;
+}
+
+function detectUsage(name){
+  const n = normalizeText(name);
+  if(n.includes("spotify") || n.includes("netflix") || n.includes("disney")) return "alta";
+  if(n.includes("chatgpt") || n.includes("canva") || n.includes("suno") || n.includes("moises")) return "media";
+  return "baja";
 }
 
 function cleanName(text){
@@ -248,9 +344,19 @@ function cleanName(text){
     .replace(/\bde\b|\bel\b|\bla\b|\blos\b|\blas\b|\by\b/gi,"")
     .replace(/[^\w\s]/gi,"")
     .replace(/\s+/g," ")
-    .trim();
+    .trim()
+    .replace(/\b\w/g,c=>c.toUpperCase());
 
-  return name.replace(/\b\w/g,c=>c.toUpperCase());
+  return normalizeBrand(name);
+}
+
+function duplicateExists(name, ignoreId=null){
+  const n = normalizeText(name);
+  return subs.some(s => {
+    if(ignoreId && s.id === ignoreId) return false;
+    const existing = normalizeText(s.name);
+    return existing.includes(n) || n.includes(existing);
+  });
 }
 
 function score(s){
@@ -279,10 +385,7 @@ function renewalText(s){
 }
 
 function splitEntries(raw){
-  return raw
-    .split(/\n|;|,(?=\s*[A-Za-zÁÉÍÓÚáéíóúÑñ])/)
-    .map(x=>x.trim())
-    .filter(Boolean);
+  return raw.split(/\n|;|,(?=\s*[A-Za-zÁÉÍÓÚáéíóúÑñ])/).map(x=>x.trim()).filter(Boolean);
 }
 
 function parseAI(){
@@ -301,21 +404,14 @@ function parseAI(){
     const date = parseDate(line);
     const currency = parseCurrency(line);
     const frequency = parseFrequency(line);
+    const usage = detectUsage(name);
 
     if(!name || !price) return;
-
-    const exists = subs.some(s => s.name.toLowerCase() === name.toLowerCase());
-    if(exists) return;
+    if(duplicateExists(name)) return;
 
     subs.unshift({
       id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()),
-      name,
-      price,
-      currency,
-      frequency,
-      date,
-      usage:"media",
-      source:"IA"
+      name, price, currency, frequency, date, usage, source:"IA"
     });
 
     added++;
@@ -324,31 +420,98 @@ function parseAI(){
   $("aiInput").value="";
   save();
   render();
-
   alert(added ? `Cargué ${added} suscripción/es.` : "No encontré suscripciones nuevas o ya estaban cargadas.");
 }
 
 function addManual(){
-  const name=$("mName").value.trim();
-  const price=Number($("mPrice").value);
-  const date=$("mDate").value;
-  const usage=$("mUsage").value;
-  const frequency=$("mFrequency").value;
+  const name = normalizeBrand($("mName").value.trim());
+  const price = Number($("mPrice").value);
+  const date = $("mDate").value;
+  const usage = $("mUsage").value;
+  const frequency = $("mFrequency").value;
 
   if(!name) return alert("Falta el nombre");
   if(!price) return alert("Falta el precio");
 
-  subs.unshift({
-    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()),
-    name, price, date, usage, frequency, currency:"EUR", source:"Manual"
-  });
+  if(editingId){
+    subs = subs.map(s => s.id === editingId ? {...s, name, price, date, usage, frequency, currency:s.currency || "EUR"} : s);
+    editingId = null;
+  } else {
+    if(duplicateExists(name)) return alert("Ya existe una suscripción parecida.");
+    subs.unshift({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()),
+      name, price, date, usage, frequency, currency:"EUR", source:"Manual"
+    });
+  }
 
-  $("mName").value="";
-  $("mPrice").value="";
-  $("mDate").value="";
+  clearManual();
   $("manualPanel").style.display="none";
   save();
   render();
+}
+
+function clearManual(){
+  $("mName").value="";
+  $("mPrice").value="";
+  $("mDate").value="";
+  $("mUsage").value="media";
+  $("mFrequency").value="monthly";
+}
+
+function editSub(id){
+  const s = subs.find(x=>x.id===id);
+  if(!s) return;
+
+  editingId = id;
+  $("mName").value=s.name;
+  $("mPrice").value=s.price;
+  $("mDate").value=s.date || "";
+  $("mUsage").value=s.usage || "media";
+  $("mFrequency").value=s.frequency || "monthly";
+  $("manualPanel").style.display="block";
+  $("manualPanel").scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+function renderRankings(){
+  const top = [...subs].sort((a,b)=>monthlyCost(b)-monthlyCost(a)).slice(0,3);
+  const cancel = [...subs].sort((a,b)=>score(b)-score(a)).slice(0,3);
+
+  let html = "";
+
+  if(top.length){
+    html += `<div class="details"><b>Top gastos:</b></div>`;
+    top.forEach(s=>{
+      html += `<div class="rankItem"><strong>${escapeHTML(s.name)}</strong><span>${money(monthlyCost(s),s.currency)}/mes</span></div>`;
+    });
+  }
+
+  if(cancel.length){
+    html += `<div class="details" style="margin-top:14px"><b>Posibles cancelaciones:</b></div>`;
+    cancel.forEach(s=>{
+      html += `<div class="rankItem"><strong>${escapeHTML(s.name)}</strong><span>Score ${score(s)}/10</span></div>`;
+    });
+  }
+
+  $("rankList").innerHTML = html || `<div class="details">Agregá suscripciones para ver recomendaciones.</div>`;
+}
+
+function askAdvisor(){
+  if(!subs.length) return alert("Todavía no hay suscripciones para analizar.");
+
+  const total = subs.reduce((a,s)=>a+monthlyCost(s),0);
+  const worst = [...subs].sort((a,b)=>score(b)-score(a))[0];
+  const yearly = total * 12;
+
+  let msg = `Gastás aproximadamente ${money(total)} al mes (${money(yearly)} al año).\n\n`;
+
+  if(worst && score(worst) >= 5){
+    msg += `La primera que revisaría es ${worst.name}: score ${score(worst)}/10. `;
+    msg += `Te cuesta ${money(monthlyCost(worst),worst.currency)} al mes.`;
+  } else {
+    msg += "No veo una cancelación urgente. Revisaría las que tengan uso bajo o fecha de renovación cercana.";
+  }
+
+  alert(msg);
 }
 
 function render(){
@@ -360,9 +523,12 @@ function render(){
   const saving=subs.filter(s=>s.usage==="baja").reduce((a,s)=>a+monthlyCost(s),0);
 
   $("total").innerText=money(total);
+  $("yearlyTotal").innerText=`${money(total*12)} al año`;
   $("weekTotal").innerText=money(week);
   $("savingTotal").innerText=money(saving);
   $("count").innerText=`${subs.length} activas`;
+
+  renderRankings();
 
   if(!filtered.length){
     $("list").innerHTML=`<div class="empty glass">No hay suscripciones cargadas.</div>`;
@@ -395,6 +561,7 @@ function render(){
         <button class="action delete" data-action="delete" data-id="${s.id}">Eliminar</button>
         <button class="action review" data-action="review" data-id="${s.id}">Revisar</button>
         <button class="action keep" data-action="keep" data-id="${s.id}">Mantener</button>
+        <button class="action edit" data-action="edit" data-id="${s.id}">Editar</button>
       </div>
     </article>`;
   }).join("");
@@ -405,7 +572,7 @@ function escapeHTML(str){
 }
 
 function showUpcoming(){
-  const upcoming=subs.filter(s=>{const d=daysUntil(s.date);return d!==null&&d>=0&&d<=14})
+  const upcoming=subs.filter(s=>{const d=daysUntil(s.date);return d!==null&&d>=0&&d<=30})
     .map(s=>`• ${s.name}: ${renewalText(s)}`).join("\n");
   alert(upcoming ? "Próximos cobros:\n\n"+upcoming : "No tenés cobros próximos cargados.");
 }
@@ -421,6 +588,7 @@ $("plusBtn").addEventListener("click", toggleManual);
 $("navAdd").addEventListener("click", toggleManual);
 $("manualBtn").addEventListener("click", addManual);
 $("upcomingBtn").addEventListener("click", showUpcoming);
+$("advisorBtn").addEventListener("click", askAdvisor);
 $("mailBtn").addEventListener("click", ()=>alert("Correo conectado en próxima versión"));
 $("smsBtn").addEventListener("click", ()=>alert("SMS en prueba"));
 $("search").addEventListener("input", render);
@@ -439,6 +607,7 @@ $("list").addEventListener("click", e=>{
   if(action==="delete") subs=subs.filter(s=>s.id!==id);
   if(action==="review") subs=subs.map(s=>s.id===id?{...s,usage:"baja"}:s);
   if(action==="keep") subs=subs.map(s=>s.id===id?{...s,usage:"alta"}:s);
+  if(action==="edit") return editSub(id);
 
   save();
   render();
