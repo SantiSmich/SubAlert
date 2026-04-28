@@ -614,7 +614,7 @@ ${warning}
               ${cancelUrl ? `<a class="smallBtn cancelBtn" href="${cancelUrl}" target="_blank">Cancelar</a>` : ""}
               <button class="smallBtn reviewBtn" onclick="markReview('${s.id}')">No la uso</button>
               <button class="smallBtn keepBtn" onclick="markKeep('${s.id}')">Mantener</button>
-              <button class="smallBtn deleteBtn" onclick="deleteSub('${s.id}')">Eliminar</button>
+              <button class="smallBtn deleteBtn" onclick="deleteSub('${s.id}')">Eliminar</button><button class="smallBtn aiBtn" onclick="analyzeUsage('${s.id}')">🤖 Analizar</button>
             </div>
           </article>
         `;
