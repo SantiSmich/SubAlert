@@ -1,0 +1,9 @@
+{
+  "name": "SubAlert",
+  "short_name": "SubAlert",
+  "description": "Nunca más una suscripción sorpresa.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070510",
+  "theme_color": "#35106c"
+}
