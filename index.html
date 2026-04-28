@@ -585,10 +585,10 @@ const score = s.usage === "alta"
   : "🔴";
    const cancelScore = getCancelScore(s);
 
-const scoreLabel = 
-  cancelScore >= 7 ? "🔴 Cancelar ya" :
-  cancelScore >= 4 ? "🟡 Revisar" :
-  "🟢 OK";     
+cconst scoreLabel = 
+  cancelScore >= 7 ? "🔴 Estás perdiendo dinero" :
+  cancelScore >= 4 ? "🟡 Podrías optimizar esto" :
+  "🟢 Vale la pena mantenerla";    
         return `
           <article class="card ${s.usage === "baja" || s.reviewed ? "low" : ""}">
             <div class="cardTop">
