@@ -687,7 +687,16 @@ function demoSMS(){
     source:"SMS"
   });
 }
-
+const cancelLinks = {
+  "netflix": "https://www.netflix.com/cancelplan",
+  "spotify": "https://www.spotify.com/account/subscription/",
+  "chatgpt": "https://platform.openai.com/account/billing",
+  "canva": "https://www.canva.com/settings/billing",
+  "amazon": "https://www.amazon.es/gp/primecentral",
+  "disney": "https://www.disneyplus.com/account",
+  "moises": "https://moises.ai",
+  "suno": "https://suno.ai"
+};
 function addDetected(item){
   const exists = subs.some(s =>
     s.name.toLowerCase() === item.name.toLowerCase()
@@ -698,10 +707,21 @@ function addDetected(item){
     return;
   }
 
-  subs.unshift({
-    ...item,
-    id: crypto.randomUUID()
-  });
+  const name = item.name.toLowerCase();
+
+let cancelUrl = "";
+
+for (const key in cancelLinks) {
+  if (name.includes(key)) {
+    cancelUrl = cancelLinks[key];
+  }
+}
+
+subs.unshift({
+  ...item,
+  cancelUrl,
+  id: crypto.randomUUID()
+});
 
   save();
   render();
@@ -819,3 +839,11 @@ render();
 </body>
 </html>
 .
+const cancelLinks = {
+  "netflix": "https://www.netflix.com/cancelplan",
+  "spotify": "https://www.spotify.com/account/subscription/",
+  "chatgpt": "https://platform.openai.com/account/billing",
+  "canva": "https://www.canva.com/settings/billing",
+  "amazon": "https://www.amazon.es/gp/primecentral",
+  "disney": "https://www.disneyplus.com/account"
+};
