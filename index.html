@@ -331,7 +331,7 @@ Canva 120 anual"></textarea>
   <button onclick="showTab('ai')">IA</button>
 </nav>
 
-<script>
+<scr
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
 const supabaseUrl = "https://gicidxfdikujfomieisw.supabase.co";
@@ -341,8 +341,8 @@ let subs = JSON.parse(localStorage.getItem("subs") || "[]");
 
 const $ = id => document.getElementById(id);
 
-function save(){
-  localStorage.setItem("subs", JSON.stringify(subs));
+async function save(){
+  await supabase.from("subscriptions").insert(subs)
 }
 
 function money(n){
