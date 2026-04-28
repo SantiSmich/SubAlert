@@ -689,7 +689,50 @@ function askAdvisor(){
 
   showAnswer(msg);
 }
+function quickAdd(name){
+  const map = {
+    "Spotify": { price: 11.99, frequency: "monthly", currency: "EUR", usage: "alta" },
+    "Netflix": { price: 12.99, frequency: "monthly", currency: "EUR", usage: "media" },
+    "ChatGPT": { price: 20, frequency: "monthly", currency: "USD", usage: "media" },
+    "Canva": { price: 120, frequency: "yearly", currency: "EUR", usage: "media" },
+    "Disney+": { price: 8.99, frequency: "monthly", currency: "EUR", usage: "media" },
+    "YouTube": { price: 11.99, frequency: "monthly", currency: "EUR", usage: "media" },
+    "iCloud": { price: 0.99, frequency: "monthly", currency: "EUR", usage: "alta" },
+    "Google Drive": { price: 1.99, frequency: "monthly", currency: "EUR", usage: "media" },
+    "Amazon Prime": { price: 4.99, frequency: "monthly", currency: "EUR", usage: "media" },
+    "HBO Max": { price: 9.99, frequency: "monthly", currency: "EUR", usage: "media" },
+    "Suno": { price: 10, frequency: "monthly", currency: "USD", usage: "media" },
+    "Moises": { price: 5.99, frequency: "monthly", currency: "EUR", usage: "media" }
+  };
 
+  const data = map[name];
+  if(!data) return;
+
+  if(duplicateExists(name)){
+    showAnswer(`${name} ya está cargada.`);
+    return;
+  }
+
+  const date = new Date();
+  date.setDate(date.getDate() + (data.frequency === "yearly" ? 365 : 30));
+
+  subs.unshift({
+    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+    name,
+    price: data.price,
+    currency: data.currency,
+    frequency: data.frequency,
+    date: date.toISOString().split("T")[0],
+    usage: data.usage,
+    source: "Rápido"
+  });
+
+  save();
+  render();
+
+  const total = subs.reduce((a,s)=>a + monthlyEUR(s), 0);
+  showAnswer(`Agregué ${name}.\n\nAhora estás registrando aproximadamente ${moneyEUR(total)} al mes en suscripciones.`);
+}
 function render(){
   const search = $("search").value.toLowerCase();
   const filtered = subs.filter(s => s.name.toLowerCase().includes(search));
