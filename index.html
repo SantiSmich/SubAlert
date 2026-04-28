@@ -160,28 +160,6 @@ textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
     </div>
   </div>
 </section>
-
-<section class="aiBox glass" id="ia">
-  <textarea id="aiInput" placeholder="Ej: Spotify 11.99 mensual renovación 9/5&#10;ChatGPT 20 USD mensual renueva el 15 de mayo&#10;Canva 120 anual"></textarea>
-  <button class="primary" id="aiBtn">✨ Cargar con IA</button>
-</section>
-
-<section class="manual glass" id="manualPanel">
-  <input id="mName" placeholder="Nombre">
-  <input id="mPrice" type="number" step="0.01" placeholder="Precio">
-  <input id="mDate" type="date">
-  <select id="mFrequency">
-    <option value="monthly">Mensual</option>
-    <option value="yearly">Anual</option>
-    <option value="trial">Trial</option>
-  </select>
-  <select id="mUsage">
-    <option value="alta">Uso alto</option>
-    <option value="media">Uso medio</option>
-    <option value="baja">Uso bajo</option>
-  </select>
-  <button class="primary" id="manualBtn">Guardar</button>
-</section>
 <div class="quickAdd">
   <h2>Descubrí en qué se te va la plata</h2>
   <p style="opacity:.7">Elegí lo que usás</p>
@@ -203,6 +181,28 @@ textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
     <button onclick="quickAdd('Moises')">Moises</button>
   </div>
 </div>
+<section class="aiBox glass" id="ia">
+  <textarea id="aiInput" placeholder="Ej: Spotify 11.99 mensual renovación 9/5&#10;ChatGPT 20 USD mensual renueva el 15 de mayo&#10;Canva 120 anual"></textarea>
+  <button class="primary" id="aiBtn">✨ Cargar con IA</button>
+</section>
+
+<section class="manual glass" id="manualPanel">
+  <input id="mName" placeholder="Nombre">
+  <input id="mPrice" type="number" step="0.01" placeholder="Precio">
+  <input id="mDate" type="date">
+  <select id="mFrequency">
+    <option value="monthly">Mensual</option>
+    <option value="yearly">Anual</option>
+    <option value="trial">Trial</option>
+  </select>
+  <select id="mUsage">
+    <option value="alta">Uso alto</option>
+    <option value="media">Uso medio</option>
+    <option value="baja">Uso bajo</option>
+  </select>
+  <button class="primary" id="manualBtn">Guardar</button>
+</section>
+
 <div class="quick">
   <button id="mailBtn">🔍 Correo</button>
   <button id="smsBtn">📱 SMS</button>
