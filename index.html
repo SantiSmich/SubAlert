@@ -341,10 +341,26 @@ let subs = JSON.parse(localStorage.getItem("subs") || "[]");
 
 const $ = id => document.getElementById(id);
 
-async function save(){
-  await supabase.from("subscriptions").insert(subs)
-}
+function save(){
+  localStorage.setItem("subs", JSON.stringify(subs));
 
+  if(typeof supabaseClient !== "undefined"){
+    const last = subs[0];
+
+    if(last){
+      supabaseClient.from("subscriptions").insert({
+        name: last.name,
+        price: last.price,
+        frequency: last.frequency,
+        date: last.date || null,
+        usage: last.usage || "media",
+        source: last.source || "app"
+      }).then(({ error }) => {
+        if(error) console.log("Supabase error:", error.message);
+      });
+    }
+  }
+}
 function money(n){
   return Number(n || 0).toLocaleString("es-ES", {
     minimumFractionDigits:2,
