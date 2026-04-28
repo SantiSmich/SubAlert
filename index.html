@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SubAlert</title>
+
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -13,33 +15,103 @@
       color: white;
       padding: 38px 22px;
     }
-    .top { display: flex; justify-content: space-between; align-items: center; }
-    .label { color: #b79cff; letter-spacing: 4px; font-weight: bold; font-size: 14px; }
-    h1 { font-size: 54px; margin: 10px 0 8px; }
-    .subtitle { color: #bfb6d8; font-size: 22px; margin-bottom: 28px; }
-    .add {
-      width: 72px; height: 72px; border-radius: 24px; border: 0;
-      background: #7c35ff; color: white; font-size: 42px; font-weight: bold;
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
     }
+
+    .label {
+      color: #b79cff;
+      letter-spacing: 4px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    h1 {
+      font-size: 54px;
+      margin: 10px 0 8px;
+    }
+
+    .subtitle {
+      color: #bfb6d8;
+      font-size: 22px;
+      margin-bottom: 28px;
+    }
+
+    .add {
+      width: 72px;
+      height: 72px;
+      border-radius: 24px;
+      border: 0;
+      background: #7c35ff;
+      color: white;
+      font-size: 42px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .dashboard {
+      display: grid;
+      gap: 14px;
+      margin: 24px 0;
+    }
+
     .summary {
       background: rgba(255,255,255,.08);
       border: 1px solid rgba(255,255,255,.12);
       border-radius: 30px;
       padding: 26px;
-      margin: 24px 0;
     }
-    .summary p { color: #bfb6d8; font-size: 22px; margin: 0 0 12px; }
-    .total { font-size: 48px; font-weight: bold; }
-    .weekAlert {
-      margin-top: 20px;
-      padding: 14px;
-      border-radius: 20px;
-      background: rgba(255, 90, 110, .25);
-      color: #ffd7dc;
+
+    .summary p {
+      color: #bfb6d8;
+      font-size: 19px;
+      margin: 0 0 10px;
+    }
+
+    .total {
+      font-size: 48px;
       font-weight: bold;
-      display: none;
     }
-    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .miniGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .miniCard {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+      padding: 18px;
+    }
+
+    .miniCard span {
+      display: block;
+      color: #bfb6d8;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .miniCard strong {
+      font-size: 24px;
+    }
+
+    .saving {
+      background: rgba(255, 90, 110, .18);
+      border-color: rgba(255, 120, 140, .25);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
     .btn, .reminder {
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
@@ -52,25 +124,69 @@
       text-decoration: none;
       display: block;
     }
+
     .reminder {
       margin: 18px 0;
       background: linear-gradient(90deg, #8a3cff, #6723d4);
       border: 0;
-    }
-    input, select {
       width: 100%;
-      padding: 18px;
+    }
+
+    .manualBox {
+      display: none;
+      margin: 22px 0;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 28px;
+      padding: 20px;
+    }
+
+    .manualBox h2 {
+      margin-top: 0;
+      font-size: 26px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 17px;
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
       color: white;
-      font-size: 18px;
+      font-size: 17px;
       margin-bottom: 12px;
     }
-    input::placeholder { color: #aaa; }
-    .sectionTitle { display: flex; justify-content: space-between; align-items: center; margin-top: 26px; }
-    .sectionTitle h2 { font-size: 28px; margin: 0; }
-    .count { color: #bfb6d8; font-size: 18px; }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #aaa;
+    }
+
+    select option {
+      color: black;
+    }
+
+    .sectionTitle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 26px;
+    }
+
+    .sectionTitle h2 {
+      font-size: 28px;
+      margin: 0;
+    }
+
+    .count {
+      color: #bfb6d8;
+      font-size: 18px;
+    }
+
     .empty {
       margin-top: 18px;
       padding: 28px;
@@ -79,6 +195,7 @@
       background: rgba(255,255,255,.07);
       border-radius: 28px;
     }
+
     .card {
       margin-top: 16px;
       padding: 22px;
@@ -86,13 +203,63 @@
       border: 1px solid rgba(255,255,255,.12);
       border-radius: 26px;
     }
-    .cardTop { display: flex; justify-content: space-between; gap: 14px; }
-    .card h3 { margin: 0 0 8px; font-size: 24px; }
-    .card p { color: #bfb6d8; margin: 5px 0; }
-    .price { text-align: right; font-size: 22px; font-weight: bold; }
-    .renewal { margin-top: 14px; color: #ffd7dc; font-weight: bold; }
-    .details { margin-top: 12px; font-size: 14px; color: #bfb6d8; }
-    .cardActions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+
+    .card.low {
+      border-color: rgba(255, 120, 140, .45);
+      background: rgba(255, 80, 110, .12);
+    }
+
+    .cardTop {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+
+    .card p {
+      color: #bfb6d8;
+      margin: 5px 0;
+    }
+
+    .price {
+      text-align: right;
+      font-size: 22px;
+      font-weight: bold;
+      min-width: 90px;
+    }
+
+    .renewal {
+      margin-top: 14px;
+      color: #ffd7dc;
+      font-weight: bold;
+    }
+
+    .suggestion {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255, 180, 60, .15);
+      color: #ffe2a8;
+      font-weight: bold;
+    }
+
+    .details {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #bfb6d8;
+    }
+
+    .cardActions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
     .smallBtn {
       padding: 10px 14px;
       border-radius: 14px;
@@ -101,9 +268,24 @@
       color: white;
       text-decoration: none;
       font-weight: bold;
+      cursor: pointer;
     }
+
     .cancelBtn { color: #ffb3c0; }
+    .reviewBtn { color: #ffe2a8; }
+    .keepBtn { color: #a7ffca; }
     .deleteBtn { color: #ff6b7a; }
+
+    .pill {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.1);
+      color: #d7ccff;
+      font-size: 13px;
+      font-weight: bold;
+    }
   </style>
 </head>
 
@@ -114,13 +296,27 @@
       <h1>SubAlert</h1>
       <div class="subtitle">Nunca más una suscripción sorpresa.</div>
     </div>
+
     <button class="add" onclick="openManual()">+</button>
   </div>
 
-  <div class="summary">
-    <p>Total mensual estimado</p>
-    <div class="total" id="total">0,00 €</div>
-    <div class="weekAlert" id="weekAlert"></div>
+  <div class="dashboard">
+    <div class="summary">
+      <p>Total mensual estimado</p>
+      <div class="total" id="total">0,00 €</div>
+    </div>
+
+    <div class="miniGrid">
+      <div class="miniCard">
+        <span>Próximos 7 días</span>
+        <strong id="weekTotal">0,00 €</strong>
+      </div>
+
+      <div class="miniCard saving">
+        <span>Ahorro potencial</span>
+        <strong id="savingTotal">0,00 €</strong>
+      </div>
+    </div>
   </div>
 
   <div class="actions">
@@ -130,19 +326,38 @@
 
   <button class="reminder" onclick="activateReminders()">🔔 Activar recordatorios</button>
 
-  <input id="search" placeholder="Buscar suscripción..." oninput="render()" />
+  <div class="manualBox" id="manualBox">
+    <h2>Agregar suscripción</h2>
 
-  <div id="manualBox" style="display:none;">
     <input id="name" placeholder="Nombre: Netflix, Canva, ChatGPT..." />
     <input id="plan" placeholder="Plan: Premium, Pro, Plus..." />
     <input id="price" type="number" step="0.01" placeholder="Precio" />
+
+    <select id="currency">
+      <option value="EUR">EUR (€)</option>
+      <option value="USD">USD ($)</option>
+    </select>
+
     <select id="frequency">
       <option value="monthly">Mensual</option>
       <option value="yearly">Anual</option>
+      <option value="trial">Trial / prueba</option>
     </select>
+
     <input id="date" type="date" />
+
+    <select id="usage">
+      <option value="alta">Uso alto</option>
+      <option value="media">Uso medio</option>
+      <option value="baja">Uso bajo / casi no la uso</option>
+    </select>
+
+    <textarea id="notes" placeholder="Notas: cuenta asociada, tarjeta, motivo, etc."></textarea>
+
     <button class="reminder" onclick="addManual()">Guardar suscripción</button>
   </div>
+
+  <input id="search" placeholder="Buscar suscripción..." oninput="render()" />
 
   <div class="sectionTitle">
     <h2>Suscripciones</h2>
@@ -164,7 +379,9 @@
       suno: "https://suno.com/account",
       youtube: "https://www.youtube.com/paid_memberships",
       google: "https://myaccount.google.com/payments-and-subscriptions",
-      apple: "https://support.apple.com/billing"
+      apple: "https://support.apple.com/billing",
+      afa: "https://afaplay.tv",
+      prime: "https://www.amazon.es/gp/primecentral"
     };
 
     let subs = JSON.parse(localStorage.getItem("subs") || "[]");
@@ -173,33 +390,71 @@
       localStorage.setItem("subs", JSON.stringify(subs));
     }
 
-    function money(n) {
+    function money(n, currency = "EUR") {
+      const symbol = currency === "USD" ? "$" : "€";
       return Number(n || 0).toLocaleString("es-ES", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-      }) + " €";
+      }) + " " + symbol;
     }
 
     function monthlyCost(s) {
       const price = Number(s.price || 0);
-      return s.frequency === "yearly" ? price / 12 : price;
+      if (s.frequency === "yearly") return price / 12;
+      return price;
     }
 
     function daysUntil(date) {
       if (!date) return null;
+
       const today = new Date();
       const target = new Date(date);
+
       today.setHours(0,0,0,0);
       target.setHours(0,0,0,0);
+
       return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
     }
 
     function getCancelUrl(name) {
       const text = (name || "").toLowerCase();
+
       for (const key in cancelLinks) {
         if (text.includes(key)) return cancelLinks[key];
       }
+
       return "";
+    }
+
+    function openManual() {
+      const box = document.getElementById("manualBox");
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+
+    function addManual() {
+      const item = {
+        name: document.getElementById("name").value.trim(),
+        plan: document.getElementById("plan").value.trim() || "Sin plan indicado",
+        price: Number(document.getElementById("price").value || 0),
+        currency: document.getElementById("currency").value,
+        frequency: document.getElementById("frequency").value,
+        date: document.getElementById("date").value,
+        usage: document.getElementById("usage").value,
+        notes: document.getElementById("notes").value.trim(),
+        source: "Manual"
+      };
+
+      if (!item.name) return toast("Poné un nombre");
+      if (!item.price) return toast("Poné un precio");
+
+      addDetected(item);
+
+      document.getElementById("name").value = "";
+      document.getElementById("plan").value = "";
+      document.getElementById("price").value = "";
+      document.getElementById("date").value = "";
+      document.getElementById("notes").value = "";
+      document.getElementById("manualBox").style.display = "none";
     }
 
     function addDetected(item) {
@@ -217,6 +472,8 @@
       subs.unshift({
         ...item,
         cancelUrl,
+        reviewed: false,
+        keep: false,
         id: crypto.randomUUID()
       });
 
@@ -225,32 +482,55 @@
       toast(`Detectamos ${item.name}`);
     }
 
-    function addManual() {
-      const item = {
-        name: document.getElementById("name").value.trim(),
-        plan: document.getElementById("plan").value.trim() || "Sin plan indicado",
-        price: Number(document.getElementById("price").value || 0),
-        frequency: document.getElementById("frequency").value,
-        date: document.getElementById("date").value,
-        source: "Manual"
-      };
-
-      if (!item.name) return toast("Poné un nombre");
-
-      addDetected(item);
-
-      document.getElementById("name").value = "";
-      document.getElementById("plan").value = "";
-      document.getElementById("price").value = "";
-      document.getElementById("date").value = "";
-      document.getElementById("manualBox").style.display = "none";
-    }
-
     function deleteSub(id) {
       subs = subs.filter(s => s.id !== id);
       save();
       render();
       toast("Suscripción eliminada");
+    }
+
+    function markReview(id) {
+      subs = subs.map(s =>
+        s.id === id ? { ...s, reviewed: true, keep: false } : s
+      );
+
+      save();
+      render();
+      toast("Marcada como innecesaria");
+    }
+
+    function markKeep(id) {
+      subs = subs.map(s =>
+        s.id === id ? { ...s, keep: true, reviewed: false } : s
+      );
+
+      save();
+      render();
+      toast("Marcada como mantener");
+    }
+
+    function getRenewalText(s) {
+      const d = daysUntil(s.date);
+
+      if (s.frequency === "trial") {
+        if (d === null) return "Trial sin fecha de cobro";
+        if (d === 0) return "Hoy termina el trial";
+        if (d > 0) return `Trial: te pueden cobrar en ${d} días`;
+        return "Trial vencido";
+      }
+
+      if (d === null) return "Sin fecha de renovación";
+      if (d === 0) return "Hoy te cobran";
+      if (d > 0) return `En ${d} días`;
+      return "Fecha pasada";
+    }
+
+    function getSuggestion(s) {
+      if (s.keep) return "✅ Marcada como importante. Mantener.";
+      if (s.reviewed) return "⚠️ Marcada como posible gasto innecesario.";
+      if (s.usage === "baja") return "💸 Uso bajo: podrías cancelar esto.";
+      if (s.frequency === "trial") return "🔥 Trial activo: revisá antes de que te cobren.";
+      return "";
     }
 
     function render() {
@@ -262,9 +542,7 @@
         (s.plan || "").toLowerCase().includes(search)
       );
 
-      const total = subs.reduce((acc, s) => acc + monthlyCost(s), 0);
-      document.getElementById("total").innerText = money(total);
-      document.getElementById("count").innerText = `${subs.length} activas`;
+      const totalMonthly = subs.reduce((acc, s) => acc + monthlyCost(s), 0);
 
       const weekTotal = subs
         .filter(s => {
@@ -273,13 +551,14 @@
         })
         .reduce((acc, s) => acc + Number(s.price || 0), 0);
 
-      const alertBox = document.getElementById("weekAlert");
-      if (weekTotal > 0) {
-        alertBox.style.display = "block";
-        alertBox.innerText = `⚠️ Esta semana te cobran ${money(weekTotal)}`;
-      } else {
-        alertBox.style.display = "none";
-      }
+      const savingTotal = subs
+        .filter(s => s.usage === "baja" || s.reviewed)
+        .reduce((acc, s) => acc + monthlyCost(s), 0);
+
+      document.getElementById("total").innerText = money(totalMonthly);
+      document.getElementById("weekTotal").innerText = money(weekTotal);
+      document.getElementById("savingTotal").innerText = money(savingTotal);
+      document.getElementById("count").innerText = `${subs.length} activas`;
 
       if (!filtered.length) {
         list.innerHTML = `<div class="empty">No hay suscripciones cargadas.</div>`;
@@ -287,39 +566,40 @@
       }
 
       list.innerHTML = filtered.map(s => {
-        const d = daysUntil(s.date);
-        const renewal = d === null
-          ? "Sin fecha de renovación"
-          : d === 0
-            ? "Hoy te cobran"
-            : d > 0
-              ? `En ${d} días`
-              : "Fecha pasada";
-
         const cancelUrl = s.cancelUrl || getCancelUrl(s.name + " " + s.plan);
+        const suggestion = getSuggestion(s);
 
         return `
-          <article class="card">
+          <article class="card ${s.usage === "baja" || s.reviewed ? "low" : ""}">
             <div class="cardTop">
               <div>
-                <h3>${s.name}</h3>
-                <p>${s.plan || "Sin plan indicado"}</p>
+                <h3>${escapeHTML(s.name)}</h3>
+                <p>${escapeHTML(s.plan || "Sin plan indicado")}</p>
+                <span class="pill">${s.frequency === "yearly" ? "Anual" : s.frequency === "trial" ? "Trial" : "Mensual"}</span>
+                <span class="pill">Uso: ${s.usage || "media"}</span>
               </div>
+
               <div class="price">
-                ${money(s.price)}
-                <p>${s.frequency === "yearly" ? "año" : "mes"}</p>
+                ${money(s.price, s.currency)}
+                <p>${s.frequency === "yearly" ? "año" : s.frequency === "trial" ? "trial" : "mes"}</p>
               </div>
             </div>
 
-            <div class="renewal">🔔 ${renewal}</div>
+            <div class="renewal">🔔 ${getRenewalText(s)}</div>
+
+            ${suggestion ? `<div class="suggestion">${suggestion}</div>` : ""}
 
             <div class="details">
               <p><b>Origen:</b> ${s.source || "Manual"}</p>
-              <p><b>Coste mensual estimado:</b> ${money(monthlyCost(s))}</p>
+              <p><b>Coste mensual estimado:</b> ${money(monthlyCost(s), s.currency)}</p>
+              ${s.date ? `<p><b>Próximo cobro:</b> ${s.date}</p>` : ""}
+              ${s.notes ? `<p><b>Notas:</b> ${escapeHTML(s.notes)}</p>` : ""}
             </div>
 
             <div class="cardActions">
               ${cancelUrl ? `<a class="smallBtn cancelBtn" href="${cancelUrl}" target="_blank">Cancelar</a>` : ""}
+              <button class="smallBtn reviewBtn" onclick="markReview('${s.id}')">No la uso</button>
+              <button class="smallBtn keepBtn" onclick="markKeep('${s.id}')">Mantener</button>
               <button class="smallBtn deleteBtn" onclick="deleteSub('${s.id}')">Eliminar</button>
             </div>
           </article>
@@ -327,17 +607,21 @@
       }).join("");
     }
 
-    function openManual() {
-      const box = document.getElementById("manualBox");
-      box.style.display = box.style.display === "none" ? "block" : "none";
+    function escapeHTML(str) {
+      return String(str || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
     function activateReminders() {
-      toast("Recordatorios activados");
+      toast("Recordatorios activados. Próximo paso: notificaciones reales.");
     }
 
     function demoSMS() {
-      toast("La búsqueda por SMS todavía está en prueba");
+      toast("La búsqueda por SMS todavía está en prueba.");
     }
 
     function toast(msg) {
@@ -350,13 +634,17 @@
     if (data) {
       try {
         const detected = JSON.parse(decodeURIComponent(data));
+
         detected.forEach(s => {
           addDetected({
             name: s.from || "Suscripción detectada",
             plan: s.subject || "Detectada por correo",
             price: 0,
+            currency: "EUR",
             frequency: "monthly",
             date: "",
+            usage: "media",
+            notes: "",
             source: "Correo"
           });
         });
