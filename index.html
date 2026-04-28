@@ -723,7 +723,10 @@ function quickAdd(name){
   if(!data) return;
 
   const already = subs.some(s => s.name.toLowerCase() === name.toLowerCase());
-  if(already) return;
+  if(already){
+    markQuickButtons();
+    return;
+  }
 
   const date = new Date();
   date.setDate(date.getDate() + (data.frequency === "yearly" ? 365 : 30));
@@ -731,13 +734,41 @@ function quickAdd(name){
   subs.unshift({
     id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
     name,
+    plan: "Estimado rápido",
     price: data.price,
     currency: data.currency,
     frequency: data.frequency,
     date: date.toISOString().split("T")[0],
     usage: data.usage,
+    notes: "Agregado con botones rápidos",
     source: "Rápido"
   });
+
+  save();
+  render();
+  markQuickButtons();
+}
+
+function markQuickButtons(){
+  const aliases = {
+    "Prime": "Amazon Prime",
+    "Drive": "Google Drive",
+    "HBO": "HBO Max"
+  };
+
+  document.querySelectorAll(".quickGrid button").forEach(btn => {
+    let label = btn.textContent.trim().replace("✓ ", "");
+    const realName = aliases[label] || label;
+
+    const exists = subs.some(s => s.name.toLowerCase() === realName.toLowerCase());
+
+    if(exists){
+      btn.textContent = "✓ " + label;
+      btn.disabled = true;
+      btn.style.opacity = "0.55";
+    }
+  });
+}
 
   save();
   render();
