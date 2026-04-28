@@ -20,7 +20,7 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
   background:radial-gradient(circle at top,#35106c,#070510 62%);
   color:white;
-  padding:calc(28px + env(safe-area-inset-top)) 18px calc(160px + env(safe-area-inset-bottom));
+  padding:calc(28px + env(safe-area-inset-top)) 18px calc(170px + env(safe-area-inset-bottom));
   overflow-x:hidden;
 }
 .app{max-width:520px;margin:0 auto}
@@ -92,8 +92,17 @@ textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
 .rankItem{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
 .rankItem:last-child{border-bottom:0}
 .rankItem strong{font-size:16px}
-.rankItem span{color:var(--muted);font-weight:800}
-.alertBadge{display:inline-block;margin-left:6px;color:#ffd7dc}
+.rankItem span{color:var(--muted);font-weight:800;text-align:right}
+.insight{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  padding:14px;
+  border-radius:18px;
+  margin:10px 0;
+  color:#d8ccff;
+  line-height:1.35;
+  font-weight:750;
+}
 .nav{
   position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));
   max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);
@@ -220,6 +229,13 @@ const brandMap = {
   google:"Google"
 };
 
+const categories = {
+  music:["spotify","youtube music","apple music","deezer","tidal"],
+  video:["netflix","disney","prime","amazon prime","hbo","max","skyshowtime"],
+  productivity:["chatgpt","openai","canva","notion","google","icloud","dropbox"],
+  creation:["suno","moises","canva","adobe"]
+};
+
 const monthMap = {
   enero:1, febrero:2, marzo:3, abril:4, mayo:5, junio:6,
   julio:7, agosto:8, septiembre:9, setiembre:9, octubre:10,
@@ -321,6 +337,14 @@ function detectUsage(name){
   return "baja";
 }
 
+function getCategory(name){
+  const n = normalizeText(name);
+  for(const cat in categories){
+    if(categories[cat].some(item => n.includes(item))) return cat;
+  }
+  return "other";
+}
+
 function cleanName(text){
   let name = normalizeText(text);
 
@@ -361,12 +385,21 @@ function duplicateExists(name, ignoreId=null){
 
 function score(s){
   let n=0;
+
   if(s.usage==="baja") n+=5;
   if(s.usage==="media") n+=2;
+
   if(monthlyCost(s)>10) n+=2;
   if(monthlyCost(s)>20) n+=3;
+
   if(s.frequency==="yearly") n+=1;
   if(!s.date) n+=1;
+
+  const cat = getCategory(s.name);
+  const sameCategory = subs.filter(x => getCategory(x.name) === cat && cat !== "other");
+
+  if(sameCategory.length > 1) n+=2;
+
   return Math.min(n,10);
 }
 
@@ -374,6 +407,27 @@ function label(n){
   if(n>=8) return ["danger","🔴 Cancelar ya"];
   if(n>=5) return ["warn","🟡 Revisar"];
   return ["ok","🟢 Mantener"];
+}
+
+function explainSub(s){
+  const reasons = [];
+  const m = monthlyCost(s);
+  const cat = getCategory(s.name);
+  const sameCategory = subs.filter(x => getCategory(x.name) === cat && cat !== "other");
+
+  if(s.usage === "alta") reasons.push("La marcaste como uso alto, por eso no parece una cancelación urgente.");
+  if(s.usage === "media") reasons.push("Tiene uso medio: conviene revisar si realmente la aprovechás.");
+  if(s.usage === "baja") reasons.push("Tiene uso bajo: es candidata clara a cancelación.");
+
+  if(m > 20) reasons.push("Tiene un coste mensual alto.");
+  else if(m > 10) reasons.push("Tiene un coste mensual medio/alto.");
+  else reasons.push("Su coste mensual no es especialmente alto.");
+
+  if(s.frequency === "yearly") reasons.push("Es anual: puede doler menos mes a mes, pero suma en el año.");
+  if(!s.date) reasons.push("No tiene fecha de renovación cargada, así que hay menos control.");
+  if(sameCategory.length > 1) reasons.push("Hay más de una suscripción parecida en esta categoría.");
+
+  return reasons;
 }
 
 function renewalText(s){
@@ -472,23 +526,53 @@ function editSub(id){
   $("manualPanel").scrollIntoView({behavior:"smooth",block:"center"});
 }
 
+function getInsights(){
+  const total = subs.reduce((a,s)=>a+monthlyCost(s),0);
+  const yearly = total * 12;
+
+  const topExpenses = [...subs]
+    .sort((a,b)=>monthlyCost(b)-monthlyCost(a))
+    .slice(0,3);
+
+  const cancelCandidates = [...subs]
+    .sort((a,b)=>score(b)-score(a))
+    .slice(0,3);
+
+  const duplicateCategories = [];
+
+  Object.keys(categories).forEach(cat=>{
+    const group = subs.filter(s => getCategory(s.name) === cat);
+    if(group.length > 1){
+      duplicateCategories.push({cat, group});
+    }
+  });
+
+  return {total, yearly, topExpenses, cancelCandidates, duplicateCategories};
+}
+
 function renderRankings(){
-  const top = [...subs].sort((a,b)=>monthlyCost(b)-monthlyCost(a)).slice(0,3);
-  const cancel = [...subs].sort((a,b)=>score(b)-score(a)).slice(0,3);
+  const insights = getInsights();
 
   let html = "";
 
-  if(top.length){
+  if(insights.topExpenses.length){
     html += `<div class="details"><b>Top gastos:</b></div>`;
-    top.forEach(s=>{
+    insights.topExpenses.forEach(s=>{
       html += `<div class="rankItem"><strong>${escapeHTML(s.name)}</strong><span>${money(monthlyCost(s),s.currency)}/mes</span></div>`;
     });
   }
 
-  if(cancel.length){
+  if(insights.cancelCandidates.length){
     html += `<div class="details" style="margin-top:14px"><b>Posibles cancelaciones:</b></div>`;
-    cancel.forEach(s=>{
+    insights.cancelCandidates.forEach(s=>{
       html += `<div class="rankItem"><strong>${escapeHTML(s.name)}</strong><span>Score ${score(s)}/10</span></div>`;
+    });
+  }
+
+  if(insights.duplicateCategories.length){
+    html += `<div class="details" style="margin-top:14px"><b>Posibles solapamientos:</b></div>`;
+    insights.duplicateCategories.forEach(item=>{
+      html += `<div class="insight">Tenés varias suscripciones de ${item.cat}: ${item.group.map(x=>x.name).join(", ")}.</div>`;
     });
   }
 
@@ -498,17 +582,33 @@ function renderRankings(){
 function askAdvisor(){
   if(!subs.length) return alert("Todavía no hay suscripciones para analizar.");
 
-  const total = subs.reduce((a,s)=>a+monthlyCost(s),0);
-  const worst = [...subs].sort((a,b)=>score(b)-score(a))[0];
-  const yearly = total * 12;
+  const question = normalizeText($("advisorInput").value);
+  const insights = getInsights();
+  const worst = insights.cancelCandidates[0];
+  const top = insights.topExpenses[0];
 
-  let msg = `Gastás aproximadamente ${money(total)} al mes (${money(yearly)} al año).\n\n`;
+  let msg = `Gastás aproximadamente ${money(insights.total)} al mes (${money(insights.yearly)} al año).\n\n`;
 
-  if(worst && score(worst) >= 5){
-    msg += `La primera que revisaría es ${worst.name}: score ${score(worst)}/10. `;
-    msg += `Te cuesta ${money(monthlyCost(worst),worst.currency)} al mes.`;
+  if(question.includes("cancel") || question.includes("eliminar") || question.includes("quitar")){
+    msg += `Primero revisaría: ${worst.name}.\n`;
+    msg += `Score: ${score(worst)}/10.\n\n`;
+    msg += explainSub(worst).map(r=>`• ${r}`).join("\n");
+    msg += `\n\nAhorro posible: ${money(monthlyCost(worst), worst.currency)} al mes.`;
+  } else if(question.includes("car") || question.includes("gasto")){
+    msg += `Tu mayor gasto es ${top.name}: ${money(monthlyCost(top), top.currency)} al mes.\n\n`;
+    msg += explainSub(top).map(r=>`• ${r}`).join("\n");
+  } else if(question.includes("ahorrar")){
+    const options = insights.cancelCandidates.filter(s=>score(s)>=4);
+    const possible = options.reduce((a,s)=>a+monthlyCost(s),0);
+    msg += `Podrías revisar ${options.length} suscripción/es y liberar hasta ${money(possible)} al mes.\n\n`;
+    msg += options.map(s=>`• ${s.name}: ${money(monthlyCost(s),s.currency)}/mes · Score ${score(s)}/10`).join("\n");
+  } else if(insights.duplicateCategories.length){
+    const dup = insights.duplicateCategories[0];
+    msg += `Detecté posible solapamiento en ${dup.cat}: ${dup.group.map(x=>x.name).join(", ")}.\n\n`;
+    msg += `Si cumplen una función parecida, conviene quedarte con una sola.`;
   } else {
-    msg += "No veo una cancelación urgente. Revisaría las que tengan uso bajo o fecha de renovación cercana.";
+    msg += `La revisión más razonable sería ${worst.name}: score ${score(worst)}/10.\n\n`;
+    msg += explainSub(worst).map(r=>`• ${r}`).join("\n");
   }
 
   alert(msg);
@@ -540,6 +640,7 @@ function render(){
     const [cls,txt]=label(sc);
     const freqLabel = s.frequency === "yearly" ? "Anual" : s.frequency === "trial" ? "Trial" : "Mensual";
     const pricePeriod = s.frequency === "yearly" ? "/ año" : s.frequency === "trial" ? "/ trial" : "/ mes";
+    const reasons = explainSub(s).slice(0,2).map(r=>`<div>• ${escapeHTML(r)}</div>`).join("");
 
     return `
     <article class="card glass">
@@ -556,6 +657,7 @@ function render(){
       <div class="details">
         <div><b>Coste mensual:</b> ${money(monthlyCost(s), s.currency)}</div>
         <div><b>Score:</b> ${sc}/10</div>
+        <div style="margin-top:8px">${reasons}</div>
       </div>
       <div class="actions">
         <button class="action delete" data-action="delete" data-id="${s.id}">Eliminar</button>
