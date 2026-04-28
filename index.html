@@ -106,6 +106,30 @@
       border-color: rgba(255, 120, 140, .25);
     }
 
+    .onboarding {
+      margin: 20px 0;
+      padding: 22px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+    }
+
+    .onboarding p {
+      color: #bfb6d8;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .onboarding button {
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: #7c35ff;
+      color: white;
+      border: 0;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
     .actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -225,6 +249,16 @@
       margin: 5px 0;
     }
 
+    .score {
+      margin: 8px 0 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.08);
+      color: #d8ccff;
+      font-weight: bold;
+      line-height: 1.25;
+    }
+
     .price {
       text-align: right;
       font-size: 22px;
@@ -275,6 +309,7 @@
     .reviewBtn { color: #ffe2a8; }
     .keepBtn { color: #a7ffca; }
     .deleteBtn { color: #ff6b7a; }
+    .aiBtn { color: #cbb7ff; border-color: rgba(124, 92, 255, .6); }
 
     .pill {
       display: inline-block;
@@ -318,13 +353,13 @@
       </div>
     </div>
   </div>
-<div id="onboarding" style="margin-top:20px;padding:20px;background:rgba(255,255,255,.08);border-radius:20px;">
-  <p style="margin:0 0 10px;font-weight:bold;">Empezá en 10 segundos 👇</p>
-  <p style="margin:0 0 14px;color:#bfb6d8;">Agregá al menos 1 suscripción para ver tu gasto real.</p>
-  <button onclick="openManual()" style="padding:14px 18px;border-radius:14px;background:#7c35ff;color:white;border:0;font-weight:bold;">
-    + Agregar primera suscripción
-  </button>
-</div>
+
+  <div id="onboarding" class="onboarding">
+    <p style="margin:0 0 10px;font-weight:bold;color:white;">Empezá en 10 segundos 👇</p>
+    <p style="margin:0 0 14px;">Agregá al menos 1 suscripción para ver tu gasto real.</p>
+    <button onclick="openManual()">+ Agregar primera suscripción</button>
+  </div>
+
   <div class="actions">
     <a class="btn" href="/api/auth/google">🔍 Buscar en correo</a>
     <button class="btn" onclick="demoSMS()">📱 Buscar por SMS</button>
@@ -432,9 +467,32 @@
       return "";
     }
 
+    function getCancelScore(s) {
+      let score = 0;
+
+      if (s.usage === "baja") score += 5;
+      if (s.usage === "media") score += 2;
+
+      if (Number(s.price) > 10) score += 2;
+      if (Number(s.price) > 20) score += 3;
+
+      if (s.frequency === "yearly") score += 2;
+
+      if (!s.date) score += 1;
+
+      return Math.min(score, 10);
+    }
+
+    function getScoreLabel(score) {
+      if (score >= 7) return "🔴 Estás perdiendo dinero";
+      if (score >= 4) return "🟡 Podrías optimizar esto";
+      return "🟢 Vale la pena mantenerla";
+    }
+
     function openManual() {
       const box = document.getElementById("manualBox");
-      box.style.display = box.style.display === "none" ? "block" : "none";
+      if (!box) return;
+      box.style.display = box.style.display === "none" || box.style.display === "" ? "block" : "none";
     }
 
     function addManual() {
@@ -497,12 +555,12 @@
 
     function markReview(id) {
       subs = subs.map(s =>
-        s.id === id ? { ...s, reviewed: true, keep: false } : s
+        s.id === id ? { ...s, reviewed: true, keep: false, usage: "baja" } : s
       );
 
       save();
       render();
-      toast("Marcada como innecesaria");
+      toast("Marcada como posible gasto innecesario");
     }
 
     function markKeep(id) {
@@ -513,6 +571,29 @@
       save();
       render();
       toast("Marcada como mantener");
+    }
+
+    function analyzeUsage(id) {
+      const sub = subs.find(s => s.id === id);
+
+      if (!sub) {
+        toast("No se encontró la suscripción");
+        return;
+      }
+
+      const score = getCancelScore(sub);
+
+      let message = `Score de cancelación: ${score}/10\n\n`;
+
+      if (score >= 7) {
+        message += `🚨 CANCELAR YA.\nEstás perdiendo dinero con ${sub.name}.`;
+      } else if (score >= 4) {
+        message += `⚠️ Revisar ${sub.name}.\nPodrías ahorrar dinero.`;
+      } else {
+        message += `✅ ${sub.name} está OK.\nNo es prioridad cancelarla.`;
+      }
+
+      alert(message);
     }
 
     function getRenewalText(s) {
@@ -534,7 +615,7 @@
     function getSuggestion(s) {
       if (s.keep) return "✅ Marcada como importante. Mantener.";
       if (s.reviewed) return "⚠️ Marcada como posible gasto innecesario.";
-      if (s.usage === "baja") return "💸 Uso bajo: podrías cancelar esto.";
+      if (s.usage === "baja") return `💸 Uso bajo: podrías ahorrar ${money(monthlyCost(s), s.currency)} al mes.`;
       if (s.frequency === "trial") return "🔥 Trial activo: revisá antes de que te cobren.";
       return "";
     }
@@ -566,6 +647,11 @@
       document.getElementById("savingTotal").innerText = money(savingTotal);
       document.getElementById("count").innerText = `${subs.length} activas`;
 
+      const onboarding = document.getElementById("onboarding");
+      if (onboarding) {
+        onboarding.style.display = subs.length === 0 ? "block" : "none";
+      }
+
       if (!filtered.length) {
         list.innerHTML = `<div class="empty">No hay suscripciones cargadas.</div>`;
         return;
@@ -574,28 +660,19 @@
       list.innerHTML = filtered.map(s => {
         const cancelUrl = s.cancelUrl || getCancelUrl(s.name + " " + s.plan);
         const suggestion = getSuggestion(s);
-const warning = s.usage === "baja"
-  ? `<div class="suggestion">⚠️ Podrías ahorrar ${money(monthlyCost(s), s.currency)} al mes cancelando esto.</div>`
-  : "";
+        const cancelScore = getCancelScore(s);
+        const scoreLabel = getScoreLabel(cancelScore);
 
-const score = s.usage === "alta"
-  ? "🟢"
-  : s.usage === "media"
-  ? "🟡"
-  : "🔴";
-   const cancelScore = getCancelScore(s);
-
-cconst scoreLabel = 
-  cancelScore >= 7 ? "🔴 Estás perdiendo dinero" :
-  cancelScore >= 4 ? "🟡 Podrías optimizar esto" :
-  "🟢 Vale la pena mantenerla";    
         return `
           <article class="card ${s.usage === "baja" || s.reviewed ? "low" : ""}">
             <div class="cardTop">
               <div>
-                <h3>${escapeHTML(s.name)}</<div class="score">
-  Score: ${cancelScore}/10 — ${scoreLabel}
-</div>
+                <h3>${escapeHTML(s.name)}</h3>
+
+                <div class="score">
+                  ${scoreLabel}
+                </div>
+
                 <p>${escapeHTML(s.plan || "Sin plan indicado")}</p>
                 <span class="pill">${s.frequency === "yearly" ? "Anual" : s.frequency === "trial" ? "Trial" : "Mensual"}</span>
                 <span class="pill">Uso: ${s.usage || "media"}</span>
@@ -610,7 +687,7 @@ cconst scoreLabel =
             <div class="renewal">🔔 ${getRenewalText(s)}</div>
 
             ${suggestion ? `<div class="suggestion">${suggestion}</div>` : ""}
-${warning}
+
             <div class="details">
               <p><b>Origen:</b> ${s.source || "Manual"}</p>
               <p><b>Coste mensual estimado:</b> ${money(monthlyCost(s), s.currency)}</p>
@@ -622,20 +699,13 @@ ${warning}
               ${cancelUrl ? `<a class="smallBtn cancelBtn" href="${cancelUrl}" target="_blank">Cancelar</a>` : ""}
               <button class="smallBtn reviewBtn" onclick="markReview('${s.id}')">No la uso</button>
               <button class="smallBtn keepBtn" onclick="markKeep('${s.id}')">Mantener</button>
-              <button class="smallBtn deleteBtn" onclick="deleteSub('${s.id}')">Eliminar</button><button class="smallBtn aiBtn" onclick="analyzeUsage('${s.id}')">🤖 Analizar</button>
+              <button class="smallBtn deleteBtn" onclick="deleteSub('${s.id}')">Eliminar</button>
+              <button class="smallBtn aiBtn" onclick="analyzeUsage('${s.id}')">🤖 Analizar</button>
             </div>
           </article>
         `;
       }).join("");
- const onboarding = document.getElementById("onboarding");
-
-if (onboarding) {
-  if (subs.length === 0) {
-    onboarding.style.display = "block";
-  } else {
-    onboarding.style.display = "none";
-  }
-}   }
+    }
 
     function escapeHTML(str) {
       return String(str || "")
@@ -647,7 +717,18 @@ if (onboarding) {
     }
 
     function activateReminders() {
-      toast("Recordatorios activados. Próximo paso: notificaciones reales.");
+      if (!("Notification" in window)) {
+        toast("Tu navegador no soporta notificaciones");
+        return;
+      }
+
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          toast("Recordatorios activados");
+        } else {
+          toast("No se activaron los permisos de notificación");
+        }
+      });
     }
 
     function demoSMS() {
@@ -686,43 +767,6 @@ if (onboarding) {
     }
 
     render();
-    function getCancelScore(s){
-  let score = 0;
-
-  if(s.usage === "baja") score += 5;
-  if(s.usage === "media") score += 2;
-
-  if(Number(s.price) > 10) score += 2;
-  if(Number(s.price) > 20) score += 3;
-
-  if(s.frequency === "yearly") score += 2;
-
-  if(!s.date) score += 1;
-
-  return Math.min(score, 10);
-}
-    function analyzeUsage(id){
-  const sub = subs.find(s => s.id === id);
-
-  if(!sub){
-    toast("No se encontró la suscripción");
-    return;
-  }
-
-  const score = getCancelScore(sub);
-
-  let message = `Score cancelación: ${score}/10\n\n`;
-
-  if(score >= 8){
-    message += `🚨 CANCELAR YA.\nEstás perdiendo dinero con ${sub.name}`;
-  } else if(score >= 5){
-    message += `⚠️ Revisar ${sub.name}.\nPodrías ahorrar dinero.`;
-  } else {
-    message += `✅ ${sub.name} está OK.\nNo es prioridad cancelarla.`;
-  }
-
-  alert(message);
-}
   </script>
 </body>
 </html>
