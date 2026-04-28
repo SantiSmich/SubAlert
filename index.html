@@ -318,7 +318,13 @@
       </div>
     </div>
   </div>
-
+<div id="onboarding" style="margin-top:20px;padding:20px;background:rgba(255,255,255,.08);border-radius:20px;">
+  <p style="margin:0 0 10px;font-weight:bold;">Empezá en 10 segundos 👇</p>
+  <p style="margin:0 0 14px;color:#bfb6d8;">Agregá al menos 1 suscripción para ver tu gasto real.</p>
+  <button onclick="openManual()" style="padding:14px 18px;border-radius:14px;background:#7c35ff;color:white;border:0;font-weight:bold;">
+    + Agregar primera suscripción
+  </button>
+</div>
   <div class="actions">
     <a class="btn" href="/api/auth/google">🔍 Buscar en correo</a>
     <button class="btn" onclick="demoSMS()">📱 Buscar por SMS</button>
@@ -605,7 +611,15 @@
           </article>
         `;
       }).join("");
-    }
+ const onboarding = document.getElementById("onboarding");
+
+if (onboarding) {
+  if (subs.length === 0) {
+    onboarding.style.display = "block";
+  } else {
+    onboarding.style.display = "none";
+  }
+}   }
 
     function escapeHTML(str) {
       return String(str || "")
