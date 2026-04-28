@@ -461,7 +461,7 @@ function parseAI(){
 
   lines.forEach(line => {
     const priceMatch = line.match(/(\d+[,.]?\d*)/);
-    if(!priceMatch) return;
+    
 
     const name = cleanName(line);
     if(!name) return;
@@ -470,8 +470,9 @@ function parseAI(){
 
     const lower = line.toLowerCase();
     const frequency = lower.includes("anual") ? "yearly" : "monthly";
-    const price = Number(priceMatch[1].replace(",","."));
-
+    const price = priceMatch 
+  ? Number(priceMatch[1].replace(",", "."))
+  : 0;
     subs.unshift({
       id: Date.now().toString() + Math.random(),
       name,
