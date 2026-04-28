@@ -26,7 +26,7 @@ h1{font-size:54px;line-height:.9;margin:8px 0 12px}
 .saving{background:rgba(255,80,130,.14);border-color:rgba(255,120,170,.28)}
 .aiBox{border-radius:30px;padding:18px;margin:18px 0}
 textarea,input{width:100%;border:0;outline:0;background:transparent;color:white;font-size:17px}
-textarea{min-height:90px;resize:none}
+textarea{min-height:110px;resize:none}
 textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
 .primary{width:100%;border:0;border-radius:22px;padding:17px;background:linear-gradient(90deg,#963cff,#6723d8);color:white;font-size:17px;font-weight:950;margin-top:12px}
 .quick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
@@ -83,7 +83,7 @@ textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
 </section>
 
 <section class="aiBox glass" id="ia">
-  <textarea id="aiInput" placeholder="Ej: Spotify 11.99 mensual renovación 9/5"></textarea>
+  <textarea id="aiInput" placeholder="Ej: Spotify 11.99 mensual renovación 9/5&#10;ChatGPT 20 USD mensual renueva el 15 de mayo&#10;Canva 120 anual"></textarea>
   <button class="primary" id="aiBtn">✨ Cargar con IA</button>
 </section>
 
@@ -91,6 +91,11 @@ textarea::placeholder,input::placeholder{color:rgba(255,255,255,.45)}
   <input id="mName" placeholder="Nombre">
   <input id="mPrice" type="number" step="0.01" placeholder="Precio">
   <input id="mDate" type="date">
+  <select id="mFrequency">
+    <option value="monthly">Mensual</option>
+    <option value="yearly">Anual</option>
+    <option value="trial">Trial</option>
+  </select>
   <select id="mUsage">
     <option value="alta">Uso alto</option>
     <option value="media">Uso medio</option>
@@ -128,10 +133,33 @@ let subs = JSON.parse(localStorage.getItem("subs") || "[]");
 
 const $ = id => document.getElementById(id);
 
+const monthMap = {
+  enero:1, febrero:2, marzo:3, abril:4, mayo:5, junio:6,
+  julio:7, agosto:8, septiembre:9, setiembre:9, octubre:10,
+  noviembre:11, diciembre:12
+};
+
+const numberWords = {
+  "uno":1,"una":1,"dos":2,"tres":3,"cuatro":4,"cinco":5,"seis":6,"siete":7,
+  "ocho":8,"nueve":9,"diez":10,"once":11,"doce":12,"trece":13,"catorce":14,
+  "quince":15,"dieciseis":16,"dieciséis":16,"diecisiete":17,"dieciocho":18,
+  "diecinueve":19,"veinte":20,"veintiuno":21,"veintidos":22,"veintidós":22,
+  "veintitres":23,"veintitrés":23,"veinticuatro":24,"veinticinco":25,
+  "veintiseis":26,"veintiséis":26,"veintisiete":27,"veintiocho":28,
+  "veintinueve":29,"treinta":30,"treinta y uno":31
+};
+
 function save(){ localStorage.setItem("subs", JSON.stringify(subs)); }
 
-function money(n){
-  return Number(n || 0).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2}) + " €";
+function money(n, currency="EUR"){
+  const symbol = currency === "USD" ? "$" : "€";
+  return Number(n || 0).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + symbol;
+}
+
+function monthlyCost(s){
+  const price = Number(s.price || 0);
+  if(s.frequency === "yearly") return price / 12;
+  return price;
 }
 
 function daysUntil(date){
@@ -147,35 +175,91 @@ function formatDate(date){
   return new Date(date+"T00:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"short"});
 }
 
+function makeDate(day, month){
+  const today = new Date();
+  let year = today.getFullYear();
+  const candidate = new Date(year, month - 1, day);
+  const cleanToday = new Date();
+  cleanToday.setHours(0,0,0,0);
+  if(candidate < cleanToday) year++;
+  return `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+}
+
 function parseDate(text){
-  const m = text.match(/(\d{1,2})[\/\-](\d{1,2})/);
-  if(!m) return "";
-  const now = new Date();
-  let year = now.getFullYear();
-  const candidate = new Date(year, Number(m[2])-1, Number(m[1]));
-  const today = new Date(); today.setHours(0,0,0,0);
-  if(candidate < today) year++;
-  return `${year}-${String(m[2]).padStart(2,"0")}-${String(m[1]).padStart(2,"0")}`;
+  const lower = normalizeText(text);
+
+  let m = lower.match(/(\d{1,2})[\/\-](\d{1,2})/);
+  if(m) return makeDate(Number(m[1]), Number(m[2]));
+
+  m = lower.match(/(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)/);
+  if(m) return makeDate(Number(m[1]), monthMap[m[2]]);
+
+  for(const word in numberWords){
+    for(const month in monthMap){
+      if(lower.includes(`${word} de ${month}`)){
+        return makeDate(numberWords[word], monthMap[month]);
+      }
+    }
+  }
+
+  return "";
+}
+
+function normalizeText(text){
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"");
+}
+
+function parseCurrency(text){
+  const lower = normalizeText(text);
+  if(lower.includes("usd") || lower.includes("dolar") || lower.includes("$")) return "USD";
+  return "EUR";
+}
+
+function parseFrequency(text){
+  const lower = normalizeText(text);
+  if(lower.includes("anual") || lower.includes("año") || lower.includes("year")) return "yearly";
+  if(lower.includes("trial") || lower.includes("prueba")) return "trial";
+  return "monthly";
 }
 
 function cleanName(text){
-  return text
-    .toLowerCase()
+  let name = normalizeText(text);
+
+  name = name
     .replace(/\d+([.,]\d+)?/g,"")
     .replace(/\d{1,2}[\/\-]\d{1,2}/g,"")
-    .replace(/mensual|mes|anual|año|usd|eur|euros|dólares|dolares|renovación|renovacion|fecha|de|el/gi,"")
+    .replace(/\d{1,2}\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)/gi,"")
+    .replace(/mensual|mes|anual|año|yearly|monthly|trial|prueba/gi,"")
+    .replace(/usd|eur|euro|euros|dolar|dolares|\$|€/gi,"")
+    .replace(/renovacion|renueva|renueva el|fecha|cobro|proximo|próximo/gi,"");
+
+  Object.keys(monthMap).forEach(month=>{
+    name = name.replace(new RegExp(month,"gi"),"");
+  });
+
+  Object.keys(numberWords).forEach(word=>{
+    name = name.replace(new RegExp("\\b"+word+"\\b","gi"),"");
+  });
+
+  name = name
+    .replace(/\bde\b|\bel\b|\bla\b|\blos\b|\blas\b|\by\b/gi,"")
     .replace(/[^\w\s]/gi,"")
     .replace(/\s+/g," ")
-    .trim()
-    .replace(/\b\w/g,c=>c.toUpperCase());
+    .trim();
+
+  return name.replace(/\b\w/g,c=>c.toUpperCase());
 }
 
 function score(s){
   let n=0;
   if(s.usage==="baja") n+=5;
   if(s.usage==="media") n+=2;
-  if(Number(s.price)>10) n+=2;
-  if(Number(s.price)>20) n+=3;
+  if(monthlyCost(s)>10) n+=2;
+  if(monthlyCost(s)>20) n+=3;
+  if(s.frequency==="yearly") n+=1;
   if(!s.date) n+=1;
   return Math.min(n,10);
 }
@@ -194,11 +278,19 @@ function renewalText(s){
   return "Fecha pasada";
 }
 
+function splitEntries(raw){
+  return raw
+    .split(/\n|;|,(?=\s*[A-Za-zÁÉÍÓÚáéíóúÑñ])/)
+    .map(x=>x.trim())
+    .filter(Boolean);
+}
+
 function parseAI(){
   const raw = $("aiInput").value.trim();
   if(!raw) return alert("Escribí una suscripción primero");
 
-  const parts = raw.split(/\n|;|,(?=\s*[A-Za-zÁÉÍÓÚáéíóúÑñ])/).map(x=>x.trim()).filter(Boolean);
+  const parts = splitEntries(raw);
+  let added = 0;
 
   parts.forEach(line=>{
     const priceMatch = line.match(/\d+([.,]\d+)?/);
@@ -207,23 +299,33 @@ function parseAI(){
     const price = Number(priceMatch[0].replace(",","."));
     const name = cleanName(line);
     const date = parseDate(line);
+    const currency = parseCurrency(line);
+    const frequency = parseFrequency(line);
 
     if(!name || !price) return;
-    if(subs.some(s=>s.name.toLowerCase()===name.toLowerCase())) return;
+
+    const exists = subs.some(s => s.name.toLowerCase() === name.toLowerCase());
+    if(exists) return;
 
     subs.unshift({
       id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()),
       name,
       price,
+      currency,
+      frequency,
       date,
       usage:"media",
       source:"IA"
     });
+
+    added++;
   });
 
   $("aiInput").value="";
   save();
   render();
+
+  alert(added ? `Cargué ${added} suscripción/es.` : "No encontré suscripciones nuevas o ya estaban cargadas.");
 }
 
 function addManual(){
@@ -231,13 +333,14 @@ function addManual(){
   const price=Number($("mPrice").value);
   const date=$("mDate").value;
   const usage=$("mUsage").value;
+  const frequency=$("mFrequency").value;
 
   if(!name) return alert("Falta el nombre");
   if(!price) return alert("Falta el precio");
 
   subs.unshift({
     id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()),
-    name, price, date, usage, source:"Manual"
+    name, price, date, usage, frequency, currency:"EUR", source:"Manual"
   });
 
   $("mName").value="";
@@ -252,9 +355,9 @@ function render(){
   const search=$("search").value.toLowerCase();
   const filtered=subs.filter(s=>s.name.toLowerCase().includes(search));
 
-  const total=subs.reduce((a,s)=>a+Number(s.price||0),0);
+  const total=subs.reduce((a,s)=>a+monthlyCost(s),0);
   const week=subs.filter(s=>{const d=daysUntil(s.date);return d!==null&&d>=0&&d<=7}).reduce((a,s)=>a+Number(s.price||0),0);
-  const saving=subs.filter(s=>s.usage==="baja").reduce((a,s)=>a+Number(s.price||0),0);
+  const saving=subs.filter(s=>s.usage==="baja").reduce((a,s)=>a+monthlyCost(s),0);
 
   $("total").innerText=money(total);
   $("weekTotal").innerText=money(week);
@@ -269,6 +372,9 @@ function render(){
   $("list").innerHTML=filtered.map(s=>{
     const sc=score(s);
     const [cls,txt]=label(sc);
+    const freqLabel = s.frequency === "yearly" ? "Anual" : s.frequency === "trial" ? "Trial" : "Mensual";
+    const pricePeriod = s.frequency === "yearly" ? "/ año" : s.frequency === "trial" ? "/ trial" : "/ mes";
+
     return `
     <article class="card glass">
       <div class="cardHead">
@@ -276,12 +382,15 @@ function render(){
           <div class="name">${escapeHTML(s.name)}</div>
           <div class="source">${escapeHTML(s.source || "Manual")}</div>
         </div>
-        <div class="price">${money(s.price)}<small>/ mes</small></div>
+        <div class="price">${money(s.price, s.currency)}<small>${pricePeriod}</small></div>
       </div>
       <div class="status ${cls}">${txt}</div>
-      <div class="meta"><span class="pill">Mensual</span><span class="pill">Uso: ${s.usage}</span></div>
+      <div class="meta"><span class="pill">${freqLabel}</span><span class="pill">Uso: ${s.usage}</span></div>
       <div class="renewal">🔔 ${renewalText(s)}</div>
-      <div class="details"><div><b>Coste mensual:</b> ${money(s.price)}</div><div><b>Score:</b> ${sc}/10</div></div>
+      <div class="details">
+        <div><b>Coste mensual:</b> ${money(monthlyCost(s), s.currency)}</div>
+        <div><b>Score:</b> ${sc}/10</div>
+      </div>
       <div class="actions">
         <button class="action delete" data-action="delete" data-id="${s.id}">Eliminar</button>
         <button class="action review" data-action="review" data-id="${s.id}">Revisar</button>
@@ -323,6 +432,7 @@ document.querySelectorAll("[data-nav]").forEach(btn=>{
 $("list").addEventListener("click", e=>{
   const btn=e.target.closest("button[data-action]");
   if(!btn) return;
+
   const id=btn.dataset.id;
   const action=btn.dataset.action;
 
