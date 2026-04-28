@@ -786,11 +786,35 @@ $("list").addEventListener("click", e=>{
   save();
   render();
 });
+function checkAlerts(){
+  const today = new Date();
+  const alerts = [];
 
+  subs.forEach(sub => {
+    if(!sub.date) return;
+
+    const renewalDate = new Date(sub.date + "T00:00:00");
+    const diffTime = renewalDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if(diffDays === 0){
+      alerts.push(`⚠️ Hoy se cobra ${sub.name}`);
+    } else if(diffDays === 1){
+      alerts.push(`⏳ Mañana se cobra ${sub.name}`);
+    } else if(diffDays > 1 && diffDays <= 3){
+      alerts.push(`📅 En ${diffDays} días se cobra ${sub.name}`);
+    }
+  });
+
+  if(alerts.length){
+    showAnswer("Alertas próximas:\n\n" + alerts.join("\n"));
+  }
+}
 try{
   render();
+  checkAlerts();
 }catch(e){
-  document.body.innerHTML = "<pre style='color:red;padding:20px;font-size:16px'>Error: " + e.message + "</pre>";
+  document.body.innerHTML = "<pre style='color:red'>" + e + "</pre>";
 }
  if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/service-worker.js")
