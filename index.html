@@ -760,6 +760,15 @@ function render(){
   const saving = subs.filter(s=>score(s) >= 4).reduce((a,s)=>a + monthlyEUR(s), 0);
 
   $("total").innerText = moneyEUR(total);
+  const totalEl = $("total");
+
+if (total < 10) {
+  totalEl.style.color = "#4ade80"; // verde
+} else if (total >= 10 && total <= 15) {
+  totalEl.style.color = "#facc15"; // amarillo
+} else {
+  totalEl.style.color = "#f87171"; // rojo
+}
   $("yearlyTotal").innerText = `${moneyEUR(total * 12)} al año`;
   $("weekTotal").innerText = moneyEUR(week);
   $("savingTotal").innerText = moneyEUR(saving);
