@@ -583,11 +583,19 @@ const score = s.usage === "alta"
   : s.usage === "media"
   ? "🟡"
   : "🔴";
+   const cancelScore = getCancelScore(s);
+
+const scoreLabel = 
+  cancelScore >= 7 ? "🔴 Cancelar ya" :
+  cancelScore >= 4 ? "🟡 Revisar" :
+  "🟢 OK";     
         return `
           <article class="card ${s.usage === "baja" || s.reviewed ? "low" : ""}">
             <div class="cardTop">
               <div>
-                <h3>${escapeHTML(s.name)}</h3>
+                <h3>${escapeHTML(s.name)}</<div class="score">
+  Score: ${cancelScore}/10 — ${scoreLabel}
+</div>
                 <p>${escapeHTML(s.plan || "Sin plan indicado")}</p>
                 <span class="pill">${s.frequency === "yearly" ? "Anual" : s.frequency === "trial" ? "Trial" : "Mensual"}</span>
                 <span class="pill">Uso: ${s.usage || "media"}</span>
