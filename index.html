@@ -1,859 +1,289 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SubAlert</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<meta charset="UTF-8">
 
-    body {
-      margin: 0;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top left, #32155f, #080711 55%);
-      color: white;
-      padding: 34px 20px 110px;
-    }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
+<title>SubAlert</title>
 
-    .label {
-      color: #b79cff;
-      letter-spacing: 4px;
-      font-weight: bold;
-      font-size: 13px;
-    }
+<style>
 
-    h1 {
-      font-size: 50px;
-      margin: 10px 0 6px;
-      line-height: .95;
-    }
+body{
 
-    .subtitle {
-      color: #bfb6d8;
-      font-size: 20px;
-      margin-bottom: 22px;
-    }
+  margin:0;
 
-    .add {
-      width: 66px;
-      height: 66px;
-      border-radius: 22px;
-      border: 0;
-      background: #7c35ff;
-      color: white;
-      font-size: 38px;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
+  font-family:Arial;
 
-    .dashboard {
-      display: grid;
-      gap: 12px;
-      margin: 22px 0;
-    }
+  background:#0b0715;
 
-    .summary, .miniCard, .panel, .card {
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.13);
-      backdrop-filter: blur(14px);
-    }
+  color:white;
 
-    .summary {
-      border-radius: 30px;
-      padding: 24px;
-    }
+  padding:20px 16px 120px;
 
-    .summary p, .miniCard span {
-      color: #bfb6d8;
-      margin: 0 0 8px;
-    }
+}
 
-    .total {
-      font-size: 46px;
-      font-weight: 800;
-    }
+h1{font-size:34px;margin:0}
 
-    .miniGrid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+.card{
 
-    .miniCard {
-      border-radius: 22px;
-      padding: 16px;
-    }
+  background:#1a142a;
 
-    .miniCard strong {
-      font-size: 24px;
-    }
+  border-radius:20px;
 
-    .saving {
-      background: rgba(255, 90, 110, .16);
-      border-color: rgba(255, 120, 140, .25);
-    }
+  padding:16px;
 
-    .onboarding {
-      margin: 18px 0;
-      padding: 20px;
-      border-radius: 24px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.13);
-    }
+  margin-bottom:14px;
 
-    .onboarding p {
-      color: #bfb6d8;
-      font-size: 17px;
-      line-height: 1.35;
-    }
+}
 
-    .primary {
-      width: 100%;
-      border: 0;
-      border-radius: 20px;
-      padding: 17px;
-      background: linear-gradient(90deg, #8a3cff, #6723d4);
-      color: white;
-      font-weight: 800;
-      font-size: 17px;
-    }
+button{
 
-    .actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin: 16px 0;
-    }
+  border:0;
 
-    .btn {
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color: white;
-      border-radius: 22px;
-      padding: 17px 12px;
-      font-weight: 800;
-      font-size: 16px;
-      text-align: center;
-      text-decoration: none;
-    }
+  border-radius:12px;
 
-    .panel {
-      display: none;
-      margin: 18px 0;
-      border-radius: 26px;
-      padding: 18px;
-    }
+  padding:10px 14px;
 
-    .panel h2 {
-      margin: 0 0 12px;
-      font-size: 24px;
-    }
+  font-weight:bold;
 
-    input, select, textarea {
-      width: 100%;
-      padding: 16px;
-      border-radius: 17px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color: white;
-      font-size: 16px;
-      margin-bottom: 11px;
-    }
+}
 
-    textarea {
-      min-height: 88px;
-      resize: vertical;
-    }
+.primary{background:#7b3cff;color:white;width:100%;margin-top:10px}
 
-    input::placeholder, textarea::placeholder {
-      color: #aaa;
-    }
+.small{background:#2a203d;color:white}
 
-    select option {
-      color: black;
-    }
+.danger{color:#ff6b7a}
 
-    .search {
-      margin-top: 18px;
-    }
+.good{color:#5dffb3}
 
-    .sectionTitle {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 28px 0 12px;
-    }
+.warn{color:#ffd166}
 
-    .sectionTitle h2 {
-      font-size: 32px;
-      margin: 0;
-    }
+input,textarea{
 
-    .count {
-      color: #bfb6d8;
-      font-size: 18px;
-    }
+  width:100%;
 
-    .empty {
-      padding: 28px;
-      text-align: center;
-      color: #bfb6d8;
-      background: rgba(255,255,255,.07);
-      border-radius: 26px;
-    }
+  padding:10px;
 
-    .card {
-      border-radius: 28px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
+  border-radius:10px;
 
-    .card.low {
-      background: rgba(255, 80, 110, .12);
-      border-color: rgba(255, 120, 140, .42);
-    }
+  border:1px solid #333;
 
-    .cardHead {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      align-items: flex-start;
-    }
+  background:#120c1f;
 
-    .name {
-      font-size: 26px;
-      font-weight: 900;
-      margin: 0 0 6px;
-    }
+  color:white;
 
-    .plan {
-      color: #bfb6d8;
-      font-size: 17px;
-      margin: 0;
-    }
+  margin-bottom:10px;
 
-    .price {
-      text-align: right;
-      font-size: 25px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
+}
 
-    .price small {
-      display: block;
-      color: #bfb6d8;
-      font-size: 16px;
-      margin-top: 3px;
-    }
+</style>
 
-    .score {
-      margin: 14px 0 12px;
-      padding: 12px 14px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.08);
-      color: #d8ccff;
-      font-weight: 800;
-      line-height: 1.3;
-    }
-
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 12px 0;
-    }
-
-    .pill {
-      padding: 7px 11px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.1);
-      color: #d7ccff;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .renewal {
-      margin: 12px 0;
-      color: #ffd7dc;
-      font-weight: 900;
-      font-size: 18px;
-    }
-
-    .details {
-      color: #bfb6d8;
-      font-size: 15px;
-      line-height: 1.45;
-      margin-top: 10px;
-    }
-
-    .details b {
-      color: #d8ccff;
-    }
-
-    .cardActions {
-      display: flex;
-      gap: 8px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-
-    .smallBtn {
-      padding: 10px 13px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.07);
-      color: white;
-      text-decoration: none;
-      font-weight: 800;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .cancelBtn { color: #ffb3c0; }
-    .reviewBtn { color: #ffe2a8; }
-    .keepBtn { color: #a7ffca; }
-    .deleteBtn { color: #ff6b7a; }
-
-    .bottomNav {
-      position: fixed;
-      left: 14px;
-      right: 14px;
-      bottom: 14px;
-      background: rgba(20,16,35,.9);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 24px;
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      overflow: hidden;
-      backdrop-filter: blur(18px);
-      z-index: 10;
-    }
-
-    .bottomNav button {
-      border: 0;
-      background: transparent;
-      color: #d8ccff;
-      padding: 13px 6px;
-      font-weight: 800;
-      font-size: 12px;
-    }
-  </style>
 </head>
 
 <body>
-  <div class="top">
-    <div>
-      <div class="label">MEMORIA DIGITAL</div>
-      <h1>SubAlert</h1>
-      <div class="subtitle">Tus gastos recurrentes, claros y bajo control.</div>
-    </div>
-    <button class="add" onclick="openManual()">+</button>
-  </div>
 
-  <div class="dashboard" id="home">
-    <div class="summary">
-      <p>Total mensual estimado</p>
-      <div class="total" id="total">0,00 €</div>
-    </div>
+<h1>SubAlert</h1>
 
-    <div class="miniGrid">
-      <div class="miniCard">
-        <span>Próximos 7 días</span>
-        <strong id="weekTotal">0,00 €</strong>
-      </div>
-      <div class="miniCard saving">
-        <span>Ahorro potencial</span>
-        <strong id="savingTotal">0,00 €</strong>
-      </div>
-    </div>
-  </div>
+<textarea id="aiInput" placeholder="Ej: Spotify 11.99 mensual renovación 9/5"></textarea>
 
-  <div id="onboarding" class="onboarding">
-    <p style="margin:0 0 10px;font-weight:bold;color:white;">Empezá en 10 segundos 👇</p>
-    <p style="margin:0 0 14px;">Escribí tus suscripciones o agregalas manualmente. SubAlert las ordena por vos.</p>
-    <button class="primary" onclick="openAI()">✨ Cargar con IA</button>
-  </div>
+<button class="primary" onclick="parseAI()">✨ Cargar con IA</button>
 
-  <div class="actions">
-    <a class="btn" href="/api/auth/google">🔍 Correo</a>
-    <button class="btn" onclick="demoSMS()">📱 SMS</button>
-  </div>
+<div id="list"></div>
 
-  <button class="primary" onclick="activateReminders()">🔔 Activar recordatorios</button>
+<script>
 
-  <div class="panel" id="aiPanel">
-    <h2>Cargar con IA</h2>
-    <textarea id="aiInput" placeholder="Ejemplo: Spotify 11.99 mensual renovación 9 de mayo, ChatGPT 20 USD mensual, Canva 120 anual"></textarea>
-    <button class="primary" onclick="parseAI()">✨ Crear suscripciones</button>
-  </div>
+let subs = JSON.parse(localStorage.getItem("subs")||"[]")
 
-  <div class="panel" id="manualBox">
-    <h2>Agregar suscripción</h2>
-    <input id="name" placeholder="Nombre: Netflix, Canva, ChatGPT..." />
-    <input id="plan" placeholder="Plan: Premium, Pro, Plus..." />
-    <input id="price" type="number" step="0.01" placeholder="Precio" />
-    <select id="currency">
-      <option value="EUR">EUR (€)</option>
-      <option value="USD">USD ($)</option>
-    </select>
-    <select id="frequency">
-      <option value="monthly">Mensual</option>
-      <option value="yearly">Anual</option>
-      <option value="trial">Trial / prueba</option>
-    </select>
-    <input id="date" type="date" />
-    <select id="usage">
-      <option value="alta">Uso alto</option>
-      <option value="media">Uso medio</option>
-      <option value="baja">Uso bajo / casi no la uso</option>
-    </select>
-    <textarea id="notes" placeholder="Notas: cuenta asociada, tarjeta, motivo, etc."></textarea>
-    <button class="primary" onclick="addManual()">Guardar suscripción</button>
-  </div>
+function save(){
 
-  <input class="search" id="search" placeholder="Buscar suscripción..." oninput="render()" />
+  localStorage.setItem("subs",JSON.stringify(subs))
 
-  <div class="sectionTitle" id="subs">
-    <h2>Suscripciones</h2>
-    <div class="count" id="count">0 activas</div>
-  </div>
-
-  <div id="list"></div>
-
-  <div class="bottomNav">
-    <button onclick="scrollToId('home')">Inicio</button>
-    <button onclick="openAI()">IA</button>
-    <button onclick="openManual()">Agregar</button>
-    <button onclick="scrollToId('subs')">Lista</button>
-  </div>
-
-  <script>
-    const cancelLinks = {
-      netflix: "https://www.netflix.com/cancelplan",
-      spotify: "https://www.spotify.com/account/subscription/",
-      chatgpt: "https://help.openai.com/en/articles/7232927-how-do-i-cancel-my-chatgpt-plus-subscription",
-      openai: "https://help.openai.com/en/articles/7232927-how-do-i-cancel-my-chatgpt-plus-subscription",
-      canva: "https://www.canva.com/settings/billing",
-      amazon: "https://www.amazon.es/gp/primecentral",
-      disney: "https://www.disneyplus.com/account",
-      moises: "https://moises.ai/account",
-      suno: "https://suno.com/account",
-      spotify: "https://www.spotify.com/account/subscription/",
-      youtube: "https://www.youtube.com/paid_memberships",
-      google: "https://myaccount.google.com/payments-and-subscriptions",
-      apple: "https://support.apple.com/billing",
-      afa: "https://afaplay.tv"
-    };
-
-    let subs = JSON.parse(localStorage.getItem("subs") || "[]");
-
-    function save() {
-      localStorage.setItem("subs", JSON.stringify(subs));
-    }
-
-    function money(n, currency = "EUR") {
-      const symbol = currency === "USD" ? "$" : "€";
-      return Number(n || 0).toLocaleString("es-ES", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }) + " " + symbol;
-    }
-
-    function monthlyCost(s) {
-      const price = Number(s.price || 0);
-      if (s.frequency === "yearly") return price / 12;
-      return price;
-    }
-
-    function daysUntil(date) {
-      if (!date) return null;
-      const today = new Date();
-      const target = new Date(date);
-      today.setHours(0,0,0,0);
-      target.setHours(0,0,0,0);
-      return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
-    }
-
-    function getCancelUrl(name) {
-      const text = (name || "").toLowerCase();
-      for (const key in cancelLinks) {
-        if (text.includes(key)) return cancelLinks[key];
-      }
-      return "";
-    }
-
-    function getCancelScore(s) {
-      let score = 0;
-      if (s.usage === "baja") score += 5;
-      if (s.usage === "media") score += 2;
-      if (Number(s.price) > 10) score += 2;
-      if (Number(s.price) > 20) score += 3;
-      if (s.frequency === "yearly") score += 2;
-      if (!s.date) score += 1;
-      return Math.min(score, 10);
-    }
-
-    function getScoreLabel(score) {
-      if (score >= 7) return "🔴 Estás perdiendo dinero";
-      if (score >= 4) return "🟡 Podrías optimizar esto";
-      return "🟢 Vale la pena mantenerla";
-    }
-
-    function getRenewalText(s) {
-      const d = daysUntil(s.date);
-      if (s.frequency === "trial") {
-        if (d === null) return "Trial sin fecha";
-        if (d === 0) return "Hoy termina el trial";
-        if (d > 0) return `Trial: cobro posible en ${d} días`;
-        return "Trial vencido";
-      }
-      if (d === null) return "Sin fecha de renovación";
-      if (d === 0) return "Hoy te cobran";
-      if (d > 0) return `En ${d} días`;
-      return "Fecha pasada";
-    }
-
-    function formatDateNice(date) {
-      if (!date) return "";
-      const d = new Date(date + "T00:00:00");
-      return d.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
-    }
-
-    function openManual() {
-      closePanelsExcept("manualBox");
-      togglePanel("manualBox");
-    }
-
-    function openAI() {
-      closePanelsExcept("aiPanel");
-      togglePanel("aiPanel");
-    }
-
-    function togglePanel(id) {
-      const box = document.getElementById(id);
-      box.style.display = box.style.display === "block" ? "none" : "block";
-      if (box.style.display === "block") box.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-
-    function closePanelsExcept(id) {
-      ["manualBox", "aiPanel"].forEach(panel => {
-        if (panel !== id) document.getElementById(panel).style.display = "none";
-      });
-    }
-
-    function scrollToId(id) {
-      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-    }
-
-    function addManual() {
-      const item = {
-        name: document.getElementById("name").value.trim(),
-        plan: document.getElementById("plan").value.trim() || "Sin plan indicado",
-        price: Number(document.getElementById("price").value || 0),
-        currency: document.getElementById("currency").value,
-        frequency: document.getElementById("frequency").value,
-        date: document.getElementById("date").value,
-        usage: document.getElementById("usage").value,
-        notes: document.getElementById("notes").value.trim(),
-        source: "Manual"
-      };
-
-      if (!item.name) return toast("Poné un nombre");
-      if (!item.price) return toast("Poné un precio");
-
-      addDetected(item);
-      clearManual();
-      document.getElementById("manualBox").style.display = "none";
-    }
-
-    function clearManual() {
-      ["name","plan","price","date","notes"].forEach(id => document.getElementById(id).value = "");
-    }
-
-    function addDetected(item) {
-      const exists = subs.some(s => s.name.toLowerCase() === item.name.toLowerCase());
-      if (exists) return toast("Ya existe una suscripción parecida");
-
-      const cancelUrl = getCancelUrl(item.name + " " + item.plan);
-
-      subs.unshift({
-        ...item,
-        cancelUrl,
-        reviewed: false,
-        keep: false,
-        id: crypto.randomUUID()
-      });
-
-      save();
-      render();
-    }
-
-    function deleteSub(id) {
-      subs = subs.filter(s => s.id !== id);
-      save();
-      render();
-      toast("Suscripción eliminada");
-    }
-
-    function markReview(id) {
-      subs = subs.map(s => s.id === id ? { ...s, reviewed: true, keep: false, usage: "baja" } : s);
-      save();
-      render();
-    }
-
-    function markKeep(id) {
-      subs = subs.map(s => s.id === id ? { ...s, keep: true, reviewed: false } : s);
-      save();
-      render();
-    }
-
-    function parseSpanishDate(text) {
-      const months = {
-        enero: 1, febrero: 2, marzo: 3, abril: 4, mayo: 5, junio: 6,
-        julio: 7, agosto: 8, septiembre: 9, setiembre: 9, octubre: 10,
-        noviembre: 11, diciembre: 12
-      };
-
-    const numberWords = {
-  "uno": 1, "una": 1, "dos": 2, "tres": 3, "cuatro": 4, "cinco": 5,
-  "seis": 6, "siete": 7, "ocho": 8, "nueve": 9, "diez": 10,
-  "once": 11, "doce": 12, "trece": 13, "catorce": 14, "quince": 15,
-  "dieciseis": 16, "dieciséis": 16, "diecisiete": 17, "dieciocho": 18,
-  "diecinueve": 19, "veinte": 20, "veintiuno": 21,
-  "veintidos": 22, "veintidós": 22, "veintitres": 23, "veintitrés": 23,
-  "veinticuatro": 24, "veinticinco": 25, "veintiseis": 26, "veintiséis": 26,
-  "veintisiete": 27, "veintiocho": 28, "veintinueve": 29,
-  "treinta": 30, "treinta y uno": 31
-};
-
-      const lower = text.toLowerCase();
-
-      let match = lower.match(/(\d{1,2})[\/\-](\d{1,2})/);
-      if (match) return makeDate(Number(match[1]), Number(match[2]));
-
-      match = lower.match(/(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)/);
-      if (match) return makeDate(Number(match[1]), months[match[2]]);
-
-      for (const word in numberWords) {
-        for (const month in months) {
-          if (lower.includes(`${word} de ${month}`)) {
-            return makeDate(numberWords[word], months[month]);
-          }
-        }
-      }
-
-      return "";
-    }
-
-    function makeDate(day, month) {
-      const now = new Date();
-      let year = now.getFullYear();
-      const candidate = new Date(year, month - 1, day);
-      const today = new Date();
-      today.setHours(0,0,0,0);
-
-      if (candidate < today) year += 1;
-
-      return `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-    }
-
-    function cleanName(line) {
-  return line
-    .toLowerCase()
-
-    .replace(/\d+([.,]\d+)?\s?(€|eur)?/gi, "")
-    .replace(/mensual|monthly|anual|yearly/gi, "")
-    .replace(/renovaci[oó]n|fecha/gi, "")
-    .replace(/\d{1,2}\/\d{1,2}/g, "")
-    .replace(/enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre/gi, "")
-    .replace(/y$/gi, "")
-    .replace(/[^\w\s]/gi, "")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
-    function parseAI() {
-      const text = document.getElementById("aiInput").value;
-      if (!text.trim()) return toast("Escribí algo primero");
+function cleanName(line){
 
-      const parts = text
-  .split(/\n|;|,(?=\s*[A-Za-zÁÉÍÓÚáéíóúÑñ])/)
-  .map(x => x.trim())
-  .filter(Boolean);
+  return line
 
-      parts.forEach(line => {
-        const lower = line.toLowerCase();
-        const priceMatch = line.match(/(\d+([.,]\d+)?)/);
-        const price = priceMatch ? Number(priceMatch[0].replace(",", ".")) : 0;
+    .replace(/\d+([.,]\d+)?/g,"")
 
-        const isYearly = lower.includes("anual") || lower.includes("yearly");
-        const isTrial = lower.includes("trial") || lower.includes("prueba");
+    .replace(/mensual|anual|usd|eur|renovación|renovacion|fecha|\/|\d+/gi,"")
 
-        const frequency = isTrial ? "trial" : isYearly ? "yearly" : "monthly";
-        const currency = lower.includes("usd") || lower.includes("$") || lower.includes("dólares") || lower.includes("dolares") ? "USD" : "EUR";
-        const date = parseSpanishDate(line);
-        const name = cleanName(line);
+    .trim()
 
-        if (!name || !price) return;
+}
 
-        addDetected({
-          name,
-          plan: "Detectado por IA",
-          price,
-          currency,
-          frequency,
-          date,
-          usage: "media",
-          notes: "Agregado con IA",
-          source: "IA"
-        });
-      });
+function parseDate(line){
 
-      document.getElementById("aiInput").value = "";
-      document.getElementById("aiPanel").style.display = "none";
-      render();
-      toast("Suscripciones cargadas 🚀");
-    }
+  const m = line.match(/(\d{1,2})\/(\d{1,2})/)
 
-    function render() {
-      const list = document.getElementById("list");
-      const search = document.getElementById("search").value.toLowerCase();
+  if(!m) return ""
 
-      const filtered = subs.filter(s =>
-        s.name.toLowerCase().includes(search) ||
-        (s.plan || "").toLowerCase().includes(search)
-      );
+  const d = new Date()
 
-      const totalMonthly = subs.reduce((acc, s) => acc + monthlyCost(s), 0);
+  const year = d.getFullYear()
 
-      const weekTotal = subs
-        .filter(s => {
-          const d = daysUntil(s.date);
-          return d !== null && d >= 0 && d <= 7;
-        })
-        .reduce((acc, s) => acc + Number(s.price || 0), 0);
+  return `${year}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`
 
-      const savingTotal = subs
-        .filter(s => s.usage === "baja" || s.reviewed)
-        .reduce((acc, s) => acc + monthlyCost(s), 0);
+}
 
-      document.getElementById("total").innerText = money(totalMonthly);
-      document.getElementById("weekTotal").innerText = money(weekTotal);
-      document.getElementById("savingTotal").innerText = money(savingTotal);
-      document.getElementById("count").innerText = `${subs.length} activas`;
+function parseAI(){
 
-      document.getElementById("onboarding").style.display = subs.length === 0 ? "block" : "none";
+  const lines = document.getElementById("aiInput").value.split(",")
 
-      if (!filtered.length) {
-        list.innerHTML = `<div class="empty">No hay suscripciones cargadas.</div>`;
-        return;
-      }
+  lines.forEach(l=>{
 
-      list.innerHTML = filtered.map(s => {
-        const cancelUrl = s.cancelUrl || getCancelUrl(s.name + " " + s.plan);
-        const cancelScore = getCancelScore(s);
-        const scoreLabel = getScoreLabel(cancelScore);
+    const line = l.trim()
 
-        return `
-          <article class="card ${s.usage === "baja" || s.reviewed ? "low" : ""}">
-            <div class="cardHead">
-              <div>
-                <h3 class="name">${escapeHTML(s.name)}</h3>
-                <p class="plan">${escapeHTML(s.plan || "Sin plan indicado")}</p>
-              </div>
-              <div class="price">
-                ${money(s.price, s.currency)}
-                <small>${s.frequency === "yearly" ? "año" : s.frequency === "trial" ? "trial" : "mes"}</small>
-              </div>
-            </div>
+    if(!line) return
 
-            <div class="score">${scoreLabel}</div>
+    const priceMatch = line.match(/\d+([.,]\d+)?/)
 
-            <div class="meta">
-              <span class="pill">${s.frequency === "yearly" ? "Anual" : s.frequency === "trial" ? "Trial" : "Mensual"}</span>
-              <span class="pill">Uso: ${s.usage || "media"}</span>
-            </div>
+    if(!priceMatch) return
 
-            <div class="renewal">🔔 ${getRenewalText(s)} ${s.date ? `· ${formatDateNice(s.date)}` : ""}</div>
+    const price = Number(priceMatch[0].replace(",","."))
 
-            <div class="details">
-              <div><b>Origen:</b> ${s.source || "Manual"}</div>
-              <div><b>Coste mensual:</b> ${money(monthlyCost(s), s.currency)}</div>
-              ${s.notes ? `<div><b>Notas:</b> ${escapeHTML(s.notes)}</div>` : ""}
-            </div>
+    const name = cleanName(line)
 
-            <div class="cardActions">
-              ${cancelUrl ? `<a class="smallBtn cancelBtn" href="${cancelUrl}" target="_blank">Cancelar</a>` : ""}
-              <button class="smallBtn reviewBtn" onclick="markReview('${s.id}')">Revisar</button>
-              <button class="smallBtn keepBtn" onclick="markKeep('${s.id}')">Mantener</button>
-              <button class="smallBtn deleteBtn" onclick="deleteSub('${s.id}')">Eliminar</button>
-            </div>
-          </article>
-        `;
-      }).join("");
-    }
+    const date = parseDate(line)
 
-    function escapeHTML(str) {
-      return String(str || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
+    // evitar duplicados
 
-    function activateReminders() {
-      if (!("Notification" in window)) return toast("Tu navegador no soporta notificaciones");
+    const exists = subs.some(s=>s.name.toLowerCase()===name.toLowerCase())
 
-      Notification.requestPermission().then(permission => {
-        toast(permission === "granted" ? "Recordatorios activados" : "No se activaron los permisos");
-      });
-    }
+    if(exists) return
 
-    function demoSMS() {
-      toast("La búsqueda por SMS todavía está en prueba.");
-    }
+    subs.push({
 
-    function toast(msg) {
-      alert(msg);
-    }
+      id:Date.now()+Math.random(),
 
-    const params = new URLSearchParams(window.location.search);
-    const data = params.get("data");
+      name,
 
-    if (data) {
-      try {
-        const detected = JSON.parse(decodeURIComponent(data));
-        detected.forEach(s => {
-          addDetected({
-            name: s.from || "Suscripción detectada",
-            plan: s.subject || "Detectada por correo",
-            price: 0,
-            currency: "EUR",
-            frequency: "monthly",
-            date: "",
-            usage: "media",
-            notes: "",
-            source: "Correo"
-          });
-        });
-        window.history.replaceState({}, document.title, "/");
-      } catch (e) {
-        console.error(e);
-      }
-    }
+      price,
 
-    render();
-  </script>
+      frequency:"monthly",
+
+      usage:"media",
+
+      date,
+
+      source:"IA"
+
+    })
+
+  })
+
+  save()
+
+  render()
+
+}
+
+function getScore(s){
+
+  let score=0
+
+  if(s.usage==="baja") score+=5
+
+  if(s.usage==="media") score+=2
+
+  if(s.price>10) score+=2
+
+  if(s.price>20) score+=3
+
+  return Math.min(score,10)
+
+}
+
+function getLabel(score){
+
+  if(score>=8) return "🔴 Cancelar ya"
+
+  if(score>=5) return "🟡 Revisar"
+
+  return "🟢 Mantener"
+
+}
+
+function render(){
+
+  const list=document.getElementById("list")
+
+  list.innerHTML=""
+
+  subs.forEach(s=>{
+
+    const score=getScore(s)
+
+    const div=document.createElement("div")
+
+    div.className="card"
+
+    div.innerHTML=`
+
+      <h2>${s.name}</h2>
+
+      <p>${s.price} € / mes</p>
+
+      <p class="${score>=8?"danger":score>=5?"warn":"good"}">${getLabel(score)}</p>
+
+      <p>${s.date ? "Renueva: "+s.date : "Sin fecha"}</p>
+
+      <button class="small" onclick="remove(${s.id})">Eliminar</button>
+
+      <button class="small" onclick="analyze(${s.id})">Analizar</button>
+
+    `
+
+    list.appendChild(div)
+
+  })
+
+}
+
+function remove(id){
+
+  subs=subs.filter(s=>s.id!==id)
+
+  save()
+
+  render()
+
+}
+
+function analyze(id){
+
+  const s=subs.find(x=>x.id===id)
+
+  const score=getScore(s)
+
+  let msg="Score cancelación: "+score+"/10\n\n"
+
+  if(score>=8){
+
+    msg+="CANCELAR YA"
+
+  }else if(score>=5){
+
+    msg+="Podrías revisarla"
+
+  }else{
+
+    msg+="Vale la pena mantenerla"
+
+  }
+
+  alert(msg)
+
+}
+
+render()
+
+</script>
+
 </body>
+
 </html>
