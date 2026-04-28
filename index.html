@@ -574,7 +574,15 @@
       list.innerHTML = filtered.map(s => {
         const cancelUrl = s.cancelUrl || getCancelUrl(s.name + " " + s.plan);
         const suggestion = getSuggestion(s);
+const warning = s.usage === "baja"
+  ? `<div class="suggestion">⚠️ Podrías ahorrar ${money(monthlyCost(s), s.currency)} al mes cancelando esto.</div>`
+  : "";
 
+const score = s.usage === "alta"
+  ? "🟢"
+  : s.usage === "media"
+  ? "🟡"
+  : "🔴";
         return `
           <article class="card ${s.usage === "baja" || s.reviewed ? "low" : ""}">
             <div class="cardTop">
