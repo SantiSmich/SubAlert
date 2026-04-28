@@ -678,6 +678,21 @@ if (onboarding) {
     }
 
     render();
+    function getCancelScore(s){
+  let score = 0;
+
+  if(s.usage === "baja") score += 5;
+  if(s.usage === "media") score += 2;
+
+  if(Number(s.price) > 10) score += 2;
+  if(Number(s.price) > 20) score += 3;
+
+  if(s.frequency === "yearly") score += 2;
+
+  if(!s.date) score += 1;
+
+  return Math.min(score, 10);
+}
     function analyzeUsage(id){
   const sub = subs.find(s => s.id === id);
 
@@ -686,14 +701,16 @@ if (onboarding) {
     return;
   }
 
-  let message = "";
+  const score = getCancelScore(sub);
 
-  if(sub.usage === "alta"){
-    message = `Usás ${sub.name} bastante. ✔️ Conviene mantenerla.`;
-  } else if(sub.usage === "media"){
-    message = `Usás ${sub.name} a veces. 🤔 Podrías evaluar si vale la pena.`;
+  let message = `Score cancelación: ${score}/10\n\n`;
+
+  if(score >= 8){
+    message += `🚨 CANCELAR YA.\nEstás perdiendo dinero con ${sub.name}`;
+  } else if(score >= 5){
+    message += `⚠️ Revisar ${sub.name}.\nPodrías ahorrar dinero.`;
   } else {
-    message = `Casi no usás ${sub.name}. ⚠️ Estás tirando dinero: ${money(sub.price)}/mes`;
+    message += `✅ ${sub.name} está OK.\nNo es prioridad cancelarla.`;
   }
 
   alert(message);
