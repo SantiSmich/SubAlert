@@ -518,7 +518,7 @@ async function askAI(question){
   $("answer").textContent = "Analizando...";
 
   try {
-    const res = await fetch("https://gicidxfdikujfomieisw.supabase.co/functions/v1/subalert-ai", {
+   const res = await fetch("https://gicidxfdikujfomieisw.supabase.co/functions/v1/clever-worker", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
