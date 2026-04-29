@@ -346,16 +346,10 @@ async function save(){
   if(typeof supabaseClient !== "undefined"){
     const last = subs[0];
 
-    if(last){
-      await supabaseClient.from("subscriptions").insert([{
-        name: last.name,
-        price: last.price,
-        frequency: last.frequency,
-        date: last.date || null,
-        usage: last.usage || "media",
-        source: last.source || "app"
-      })
-        const { error } = await supabaseClient
+    
+if(!last) return;
+
+const { error } = await supabaseClient
   .from("subscriptions")
   .insert([{
     name: last.name,
@@ -368,7 +362,9 @@ async function save(){
 
 if (error) {
   alert("Error: " + error.message);
-}
+} else {
+  alert("Guardado en Supabase ✅");
+
     }
   }
 }
