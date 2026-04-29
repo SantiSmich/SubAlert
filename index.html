@@ -516,7 +516,7 @@ async function askAI(question){
   }
 
   $("answer").textContent = "Analizando...";
-
+const supabaseKey = "PEGÁ_ACÁ_TU_ANON_KEY";
   try {
    const res = await fetch("https://gicidxfdikujfomieisw.supabase.co/functions/v1/clever-worker", {
       method: "POST",
