@@ -509,97 +509,35 @@ function renderRank(){
   `;
 }
 
-function askAI(question){
+async function askAI(question){
   if(!subs.length){
-    $("answer").textContent = "Todavía no hay suscripciones cargadas.";
+    $("answer").textContent = "No tenés suscripciones cargadas.";
     return;
   }
 
-  const q = (question || "").toLowerCase();
+  $("answer").textContent = "Analizando...";
 
-  const total = subs.reduce((a,s)=>a + monthlyCost(s), 0);
-  const byScore = [...subs].sort((a,b)=>scoreSub(b)-scoreSub(a));
-  const byPrice = [...subs].sort((a,b)=>monthlyCost(b)-monthlyCost(a));
+  const res = await fetch("https://gicidxfdikujfomieisw.functions.supabase.co/subalert-ai", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": supabaseKey,
+      "Authorization": "Bearer " + supabaseKey
+    },
+    body: JSON.stringify({
+      subs,
+      question: question || "Analizá mis suscripciones y decime qué cancelar, revisar o mantener."
+    })
+  });
 
-  const worst = byScore[0];
-  const expensive = byPrice[0];
+  const data = await res.json();
 
-  if(q.includes("cancel") || q.includes("eliminar")){
-    const candidates = byScore.filter(s => scoreSub(s) >= 4).slice(0,3);
-
-    $("answer").textContent =
-`Yo revisaría para cancelar primero:
-
-${candidates.map(s => `• ${s.name}: ${money(monthlyCost(s))}/mes · Score ${scoreSub(s)}/10`).join("\n")}
-
-Motivo:
-Son las que combinan coste, uso y prioridad de revisión más alta.
-
-Ahorro posible si cancelás esas:
-${money(candidates.reduce((a,s)=>a + monthlyCost(s), 0))}/mes`;
+  if(data.error){
+    $("answer").textContent = "Error IA: " + data.error;
     return;
   }
 
-  if(q.includes("ahorro") || q.includes("ahorrar")){
-    const saving = byScore
-      .filter(s => scoreSub(s) >= 4)
-      .reduce((a,s)=>a + monthlyCost(s), 0);
-
-    $("answer").textContent =
-`Podrías ahorrar hasta ${money(saving)}/mes revisando las suscripciones con mayor score.
-
-Tu gasto mensual actual es:
-${money(total)}
-
-La primera que miraría:
-${worst.name} — ${money(monthlyCost(worst))}/mes · Score ${scoreSub(worst)}/10`;
-    return;
-  }
-
-  if(q.includes("car") || q.includes("gasto")){
-    $("answer").textContent =
-`Tu suscripción más cara es:
-
-${expensive.name} — ${money(monthlyCost(expensive))}/mes
-
-Tu gasto mensual total:
-${money(total)}
-
-Mi recomendación:
-Si ${expensive.name} no es de uso alto, revisala antes de renovar.`;
-    return;
-  }
-
-  $("answer").textContent =
-`Resumen rápido:
-
-Pagás ${money(total)}/mes en suscripciones.
-
-Primera prioridad de revisión:
-${worst.name} — Score ${scoreSub(worst)}/10
-
-Mayor gasto:
-${expensive.name} — ${money(monthlyCost(expensive))}/mes
-
-Preguntame algo como:
-“¿Qué debería cancelar?”
-“¿Cómo puedo ahorrar?”
-“¿Cuál es mi gasto más caro?”`;
-}
-
-  const worst = [...subs].sort((a,b)=>scoreSub(b)-scoreSub(a))[0];
-  const expensive = [...subs].sort((a,b)=>monthlyCost(b)-monthlyCost(a))[0];
-
-  $("answer").textContent =
-`Revisaría primero ${worst.name}.
-
-Motivo:
-- Score IA: ${scoreSub(worst)}/10
-- Coste mensual real: ${money(monthlyCost(worst))}
-- Gasto más alto actual: ${expensive.name} (${money(monthlyCost(expensive))}/mes)
-
-Sugerencia:
-Si no la usás seguido, pausala o cancelala este mes.`;
+  $("answer").textContent = data.answer;
 }
 
 function showUpcoming(){
