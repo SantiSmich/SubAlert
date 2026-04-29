@@ -349,8 +349,9 @@ async function loadFromSupabase() {
     return;
   }
 
- subs = data;
+subs = data || [];
 window.subs = subs;
+alert("Cargadas desde Supabase: " + subs.length);
 render();
 }
 const $ = id => document.getElementById(id);
