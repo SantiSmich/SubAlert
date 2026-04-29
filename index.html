@@ -8,146 +8,52 @@
 
   <style>
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:linear-gradient(180deg,#2b0b55,#11051f);
-      color:white;
-      padding:28px 18px 110px;
-    }
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#2b0b55,#10031d);color:white;padding:28px 18px 120px}
     .app{max-width:520px;margin:auto}
-    h1{font-size:34px;margin:26px 0 6px}
-    h2{font-size:24px;margin:0 0 12px}
-    p{color:#d8ccff;font-size:17px}
+    h1{font-size:36px;margin:28px 0 6px}
+    h2{font-size:26px;margin:0 0 12px}
+    p{color:#d8ccff;font-size:18px;line-height:1.35}
     .screen{display:none}
     .screen.active{display:block}
-    .card{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
-      padding:14px;
-      margin:10px 0;
-    }
-    .heroTotal{text-align:center;padding:18px 14px}
-    .label{color:#d8ccff;font-size:15px}
-    .total{font-size:40px;font-weight:900;margin:4px 0}
-    .year{color:#d8ccff;font-size:15px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .mini strong{display:block;font-size:24px;margin-top:8px}
-    textarea,input,select{
-      width:100%;
-      padding:14px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.08);
-      color:white;
-      font-size:16px;
-      margin-top:10px;
-    }
-    textarea{resize:none;min-height:110px;line-height:1.35}
-    .primary{
-      width:100%;
-      border:0;
-      border-radius:16px;
-      padding:12px;
-      margin-top:10px;
-      background:linear-gradient(90deg,#9333ea,#6d28d9);
-      color:white;
-      font-size:15px;
-      font-weight:900;
-    }
-    .secondary{
-      width:100%;
-      border:1px solid rgba(255,255,255,.15);
-      border-radius:20px;
-      padding:8px;
-      margin-top:10px;
-      background:rgba(255,255,255,.08);
-      color:white;
-      font-size:16px;
-      font-weight:800;
-    }
-    .subCard{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:22px;
-      padding:18px;
-      margin:12px 0;
-    }
-    .subTop{display:flex;justify-content:space-between;gap:10px}
-    .subTop h3{font-size:28px;margin:0}
-    .price{text-align:right;font-size:28px;font-weight:900}
+    .card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:24px;padding:18px;margin:14px 0}
+    .hero{text-align:center;padding:24px 18px}
+    .label{color:#d8ccff;font-size:16px}
+    .total{font-size:48px;font-weight:900;margin:8px 0;color:#fff}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .mini strong{display:block;font-size:25px;margin-top:10px}
+    textarea,input,select{width:100%;padding:15px;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:white;font-size:17px;margin-top:10px}
+    textarea{min-height:115px;resize:none}
+    button{cursor:pointer}
+    .primary{width:100%;border:0;border-radius:18px;padding:15px;margin-top:12px;background:linear-gradient(90deg,#a333ea,#6d28d9);color:white;font-size:17px;font-weight:900}
+    .secondary{width:100%;border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:13px;margin-top:10px;background:rgba(255,255,255,.07);color:white;font-size:17px;font-weight:850}
+    .subCard{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:18px;margin:14px 0}
+    .subTop{display:flex;justify-content:space-between;gap:12px}
+    .subTop h3{font-size:29px;margin:0}
+    .price{text-align:right;font-size:29px;font-weight:900}
     .muted{color:#d8ccff}
-    .status{
-      display:inline-block;
-      margin:12px 0;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.08);
-      font-weight:900;
-    }
-    .green{color:#4ade80}
-    .yellow{color:#facc15}
-    .red{color:#f87171}
-    .actions{display:flex;gap:8px;margin-top:12px}
-    .actions button{
-      flex:1;
-      padding:9px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.06);
-      color:white;
-      font-weight:800;
-    }
-    .nav{
-      position:fixed;
-      left:18px;
-      right:18px;
-      bottom:18px;
-      max-width:520px;
-      margin:auto;
-      display:flex;
-      justify-content:space-around;
-      padding:12px;
-      border-radius:24px;
-      background:rgba(13,7,25,.94);
-      border:1px solid rgba(255,255,255,.15);
-      backdrop-filter:blur(12px);
-      z-index:20;
-    }
-    .nav button{
-      background:none;
-      border:0;
-      color:#d8ccff;
-      font-size:16px;
-      font-weight:900;
-    }
+    .status{display:inline-block;margin:14px 0;padding:8px 13px;border-radius:999px;background:rgba(255,255,255,.1);font-weight:900}
+    .green{color:#4ade80}.yellow{color:#facc15}.red{color:#f87171}
+    .actions{display:flex;gap:8px;margin-top:14px}
+    .actions button{flex:1;padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:white;font-weight:800}
+    .answer{margin-top:14px;padding:16px;border-radius:18px;background:rgba(255,255,255,.08);color:#d8ccff;white-space:pre-line;font-size:17px;line-height:1.35}
+    .nav{position:fixed;left:18px;right:18px;bottom:18px;max-width:520px;margin:auto;display:flex;justify-content:space-around;padding:14px;border-radius:26px;background:rgba(13,7,25,.96);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(12px);z-index:20}
+    .nav button{background:none;border:0;color:#d8ccff;font-size:18px;font-weight:900}
     .nav button.active{color:white}
-    .answer{
-      margin-top:12px;
-      padding:14px;
-      border-radius:18px;
-      background:rgba(255,255,255,.08);
-      color:#d8ccff;
-      white-space:pre-line;
-    }
   </style>
 </head>
 
 <body>
 <div class="app">
-
   <header>
     <h1>SubAlert</h1>
     <p>Detectá. Decidí. Ahorrá.</p>
   </header>
 
   <main id="home" class="screen active">
-
-    <section class="card heroTotal">
+    <section class="card hero">
       <div class="label">Pagás al mes</div>
       <div class="total" id="total">0,00 €</div>
-      <div class="year" id="yearlyTotal">0,00 € al año</div>
+      <div class="muted" id="yearlyTotal">0,00 € al año</div>
     </section>
 
     <section class="grid">
@@ -164,10 +70,9 @@
     <section class="card">
       <h2>Detectá tus suscripciones</h2>
       <p>Pegá tus gastos o recordatorios y armamos tu lista.</p>
-
       <textarea id="aiInput" placeholder="Ej:
 Spotify 11.99 mensual renovación 9/5
-Netflix 12.99 mensual
+Netflix 6.99 mensual
 Canva 120 anual"></textarea>
 
       <button class="primary" id="aiBtn">✨ Detectar mis suscripciones</button>
@@ -190,7 +95,6 @@ Canva 120 anual"></textarea>
       </select>
       <button class="primary" id="manualBtn">Guardar</button>
     </section>
-
   </main>
 
   <main id="list" class="screen">
@@ -208,7 +112,7 @@ Canva 120 anual"></textarea>
       <p>Preguntale qué cancelar, mantener o revisar.</p>
       <input id="advisorInput" placeholder="Ej: ¿Qué debería cancelar?" />
       <button class="primary" id="advisorBtn">🤖 Analizar mis gastos</button>
-      <div id="answer" class="answer"></div>
+      <div id="answer" class="answer">Esperando pregunta...</div>
     </section>
 
     <section class="card">
@@ -219,29 +123,26 @@ Canva 120 anual"></textarea>
     <button class="secondary" id="notifyBtn">🔔 Activar notificaciones</button>
     <button class="secondary" id="upcomingBtn">Ver próximos cobros</button>
   </main>
-
 </div>
 
 <nav class="nav">
-  <button class="active" onclick="showTab('home')">Inicio</button>
-  <button onclick="showTab('list')">Lista</button>
-  <button onclick="showTab('ai')">IA</button>
+  <button class="active" id="navHome">Inicio</button>
+  <button id="navList">Lista</button>
+  <button id="navAI">IA</button>
 </nav>
 
 <script>
 const supabaseUrl = "https://gicidxfdikujfomieisw.supabase.co";
 const supabaseKey = "sb_publishable_Q6g2eR3gSCsODYz2awemBQ_4lp7yhId";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+const aiFunctionUrl = "https://gicidxfdikujfomieisw.supabase.co/functions/v1/clever-worker";
 
 let subs = [];
 
 const $ = id => document.getElementById(id);
 
 function money(n){
-  return Number(n || 0).toLocaleString("es-ES", {
-    minimumFractionDigits:2,
-    maximumFractionDigits:2
-  }) + " €";
+  return Number(n || 0).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2}) + " €";
 }
 
 function monthlyCost(s){
@@ -255,65 +156,57 @@ function daysUntil(dateStr){
   const date = new Date(dateStr);
   today.setHours(0,0,0,0);
   date.setHours(0,0,0,0);
-  return Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+  return Math.ceil((date - today) / 86400000);
 }
 
 function scoreSub(s){
   let score = 0;
-  const monthly = monthlyCost(s);
-
-  if(monthly >= 15) score += 3;
-  else if(monthly >= 10) score += 2;
+  const m = monthlyCost(s);
+  if(m >= 15) score += 3;
+  else if(m >= 8) score += 2;
   else score += 1;
-
   if(s.usage === "baja") score += 4;
   if(s.usage === "media") score += 2;
   if(!s.date) score += 1;
-
-  return Math.min(score, 10);
+  return Math.min(score,10);
 }
 
 function statusFor(s){
   const score = scoreSub(s);
-  if(score >= 7) return {text:"🔴 Eliminar", cls:"red"};
-  if(score >= 4) return {text:"🟡 Revisar", cls:"yellow"};
-  return {text:"🟢 Mantener", cls:"green"};
+  if(score >= 7) return {text:"🔴 Eliminar",cls:"red"};
+  if(score >= 4) return {text:"🟡 Revisar",cls:"yellow"};
+  return {text:"🟢 Mantener",cls:"green"};
 }
 
 async function loadFromSupabase(){
   const { data, error } = await supabaseClient
     .from("subscriptions")
     .select("*")
-    .order("created_at", { ascending:false });
+    .order("created_at",{ascending:false});
 
   if(error){
-    alert("Error cargando Supabase: " + error.message);
+    $("answer").textContent = "Error cargando Supabase: " + error.message;
     return;
   }
 
   subs = data || [];
-  localStorage.setItem("subs", JSON.stringify(subs));
   render();
 }
 
-async function save(last){
-  localStorage.setItem("subs", JSON.stringify(subs));
-
-  if(!last) return;
-
+async function saveSub(sub){
   const { error } = await supabaseClient
     .from("subscriptions")
     .insert([{
-      name: last.name,
-      price: last.price,
-      frequency: last.frequency,
-      date: last.date || null,
-      usage: last.usage || "media",
-      source: last.source || "app"
+      name: sub.name,
+      price: sub.price,
+      frequency: sub.frequency,
+      date: sub.date || null,
+      usage: sub.usage || "media",
+      source: sub.source || "app"
     }]);
 
   if(error){
-    alert("Error: " + error.message);
+    alert("Error guardando: " + error.message);
     return;
   }
 
@@ -331,131 +224,96 @@ function cleanName(line){
 function parseDate(line){
   const match = line.match(/(\d{1,2})\/(\d{1,2})/);
   if(!match) return null;
-
   const day = Number(match[1]);
-  const month = Number(match[2]) - 1;
+  const month = Number(match[2])-1;
   const year = new Date().getFullYear();
-  const date = new Date(year, month, day);
-
-  if(date < new Date()) date.setFullYear(year + 1);
-
+  const date = new Date(year,month,day);
+  if(date < new Date()) date.setFullYear(year+1);
   return date.toISOString().split("T")[0];
 }
 
 function parseAI(){
   const text = $("aiInput").value.trim();
-  if(!text) return;
+  if(!text) return alert("Pegá algún gasto primero.");
 
   const lines = text.split("\n").filter(Boolean);
-  const newSubs = [];
+  let added = 0;
 
   lines.forEach(line=>{
     const priceMatch = line.match(/(\d+([,.]\d+)?)/);
-    const price = priceMatch ? Number(priceMatch[1].replace(",", ".")) : 0;
+    const price = priceMatch ? Number(priceMatch[1].replace(",",".")) : 0;
     const name = cleanName(line);
+    if(!name || !price) return;
 
-    if(!name) return;
+    const exists = subs.some(s => String(s.name).toLowerCase() === name.toLowerCase());
+    if(exists) return;
 
-    const alreadyExists = subs.some(s => 
-      String(s.name).toLowerCase() === name.toLowerCase()
-    );
+    const frequency = line.toLowerCase().includes("anual") ? "yearly" : "monthly";
 
-    if(alreadyExists) return;
-
-    const lower = line.toLowerCase();
-    const frequency = lower.includes("anual") ? "yearly" : "monthly";
-
-    newSubs.push({
+    const sub = {
       name,
       price,
       frequency,
       date: parseDate(line),
       usage:"media",
       source:"IA"
-    });
+    };
+
+    added++;
+    saveSub(sub);
   });
 
-  if(!newSubs.length){
-    alert("No encontré suscripciones nuevas.");
-    return;
-  }
-
-  subs = [...newSubs, ...subs];
   $("aiInput").value = "";
-  render();
-
-  newSubs.forEach(s => save(s));
+  if(!added) alert("No encontré suscripciones nuevas.");
 }
 
 function addManual(){
   const name = $("mName").value.trim();
   const price = Number($("mPrice").value || 0);
-  const date = $("mDate").value || null;
-  const frequency = $("mFrequency").value;
-  const usage = $("mUsage").value;
-
-  if(!name){
-    alert("Poné un nombre.");
-    return;
-  }
+  if(!name || !price) return alert("Completá nombre y precio.");
 
   const sub = {
     name,
     price,
-    date,
-    frequency,
-    usage,
+    date: $("mDate").value || null,
+    frequency: $("mFrequency").value,
+    usage: $("mUsage").value,
     source:"manual"
   };
-
-  subs.unshift(sub);
 
   $("mName").value = "";
   $("mPrice").value = "";
   $("mDate").value = "";
   $("manualBox").style.display = "none";
 
-  render();
-  save(sub);
+  saveSub(sub);
 }
 
 async function removeSub(id){
-  subs = subs.filter(s => s.id !== id);
-  render();
-
-  if(id){
-    await supabaseClient.from("subscriptions").delete().eq("id", id);
-  }
+  if(!id) return;
+  await supabaseClient.from("subscriptions").delete().eq("id",id);
+  await loadFromSupabase();
 }
 
 function render(){
   const search = ($("search")?.value || "").toLowerCase();
-  const filtered = subs.filter(s => 
-    String(s.name || "").toLowerCase().includes(search)
-  );
+  const filtered = subs.filter(s => String(s.name || "").toLowerCase().includes(search));
 
-  const total = subs.reduce((a,s)=>a + monthlyCost(s), 0);
-  const saving = subs
-    .filter(s => scoreSub(s) >= 4)
-    .reduce((a,s)=>a + monthlyCost(s), 0);
+  const total = subs.reduce((a,s)=>a+monthlyCost(s),0);
+  const saving = subs.filter(s=>scoreSub(s)>=4).reduce((a,s)=>a+monthlyCost(s),0);
 
   $("total").textContent = money(total);
-  $("yearlyTotal").textContent = money(total * 12) + " al año";
+  $("yearlyTotal").textContent = money(total*12) + " al año";
   $("savingTotal").textContent = money(saving);
   $("count").textContent = subs.length;
 
-  const next = subs
-    .filter(s => s.date)
-    .sort((a,b)=> new Date(a.date) - new Date(b.date))[0];
-
+  const next = subs.filter(s=>s.date).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];
   $("nextCharge").textContent = next ? next.name : "—";
 
   $("subsList").innerHTML = filtered.map(s=>{
     const status = statusFor(s);
     const d = daysUntil(s.date);
-    const dateText = s.date 
-      ? `En ${d} días · ${new Date(s.date).toLocaleDateString("es-ES",{day:"numeric",month:"short"})}`
-      : "Sin fecha de renovación";
+    const dateText = s.date ? `En ${d} días · ${new Date(s.date).toLocaleDateString("es-ES",{day:"numeric",month:"short"})}` : "Sin fecha de renovación";
 
     return `
       <div class="subCard">
@@ -464,16 +322,11 @@ function render(){
             <h3>${s.name}</h3>
             <div class="muted">${dateText}</div>
           </div>
-          <div class="price">
-            ${money(s.price)}
-            <div>/mes</div>
-          </div>
+          <div class="price">${money(s.price)}<div>/mes</div></div>
         </div>
-
         <div class="status ${status.cls}">${status.text}</div>
         <div><b>Mensual real:</b> ${money(monthlyCost(s))}</div>
         <div><b>Score IA:</b> ${scoreSub(s)}/10</div>
-
         <div class="actions">
           <button onclick="removeSub(${s.id})">Eliminar</button>
           <button>Revisar</button>
@@ -492,21 +345,14 @@ function renderRank(){
     return;
   }
 
-  const top = [...subs]
-    .sort((a,b)=>monthlyCost(b)-monthlyCost(a))
-    .slice(0,3);
+  const top = [...subs].sort((a,b)=>monthlyCost(b)-monthlyCost(a)).slice(0,3);
+  const priority = [...subs].sort((a,b)=>scoreSub(b)-scoreSub(a)).slice(0,3);
 
-  const priority = [...subs]
-    .sort((a,b)=>scoreSub(b)-scoreSub(a))
-    .slice(0,3);
-
-  $("rankList").innerHTML = `
-    <b>Top gastos:</b><br><br>
-    ${top.map(s => `<b>${s.name}</b> — ${money(monthlyCost(s))}/mes`).join("<br>")}
-    <br><br>
-    <b>Prioridad de revisión:</b><br><br>
-    ${priority.map(s => `<b>${s.name}</b> — Score ${scoreSub(s)}/10`).join("<br>")}
-  `;
+  $("rankList").innerHTML =
+    `<b>Top gastos:</b><br><br>` +
+    top.map(s=>`<b>${s.name}</b> — ${money(monthlyCost(s))}/mes`).join("<br>") +
+    `<br><br><b>Prioridad de revisión:</b><br><br>` +
+    priority.map(s=>`<b>${s.name}</b> — Score ${scoreSub(s)}/10`).join("<br>");
 }
 
 async function askAI(question){
@@ -516,100 +362,94 @@ async function askAI(question){
   }
 
   $("answer").textContent = "Analizando...";
-const supabaseKey = "sb_publishable_Q6g2eR3gSCsODYz2awemBQ_4lp7yhId";
-  try {
-   const res = await fetch("https://gicidxfdikujfomieisw.supabase.co/functions/v1/clever-worker", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": supabaseKey,
-        "Authorization": "Bearer " + supabaseKey
+
+  try{
+    const res = await fetch(aiFunctionUrl,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "apikey":supabaseKey,
+        "Authorization":"Bearer " + supabaseKey
       },
-      body: JSON.stringify({
+      body:JSON.stringify({
         subs,
-        question: question || "Analizá mis suscripciones."
+        question: question || "Analizá mis suscripciones y decime qué cancelar, revisar o mantener."
       })
     });
 
-    const data = await res.json();
-
     const text = await res.text();
 
-let data;
-try {
-  data = JSON.parse(text);
-} catch(e) {
-  $("answer").textContent = "Respuesta no JSON: " + text;
-  return;
-}
+    let data;
+    try{
+      data = JSON.parse(text);
+    }catch(e){
+      $("answer").textContent = "Respuesta no JSON: " + text;
+      return;
+    }
 
-if(data.error){
-  $("answer").textContent = "Error IA: " + data.error;
-  return;
-}
+    if(data.error){
+      $("answer").textContent = "Error IA: " + data.error;
+      return;
+    }
 
-$("answer").textContent = data.answer || ("Respuesta recibida pero sin answer: " + JSON.stringify(data));
-  } catch(e) {
+    $("answer").textContent = data.answer || "La IA no devolvió respuesta.";
+  }catch(e){
     $("answer").textContent = "Error conectando con IA: " + e.message;
   }
 }
 
 function showUpcoming(){
-  const upcoming = subs
-    .filter(s => s.date)
-    .sort((a,b)=>new Date(a.date)-new Date(b.date))
-    .slice(0,5);
-
+  const upcoming = subs.filter(s=>s.date).sort((a,b)=>new Date(a.date)-new Date(b.date)).slice(0,5);
   $("answer").textContent = upcoming.length
-    ? upcoming.map(s => `${s.name}: ${new Date(s.date).toLocaleDateString("es-ES")}`).join("\n")
+    ? upcoming.map(s=>`${s.name}: ${new Date(s.date).toLocaleDateString("es-ES")}`).join("\n")
     : "No hay fechas de renovación cargadas.";
-
   showTab("ai");
 }
 
 async function activateNotifications(){
   if(!("Notification" in window)){
     $("answer").textContent = "Este dispositivo no soporta notificaciones.";
+    showTab("ai");
     return;
   }
 
   const permission = await Notification.requestPermission();
-
-  if(permission === "granted"){
-    new Notification("SubAlert activado 🔔", {
-      body:"Las notificaciones ya están listas."
-    });
-    $("answer").textContent = "Notificaciones activadas correctamente.";
-  } else {
-    $("answer").textContent = "No se activaron las notificaciones.";
-  }
+  $("answer").textContent = permission === "granted"
+    ? "Notificaciones activadas correctamente."
+    : "No se activaron las notificaciones.";
 
   showTab("ai");
 }
 
 function showTab(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  $(id).classList.add("active");
 
   document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-  [...document.querySelectorAll(".nav button")]
-    .find(b => b.textContent.toLowerCase().includes(id === "home" ? "inicio" : id))
-    ?.classList.add("active");
+  if(id==="home") $("navHome").classList.add("active");
+  if(id==="list") $("navList").classList.add("active");
+  if(id==="ai") $("navAI").classList.add("active");
 
-  window.scrollTo({top:0, behavior:"smooth"});
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-$("aiBtn").addEventListener("click", parseAI);
-$("manualOpenBtn").addEventListener("click", ()=>{
-  $("manualBox").style.display = $("manualBox").style.display === "none" ? "block" : "none";
-});
-$("manualBtn").addEventListener("click", addManual);
-$("search").addEventListener("input", render);
-$("advisorBtn").addEventListener("click", ()=>askAI($("advisorInput").value));
-$("notifyBtn").addEventListener("click", activateNotifications);
-$("upcomingBtn").addEventListener("click", showUpcoming);
+document.addEventListener("DOMContentLoaded",()=>{
+  $("aiBtn").addEventListener("click",parseAI);
+  $("manualOpenBtn").addEventListener("click",()=>{
+    $("manualBox").style.display = $("manualBox").style.display === "none" ? "block" : "none";
+  });
+  $("manualBtn").addEventListener("click",addManual);
+  $("search").addEventListener("input",render);
+  $("advisorBtn").addEventListener("click",()=>askAI($("advisorInput").value));
+  $("notifyBtn").addEventListener("click",activateNotifications);
+  $("upcomingBtn").addEventListener("click",showUpcoming);
 
-loadFromSupabase();
+  $("navHome").addEventListener("click",()=>showTab("home"));
+  $("navList").addEventListener("click",()=>showTab("list"));
+  $("navAI").addEventListener("click",()=>showTab("ai"));
+
+  loadFromSupabase();
+});
 </script>
 </body>
 </html>
