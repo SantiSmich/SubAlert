@@ -517,27 +517,31 @@ async function askAI(question){
 
   $("answer").textContent = "Analizando...";
 
-  const res = await fetch("https://gicidxfdikujfomieisw.functions.supabase.co/subalert-ai", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "apikey": supabaseKey,
-      "Authorization": "Bearer " + supabaseKey
-    },
-    body: JSON.stringify({
-      subs,
-      question: question || "Analizá mis suscripciones y decime qué cancelar, revisar o mantener."
-    })
-  });
+  try {
+    const res = await fetch("https://gicidxfdikujfomieisw.supabase.co/functions/v1/subalert-ai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": supabaseKey,
+        "Authorization": "Bearer " + supabaseKey
+      },
+      body: JSON.stringify({
+        subs,
+        question: question || "Analizá mis suscripciones."
+      })
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if(data.error){
-    $("answer").textContent = "Error IA: " + data.error;
-    return;
+    if(data.error){
+      $("answer").textContent = "Error IA: " + data.error;
+      return;
+    }
+
+    $("answer").textContent = data.answer || "La IA no devolvió respuesta.";
+  } catch(e) {
+    $("answer").textContent = "Error conectando con IA: " + e.message;
   }
-
-  $("answer").textContent = data.answer;
 }
 
 function showUpcoming(){
