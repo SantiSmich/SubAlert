@@ -746,6 +746,7 @@ if("serviceWorker" in navigator){
 }
 
 try{
+  alert("La app llegó al final del script");
   loadFromSupabase();
 }catch(e){
   document.body.innerHTML = "<pre style='color:red;padding:20px'>" + e.message + "</pre>";
