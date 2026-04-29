@@ -533,12 +533,22 @@ const supabaseKey = "sb_publishable_Q6g2eR3gSCsODYz2awemBQ_4lp7yhId";
 
     const data = await res.json();
 
-    if(data.error){
-      $("answer").textContent = "Error IA: " + data.error;
-      return;
-    }
+    const text = await res.text();
 
-    $("answer").textContent = data.answer || "La IA no devolvió respuesta.";
+let data;
+try {
+  data = JSON.parse(text);
+} catch(e) {
+  $("answer").textContent = "Respuesta no JSON: " + text;
+  return;
+}
+
+if(data.error){
+  $("answer").textContent = "Error IA: " + data.error;
+  return;
+}
+
+$("answer").textContent = data.answer || ("Respuesta recibida pero sin answer: " + JSON.stringify(data));
   } catch(e) {
     $("answer").textContent = "Error conectando con IA: " + e.message;
   }
