@@ -336,8 +336,22 @@ Canva 120 anual"></textarea>
 const supabaseUrl = "https://gicidxfdikujfomieisw.supabase.co";
 const supabaseKey = "sb_publishable_Q6g2eR3gSCsODYz2awemBQ_4lp7yhId";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+  
 let subs = JSON.parse(localStorage.getItem("subs") || "[]");
+async function loadFromSupabase() {
+  const { data, error } = await supabaseClient
+    .from("subscriptions")
+    .select("*")
+    .order("created_at", { ascending: false });
 
+  if (error) {
+    console.log("Error cargando:", error);
+    return;
+  }
+
+  subs = data;
+  render();
+}
 const $ = id => document.getElementById(id);
 
 async function save(){
@@ -730,7 +744,7 @@ if("serviceWorker" in navigator){
 }
 
 try{
-  render();
+  loadFromSupabase();
 }catch(e){
   document.body.innerHTML = "<pre style='color:red;padding:20px'>" + e.message + "</pre>";
 }
