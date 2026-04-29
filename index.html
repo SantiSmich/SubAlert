@@ -2,47 +2,49 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SubAlert</title>
-
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#140622">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     *{box-sizing:border-box}
-
     body{
       margin:0;
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:linear-gradient(180deg,#241044,#07040d);
+      background:linear-gradient(180deg,#2b0b55,#11051f);
       color:white;
-      padding:22px 16px 96px;
+      padding:28px 18px 110px;
     }
-
     .app{max-width:520px;margin:auto}
-
-    h1{font-size:30px;margin:8px 0 4px}
-    h2{font-size:22px;margin:0 0 12px}
-    p{color:#d8ccff;font-size:15px;margin:6px 0}
-
-    .tagline{color:#d8ccff;font-size:16px;margin-bottom:18px}
-
+    h1{font-size:34px;margin:26px 0 6px}
+    h2{font-size:24px;margin:0 0 12px}
+    p{color:#d8ccff;font-size:17px}
     .screen{display:none}
     .screen.active{display:block}
-
     .card{
       background:rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.14);
-     border-radius:18px;
-padding:14px;
-margin:10px 0;
+      border-radius:18px;
+      padding:14px;
+      margin:10px 0;
     }
-
     .heroTotal{text-align:center;padding:18px 14px}
     .label{color:#d8ccff;font-size:15px}
     .total{font-size:40px;font-weight:900;margin:4px 0}
     .year{color:#d8ccff;font-size:15px}
-
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .mini strong{display:block;font-size:24px;margin-top:8px}
+    textarea,input,select{
+      width:100%;
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.08);
+      color:white;
+      font-size:16px;
+      margin-top:10px;
+    }
+    textarea{resize:none;min-height:110px;line-height:1.35}
     .primary{
       width:100%;
       border:0;
@@ -54,7 +56,6 @@ margin:10px 0;
       font-size:15px;
       font-weight:900;
     }
-
     .secondary{
       width:100%;
       border:1px solid rgba(255,255,255,.15);
@@ -66,163 +67,69 @@ margin:10px 0;
       font-size:16px;
       font-weight:800;
     }
-
-    textarea,input,select{
-      width:100%;
-      padding:14px;
-      margin-top:10px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.08);
-      color:white;
-      font-size:16px;
-    }
-
-    textarea{
-  resize:none;
-  min-height:110px;
-  line-height:1.35;
-}
-
-    .row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    .miniGrid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    .mini{
-      background:rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:20px;
-      padding:14px;
-    }
-
-    .mini strong{display:block;font-size:22px;margin-top:6px}
-    .mini span{color:#d8ccff;font-size:13px;font-weight:700}
-
     .subCard{
       background:rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.14);
       border-radius:22px;
-      padding:16px;
+      padding:18px;
       margin:12px 0;
     }
-
-    .subTop{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-    }
-
-    .subName{font-size:22px;font-weight:900}
-    .subPrice{text-align:right;font-size:20px;font-weight:900}
-    .muted{color:#d8ccff;font-size:14px}
-
-    .badge{
+    .subTop{display:flex;justify-content:space-between;gap:10px}
+    .subTop h3{font-size:28px;margin:0}
+    .price{text-align:right;font-size:28px;font-weight:900}
+    .muted{color:#d8ccff}
+    .status{
       display:inline-block;
-      margin-top:12px;
+      margin:12px 0;
       padding:8px 12px;
       border-radius:999px;
-      background:rgba(255,255,255,.09);
+      background:rgba(255,255,255,.08);
       font-weight:900;
-      font-size:14px;
     }
-
     .green{color:#4ade80}
     .yellow{color:#facc15}
-    .red{color:#fb7185}
-
-    .actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-
+    .red{color:#f87171}
+    .actions{display:flex;gap:8px;margin-top:12px}
     .actions button{
-      border:1px solid rgba(255,255,255,.13);
+      flex:1;
+      padding:9px;
       border-radius:14px;
-      padding:10px 12px;
-      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.06);
       color:white;
       font-weight:800;
     }
-
-    .quickGrid{
+    .nav{
+      position:fixed;
+      left:18px;
+      right:18px;
+      bottom:18px;
+      max-width:520px;
+      margin:auto;
       display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:10px;
+      justify-content:space-around;
+      padding:12px;
+      border-radius:24px;
+      background:rgba(13,7,25,.94);
+      border:1px solid rgba(255,255,255,.15);
+      backdrop-filter:blur(12px);
+      z-index:20;
     }
-
-    .quickGrid button{
+    .nav button{
+      background:none;
       border:0;
-      border-radius:999px;
-      padding:9px 14px;
-      background:#eee;
-      color:#111;
-      font-weight:800;
+      color:#d8ccff;
+      font-size:16px;
+      font-weight:900;
     }
-
-    .quickGrid button.selected{
-      background:#7c3aed;
-      color:white;
-      opacity:.75;
-    }
-
+    .nav button.active{color:white}
     .answer{
-      display:none;
       margin-top:12px;
       padding:14px;
       border-radius:18px;
-      background:rgba(255,255,255,.09);
-      white-space:pre-wrap;
-      line-height:1.4;
-      color:#f1ecff;
-    }
-
-    .empty{
-      text-align:center;
-      color:#d8ccff;
-      padding:20px;
-    }
-
-    .nav{
-      position:fixed;
-      left:14px;
-      right:14px;
-      bottom:14px;
-      max-width:520px;
-      margin:auto;
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      background:rgba(12,6,24,.92);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:24px;
-      overflow:hidden;
-      backdrop-filter:blur(16px);
-      z-index:10;
-    }
-
-    .nav button{
-      border:0;
-      background:transparent;
-      color:#d8ccff;
-      padding:14px 6px;
-      font-weight:900;
-      font-size:13px;
-    }
-
-    .nav button.active{
       background:rgba(255,255,255,.08);
-      color:white;
+      color:#d8ccff;
+      white-space:pre-line;
     }
   </style>
 </head>
@@ -232,96 +139,86 @@ margin:10px 0;
 
   <header>
     <h1>SubAlert</h1>
-    <p class="tagline">Detectá. Decidí. Ahorrá.</p>
+    <p>Detectá. Decidí. Ahorrá.</p>
   </header>
 
-  <!-- INICIO -->
-  <section id="homeScreen" class="screen active">
+  <main id="home" class="screen active">
 
-    <div class="card heroTotal">
+    <section class="card heroTotal">
       <div class="label">Pagás al mes</div>
       <div class="total" id="total">0,00 €</div>
       <div class="year" id="yearlyTotal">0,00 € al año</div>
-    </div>
+    </section>
 
-    <div class="miniGrid">
-      <div class="mini">
-        <span>Próximo cobro</span>
+    <section class="grid">
+      <div class="card mini">
+        <div class="label">Próximo cobro</div>
         <strong id="nextCharge">—</strong>
       </div>
-      <div class="mini">
-        <span>Ahorro posible</span>
+      <div class="card mini">
+        <div class="label">Ahorro posible</div>
         <strong id="savingTotal">0,00 €</strong>
       </div>
-    </div>
+    </section>
 
-    <div class="card">
+    <section class="card">
       <h2>Detectá tus suscripciones</h2>
       <p>Pegá tus gastos o recordatorios y armamos tu lista.</p>
 
-      <textarea id="aiInput" rows="3" placeholder="Ej:
+      <textarea id="aiInput" placeholder="Ej:
 Spotify 11.99 mensual renovación 9/5
 Netflix 12.99 mensual
 Canva 120 anual"></textarea>
 
       <button class="primary" id="aiBtn">✨ Detectar mis suscripciones</button>
       <button class="secondary" id="manualOpenBtn">+ Agregar manualmente</button>
-    </div>
+    </section>
 
-    <div class="card" id="manualBox" style="display:none">
+    <section class="card" id="manualBox" style="display:none">
       <h2>Agregar suscripción</h2>
-      <input id="mName" placeholder="Nombre">
-      <input id="mPrice" type="number" step="0.01" placeholder="Precio">
-      <input id="mDate" type="date">
-
-      <div class="row">
-        <select id="mFrequency">
-          <option value="monthly">Mensual</option>
-          <option value="yearly">Anual</option>
-        </select>
-
-        <select id="mUsage">
-          <option value="alta">Uso alto</option>
-          <option value="media">Uso medio</option>
-          <option value="baja">Uso bajo</option>
-        </select>
-      </div>
-
+      <input id="mName" placeholder="Nombre" />
+      <input id="mPrice" type="number" step="0.01" placeholder="Precio" />
+      <input id="mDate" type="date" />
+      <select id="mFrequency">
+        <option value="monthly">Mensual</option>
+        <option value="yearly">Anual</option>
+      </select>
+      <select id="mUsage">
+        <option value="alta">Uso alto</option>
+        <option value="media">Uso medio</option>
+        <option value="baja">Uso bajo</option>
+      </select>
       <button class="primary" id="manualBtn">Guardar</button>
-    </div>
+    </section>
 
-    
+  </main>
 
-
-  </section>
-
-  <!-- LISTA -->
-  <section id="listScreen" class="screen">
-    <div class="card">
+  <main id="list" class="screen">
+    <section class="card">
       <h2>Suscripciones</h2>
-      <p id="count">0 activas</p>
-      <input id="search" placeholder="Buscar...">
-    </div>
+      <p><span id="count">0</span> activas</p>
+      <input id="search" placeholder="Buscar suscripción..." />
+    </section>
+    <section id="subsList"></section>
+  </main>
 
-    <div id="subsList"></div>
-  </section>
-
-  <!-- IA -->
-  <section id="aiScreen" class="screen">
-    <div class="card">
-      <h2>Asistente SubAlert</h2>
-      <p>Preguntame qué cancelar, cómo ahorrar o qué se renueva pronto.</p>
-
-      <button class="secondary" onclick="askAI('cancelar')">¿Qué debería cancelar?</button>
-      <button class="secondary" onclick="askAI('ahorrar')">¿Cómo puedo ahorrar?</button>
-      <button class="secondary" onclick="askAI('proximos')">¿Qué se cobra pronto?</button>
-
-      <input id="customQuestion" placeholder="O escribí tu pregunta...">
-      <button class="primary" onclick="askAI('custom')">Preguntar</button>
-
+  <main id="ai" class="screen">
+    <section class="card">
+      <h2>IA de ahorro</h2>
+      <p>Preguntale qué cancelar, mantener o revisar.</p>
+      <input id="advisorInput" placeholder="Ej: ¿Qué debería cancelar?" />
+      <button class="primary" id="advisorBtn">🤖 Analizar mis gastos</button>
       <div id="answer" class="answer"></div>
-    </div>
-  </section>
+    </section>
+
+    <section class="card">
+      <h2>Resumen inteligente</h2>
+      <div id="rankList" class="muted">Todavía no hay datos suficientes.</div>
+    </section>
+
+    <button class="secondary" id="notifyBtn">🔔 Activar notificaciones</button>
+    <button class="secondary" id="upcomingBtn">Ver próximos cobros</button>
+  </main>
 
 </div>
 
@@ -331,59 +228,15 @@ Canva 120 anual"></textarea>
   <button onclick="showTab('ai')">IA</button>
 </nav>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
 const supabaseUrl = "https://gicidxfdikujfomieisw.supabase.co";
 const supabaseKey = "sb_publishable_Q6g2eR3gSCsODYz2awemBQ_4lp7yhId";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-  
+
 let subs = [];
-async function loadFromSupabase() {
-  const { data, error } = await supabaseClient
-    .from("subscriptions")
-    .select("*")
-    .order("created_at", { ascending: false });
 
-  if (error) {
-    console.log("Error cargando:", error);
-    return;
-  }
-
-subs = data || [];
-window.subs = subs;
-alert("Cargadas desde Supabase: " + subs.length);
-render();
-}
 const $ = id => document.getElementById(id);
 
-async function save(){
-  localStorage.setItem("subs", JSON.stringify(subs));
-
-  if(typeof supabaseClient !== "undefined"){
-    const last = subs[0];
-
-    
-if(!last) return;
-
-const { error } = await supabaseClient
-  .from("subscriptions")
-  .insert([{
-    name: last.name,
-    price: last.price,
-    frequency: last.frequency,
-    date: last.date || null,
-    usage: last.usage || "media",
-    source: last.source || "app"
-  }]);
-
-if (error) {
-  alert("Error: " + error.message);
-} else {
-  alert("Guardado en Supabase ✅");
-
-    }
-  }
-}
 function money(n){
   return Number(n || 0).toLocaleString("es-ES", {
     minimumFractionDigits:2,
@@ -393,107 +246,100 @@ function money(n){
 
 function monthlyCost(s){
   const price = Number(s.price || 0);
-  if(s.frequency === "yearly") return price / 12;
-  return price;
+  return s.frequency === "yearly" ? price / 12 : price;
 }
 
 function daysUntil(dateStr){
   if(!dateStr) return null;
   const today = new Date();
-  const target = new Date(dateStr + "T00:00:00");
+  const date = new Date(dateStr);
   today.setHours(0,0,0,0);
-  return Math.ceil((target - today) / (1000*60*60*24));
+  date.setHours(0,0,0,0);
+  return Math.ceil((date - today) / (1000 * 60 * 60 * 24));
 }
 
-function formatDate(dateStr){
-  if(!dateStr) return "Sin fecha";
-  return new Date(dateStr + "T00:00:00").toLocaleDateString("es-ES", {
-    day:"numeric",
-    month:"short"
-  });
+function scoreSub(s){
+  let score = 0;
+  const monthly = monthlyCost(s);
+
+  if(monthly >= 15) score += 3;
+  else if(monthly >= 10) score += 2;
+  else score += 1;
+
+  if(s.usage === "baja") score += 4;
+  if(s.usage === "media") score += 2;
+  if(!s.date) score += 1;
+
+  return Math.min(score, 10);
 }
 
-function score(s){
-  let points = 0;
-  const m = monthlyCost(s);
-
-  if(s.usage === "baja") points += 5;
-  if(s.usage === "media") points += 2;
-  if(m > 10) points += 2;
-  if(m > 15) points += 2;
-  if(!s.date) points += 1;
-
-  return Math.min(points,10);
+function statusFor(s){
+  const score = scoreSub(s);
+  if(score >= 7) return {text:"🔴 Eliminar", cls:"red"};
+  if(score >= 4) return {text:"🟡 Revisar", cls:"yellow"};
+  return {text:"🟢 Mantener", cls:"green"};
 }
 
-function decision(s){
-  const sc = score(s);
-  if(sc >= 7) return {label:"Cancelar", cls:"red", icon:"🔴"};
-  if(sc >= 4) return {label:"Revisar", cls:"yellow", icon:"🟡"};
-  return {label:"Mantener", cls:"green", icon:"🟢"};
-}
+async function loadFromSupabase(){
+  const { data, error } = await supabaseClient
+    .from("subscriptions")
+    .select("*")
+    .order("created_at", { ascending:false });
 
-function nextDate(days){
-  const d = new Date();
-  d.setDate(d.getDate() + days);
-  return d.toISOString().split("T")[0];
-}
+  if(error){
+    alert("Error cargando Supabase: " + error.message);
+    return;
+  }
 
-function quickAdd(name){
-  const map = {
-    "Spotify": { price:11.99, frequency:"monthly", usage:"alta" },
-    "Netflix": { price:12.99, frequency:"monthly", usage:"media" },
-    "ChatGPT": { price:20, frequency:"monthly", usage:"media" },
-    "Canva": { price:120, frequency:"yearly", usage:"media" },
-    "Amazon Prime": { price:4.99, frequency:"monthly", usage:"media" },
-    "Disney+": { price:8.99, frequency:"monthly", usage:"media" },
-    "HBO Max": { price:9.99, frequency:"monthly", usage:"media" },
-    "Suno": { price:10, frequency:"monthly", usage:"media" },
-    "Moises": { price:5.99, frequency:"monthly", usage:"media" }
-  };
-
-  const data = map[name];
-  if(!data) return;
-
-  if(subs.some(s => s.name.toLowerCase() === name.toLowerCase())) return;
-
-  subs.unshift({
-    id: Date.now().toString(),
-    name,
-    price:data.price,
-    frequency:data.frequency,
-    usage:data.usage,
-    date: nextDate(data.frequency === "yearly" ? 365 : 30),
-    source:"Rápido"
-  });
-
-  save();
+  subs = data || [];
+  localStorage.setItem("subs", JSON.stringify(subs));
   render();
 }
 
-function parseDate(text){
-  const lower = text.toLowerCase();
-  const match = lower.match(/(\d{1,2})[\/\-](\d{1,2})/);
+async function save(last){
+  localStorage.setItem("subs", JSON.stringify(subs));
 
-  if(match){
-    const d = Number(match[1]);
-    const m = Number(match[2]) - 1;
-    return new Date(new Date().getFullYear(), m, d).toISOString().split("T")[0];
+  if(!last) return;
+
+  const { error } = await supabaseClient
+    .from("subscriptions")
+    .insert([{
+      name: last.name,
+      price: last.price,
+      frequency: last.frequency,
+      date: last.date || null,
+      usage: last.usage || "media",
+      source: last.source || "app"
+    }]);
+
+  if(error){
+    alert("Error: " + error.message);
+    return;
   }
 
-  return "";
+  await loadFromSupabase();
 }
 
 function cleanName(line){
   return line
-    .replace(/\d+[,.]?\d*/g,"")
-    .replace(/mensual|anual|renueva|renovación|renovacion|fecha|de|el|\/|\-/gi,"")
-    .replace(/eur|usd|€|\$/gi,"")
-    .trim()
-    .split(" ")
-    .filter(Boolean)
-    .slice(0,3)
-    .join(" ");
+    .replace(/\d+([,.]\d+)?/g,"")
+    .replace(/mensual|anual|renovación|renueva|el|de|mes|usd|eur|€/gi,"")
+    .replace(/\d{1,2}\/\d{1,2}/g,"")
+    .trim();
+}
+
+function parseDate(line){
+  const match = line.match(/(\d{1,2})\/(\d{1,2})/);
+  if(!match) return null;
+
+  const day = Number(match[1]);
+  const month = Number(match[2]) - 1;
+  const year = new Date().getFullYear();
+  const date = new Date(year, month, day);
+
+  if(date < new Date()) date.setFullYear(year + 1);
+
+  return date.toISOString().split("T")[0];
 }
 
 function parseAI(){
@@ -501,256 +347,245 @@ function parseAI(){
   if(!text) return;
 
   const lines = text.split("\n").filter(Boolean);
-  let added = 0;
+  const newSubs = [];
 
-  lines.forEach(line => {
-    const priceMatch = line.match(/(\d+[,.]?\d*)/);
-    
-
+  lines.forEach(line=>{
+    const priceMatch = line.match(/(\d+([,.]\d+)?)/);
+    const price = priceMatch ? Number(priceMatch[1].replace(",", ".")) : 0;
     const name = cleanName(line);
+
     if(!name) return;
 
-    if(subs.some(s => s.name.toLowerCase() === name.toLowerCase())) return;
+    const alreadyExists = subs.some(s => 
+      String(s.name).toLowerCase() === name.toLowerCase()
+    );
+
+    if(alreadyExists) return;
 
     const lower = line.toLowerCase();
     const frequency = lower.includes("anual") ? "yearly" : "monthly";
-    const price = priceMatch 
-  ? Number(priceMatch[1].replace(",", "."))
-  : 0;
-    subs.unshift({
-      id: Date.now().toString() + Math.random(),
+
+    newSubs.push({
       name,
       price,
       frequency,
+      date: parseDate(line),
       usage:"media",
-      date: parseDate(line) || nextDate(frequency === "yearly" ? 365 : 30),
       source:"IA"
     });
-
-    added++;
   });
 
+  if(!newSubs.length){
+    alert("No encontré suscripciones nuevas.");
+    return;
+  }
+
+  subs = [...newSubs, ...subs];
   $("aiInput").value = "";
-  save();
   render();
-  showAnswer(`Cargué ${added} suscripción/es.`);
+
+  newSubs.forEach(s => save(s));
 }
 
 function addManual(){
   const name = $("mName").value.trim();
-  const price = Number($("mPrice").value);
-  const date = $("mDate").value;
+  const price = Number($("mPrice").value || 0);
+  const date = $("mDate").value || null;
   const frequency = $("mFrequency").value;
   const usage = $("mUsage").value;
 
-  if(!name || !price) return;
+  if(!name){
+    alert("Poné un nombre.");
+    return;
+  }
 
-  subs.unshift({
-    id: Date.now().toString(),
-    name, price, date, frequency, usage, source:"Manual"
-  });
+  const sub = {
+    name,
+    price,
+    date,
+    frequency,
+    usage,
+    source:"manual"
+  };
+
+  subs.unshift(sub);
 
   $("mName").value = "";
   $("mPrice").value = "";
   $("mDate").value = "";
   $("manualBox").style.display = "none";
 
-  save();
   render();
+  save(sub);
 }
 
-function deleteSub(id){
+async function removeSub(id){
   subs = subs.filter(s => s.id !== id);
-  save();
   render();
-}
 
-function setUsage(id, usage){
-  subs = subs.map(s => s.id === id ? {...s, usage} : s);
-  save();
-  render();
+  if(id){
+    await supabaseClient.from("subscriptions").delete().eq("id", id);
+  }
 }
 
 function render(){
-  const total = subs.reduce((a,s)=>a + monthlyCost(s),0);
-  $("total").innerText = money(total);
-  $("yearlyTotal").innerText = money(total * 12) + " al año";
+  const search = ($("search")?.value || "").toLowerCase();
+  const filtered = subs.filter(s => 
+    String(s.name || "").toLowerCase().includes(search)
+  );
 
-  const totalEl = $("total");
-  if(total < 10) totalEl.style.color = "#4ade80";
-  else if(total <= 15) totalEl.style.color = "#facc15";
-  else totalEl.style.color = "#fb7185";
+  const total = subs.reduce((a,s)=>a + monthlyCost(s), 0);
+  const saving = subs
+    .filter(s => scoreSub(s) >= 4)
+    .reduce((a,s)=>a + monthlyCost(s), 0);
 
-  const next = [...subs]
-    .filter(s => daysUntil(s.date) !== null && daysUntil(s.date) >= 0)
-    .sort((a,b)=>daysUntil(a.date)-daysUntil(b.date))[0];
+  $("total").textContent = money(total);
+  $("yearlyTotal").textContent = money(total * 12) + " al año";
+  $("savingTotal").textContent = money(saving);
+  $("count").textContent = subs.length;
 
-  $("nextCharge").innerText = next ? `${next.name}` : "—";
+  const next = subs
+    .filter(s => s.date)
+    .sort((a,b)=> new Date(a.date) - new Date(b.date))[0];
 
-  const saving = subs.filter(s => score(s) >= 4)
-    .reduce((a,s)=>a + monthlyCost(s),0);
+  $("nextCharge").textContent = next ? next.name : "—";
 
-  $("savingTotal").innerText = money(saving);
-  $("count").innerText = `${subs.length} activas`;
-
-  const search = $("search").value.toLowerCase();
-  const filtered = subs.filter(s => s.name.toLowerCase().includes(search));
-
-  $("subsList").innerHTML = filtered.length ? filtered.map(s => {
-    const dec = decision(s);
+  $("subsList").innerHTML = filtered.map(s=>{
+    const status = statusFor(s);
     const d = daysUntil(s.date);
-    const renewal = d === null ? "Sin fecha" :
-      d === 0 ? "Hoy" :
-      d === 1 ? "Mañana" :
-      `En ${d} días · ${formatDate(s.date)}`;
+    const dateText = s.date 
+      ? `En ${d} días · ${new Date(s.date).toLocaleDateString("es-ES",{day:"numeric",month:"short"})}`
+      : "Sin fecha de renovación";
 
     return `
-      <article class="subCard">
+      <div class="subCard">
         <div class="subTop">
           <div>
-            <div class="subName">${s.name}</div>
-            <div class="muted">${renewal}</div>
+            <h3>${s.name}</h3>
+            <div class="muted">${dateText}</div>
           </div>
-          <div class="subPrice">${money(s.price)}<div class="muted">/${s.frequency === "yearly" ? "año" : "mes"}</div></div>
+          <div class="price">
+            ${money(s.price)}
+            <div>/mes</div>
+          </div>
         </div>
 
-        <div class="badge ${dec.cls}">${dec.icon} ${dec.label}</div>
-
-        <p><b>Mensual real:</b> ${money(monthlyCost(s))}</p>
-        <p><b>Score IA:</b> ${score(s)}/10</p>
+        <div class="status ${status.cls}">${status.text}</div>
+        <div><b>Mensual real:</b> ${money(monthlyCost(s))}</div>
+        <div><b>Score IA:</b> ${scoreSub(s)}/10</div>
 
         <div class="actions">
-          <button class="red" onclick="deleteSub('${s.id}')">Eliminar</button>
-          <button class="yellow" onclick="setUsage('${s.id}','media')">Revisar</button>
-          <button class="green" onclick="setUsage('${s.id}','alta')">Mantener</button>
+          <button onclick="removeSub(${s.id})">Eliminar</button>
+          <button>Revisar</button>
+          <button>Mantener</button>
         </div>
-      </article>
+      </div>
     `;
-  }).join("") : `<div class="empty">No hay suscripciones cargadas.</div>`;
+  }).join("");
 
-  markQuickButtons();
+  renderRank();
 }
 
-function markQuickButtons(){
-  document.querySelectorAll(".quickGrid button").forEach(btn => {
-    const label = btn.textContent.replace("✓","").trim();
-    const real = label === "Prime" ? "Amazon Prime" : label === "HBO" ? "HBO Max" : label;
-    const exists = subs.some(s => s.name.toLowerCase() === real.toLowerCase());
-
-    btn.textContent = exists ? "✓ " + label : label;
-    btn.classList.toggle("selected", exists);
-    btn.disabled = exists;
-  });
-}
-
-function showAnswer(text){
-  $("answer").style.display = "block";
-  $("answer").innerText = text;
-}
-
-function askAI(type){
+function renderRank(){
   if(!subs.length){
-    showAnswer("Todavía no cargaste suscripciones.");
+    $("rankList").textContent = "Todavía no hay datos suficientes.";
     return;
   }
 
-  const total = subs.reduce((a,s)=>a + monthlyCost(s),0);
-  const candidates = [...subs].filter(s=>score(s)>=4).sort((a,b)=>score(b)-score(a));
+  const top = [...subs]
+    .sort((a,b)=>monthlyCost(b)-monthlyCost(a))
+    .slice(0,3);
 
-  if(type === "proximos"){
-    const upcoming = [...subs]
-      .filter(s => daysUntil(s.date) !== null && daysUntil(s.date) <= 30)
-      .sort((a,b)=>daysUntil(a.date)-daysUntil(b.date));
+  const priority = [...subs]
+    .sort((a,b)=>scoreSub(b)-scoreSub(a))
+    .slice(0,3);
 
-    showAnswer(upcoming.length ?
-      upcoming.map(s=>`• ${s.name}: ${daysUntil(s.date) === 0 ? "hoy" : "en " + daysUntil(s.date) + " días"}`).join("\n")
-      : "No hay cobros próximos."
-    );
+  $("rankList").innerHTML = `
+    <b>Top gastos:</b><br><br>
+    ${top.map(s => `<b>${s.name}</b> — ${money(monthlyCost(s))}/mes`).join("<br>")}
+    <br><br>
+    <b>Prioridad de revisión:</b><br><br>
+    ${priority.map(s => `<b>${s.name}</b> — Score ${scoreSub(s)}/10`).join("<br>")}
+  `;
+}
+
+function askAI(question){
+  if(!subs.length){
+    $("answer").textContent = "Todavía no hay suscripciones cargadas.";
     return;
   }
 
-  if(!candidates.length){
-    showAnswer(`Pagás ${money(total)} al mes.\n\nNo veo cancelaciones urgentes.`);
-    return;
-  }
+  const worst = [...subs].sort((a,b)=>scoreSub(b)-scoreSub(a))[0];
+  const expensive = [...subs].sort((a,b)=>monthlyCost(b)-monthlyCost(a))[0];
 
-  if(type === "ahorrar"){
-    const possible = candidates.reduce((a,s)=>a + monthlyCost(s),0);
-    showAnswer(`Podrías revisar ${candidates.length} suscripción/es.\n\nAhorro potencial: ${money(possible)} al mes.`);
-    return;
-  }
+  $("answer").textContent =
+`Revisaría primero ${worst.name}.
 
-  const first = candidates[0];
-  showAnswer(`Primero revisaría: ${first.name}\n\nScore IA: ${score(first)}/10\nAhorro posible: ${money(monthlyCost(first))} al mes.`);
+Motivo:
+- Score IA: ${scoreSub(worst)}/10
+- Coste mensual real: ${money(monthlyCost(worst))}
+- Gasto más alto actual: ${expensive.name} (${money(monthlyCost(expensive))}/mes)
+
+Sugerencia:
+Si no la usás seguido, pausala o cancelala este mes.`;
 }
 
 function showUpcoming(){
-  askAI("proximos");
+  const upcoming = subs
+    .filter(s => s.date)
+    .sort((a,b)=>new Date(a.date)-new Date(b.date))
+    .slice(0,5);
+
+  $("answer").textContent = upcoming.length
+    ? upcoming.map(s => `${s.name}: ${new Date(s.date).toLocaleDateString("es-ES")}`).join("\n")
+    : "No hay fechas de renovación cargadas.";
+
   showTab("ai");
 }
 
 async function activateNotifications(){
   if(!("Notification" in window)){
-    showAnswer("Este dispositivo no soporta notificaciones web.");
+    $("answer").textContent = "Este dispositivo no soporta notificaciones.";
     return;
   }
 
   const permission = await Notification.requestPermission();
-  if(permission !== "granted"){
-    showAnswer("No se activaron las notificaciones.");
-    return;
+
+  if(permission === "granted"){
+    new Notification("SubAlert activado 🔔", {
+      body:"Las notificaciones ya están listas."
+    });
+    $("answer").textContent = "Notificaciones activadas correctamente.";
+  } else {
+    $("answer").textContent = "No se activaron las notificaciones.";
   }
 
-  const reg = await navigator.serviceWorker.ready;
-  reg.showNotification("SubAlert activado 🔔", {
-    body:"Las notificaciones ya están listas.",
-    icon:"/icon-192.png"
-  });
-
-  showAnswer("Notificaciones activadas correctamente.");
+  showTab("ai");
 }
 
-function showTab(tab){
+function showTab(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+
   document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-
-  if(tab === "home"){
-    $("homeScreen").classList.add("active");
-    document.querySelectorAll(".nav button")[0].classList.add("active");
-  }
-
-  if(tab === "list"){
-    $("listScreen").classList.add("active");
-    document.querySelectorAll(".nav button")[1].classList.add("active");
-  }
-
-  if(tab === "ai"){
-    $("aiScreen").classList.add("active");
-    document.querySelectorAll(".nav button")[2].classList.add("active");
-  }
+  [...document.querySelectorAll(".nav button")]
+    .find(b => b.textContent.toLowerCase().includes(id === "home" ? "inicio" : id))
+    ?.classList.add("active");
 
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
 $("aiBtn").addEventListener("click", parseAI);
-$("manualOpenBtn").addEventListener("click", () => {
+$("manualOpenBtn").addEventListener("click", ()=>{
   $("manualBox").style.display = $("manualBox").style.display === "none" ? "block" : "none";
 });
 $("manualBtn").addEventListener("click", addManual);
 $("search").addEventListener("input", render);
+$("advisorBtn").addEventListener("click", ()=>askAI($("advisorInput").value));
 $("notifyBtn").addEventListener("click", activateNotifications);
 $("upcomingBtn").addEventListener("click", showUpcoming);
 
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("/service-worker.js").catch(console.error);
-}
-
-try{
-  alert("La app llegó al final del script");
-  loadFromSupabase();
-}catch(e){
-  document.body.innerHTML = "<pre style='color:red;padding:20px'>" + e.message + "</pre>";
-}
+loadFromSupabase();
 </script>
 </body>
 </html>
