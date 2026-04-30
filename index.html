@@ -51,6 +51,19 @@
 .cancelar { background:#3a0f0f; color:#f87171; }
 .mantener { background:#0f2a1b; color:#4ade80; }
 .revisar { background:#3a300f; color:#facc15; }
+    .cancel-btn {
+  display: block;
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
+  border: none;
+  border-radius: 16px;
+  background: #ff4d4d;
+  color: white;
+  font-weight: 900;
+  font-size: 17px;
+  cursor: pointer;
+}
   </style>
 </head>
 
@@ -486,6 +499,14 @@ document.addEventListener("DOMContentLoaded",()=>{
 
   loadFromSupabase();
 });
+  function cancelService(service) {
+  const links = {
+    Netflix: "https://help.netflix.com/es/node/407",
+    Spotify: "https://support.spotify.com/es/article/cancel-premium/"
+  };
+
+  window.open(links[service], "_blank");
+}
 </script>
 </body>
 </html>
