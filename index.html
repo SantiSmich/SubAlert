@@ -501,7 +501,13 @@ $("savingTotal").textContent = saved.toFixed(2) + " €";
 }
 
 if (localStorage.getItem("cancelled_Spotify")) {
-  console.log("Spotify ya cancelado");
+  btn.textContent = "Spotify ya cancelado ✅";
+  btn.disabled = true;
+  btn.className = "cancel-btn disabled-btn";
+} else {
+  btn.textContent = "Cancelar Spotify";
+  btn.className = "cancel-btn";
+  btn.onclick = () => cancelService("Spotify");
 }
   $("aiBtn").addEventListener("click",parseAI);
   $("manualOpenBtn").addEventListener("click",()=>{
