@@ -39,36 +39,37 @@
     .nav{position:fixed;left:18px;right:18px;bottom:18px;max-width:520px;margin:auto;display:flex;justify-content:space-around;padding:14px;border-radius:26px;background:rgba(13,7,25,.96);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(12px);z-index:20}
     .nav button{background:none;border:0;color:#d8ccff;font-size:18px;font-weight:900}
     .nav button.active{color:white}
-    .badge {
-  display:inline-block;
-  padding:4px 10px;
-  border-radius:999px;
-  font-weight:800;
-  font-size:14px;
-  margin-right:6px;
-}
 
-.cancelar { background:#3a0f0f; color:#f87171; }
-.mantener { background:#0f2a1b; color:#4ade80; }
-.revisar { background:#3a300f; color:#facc15; }
+    .badge {
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:14px;
+      margin-right:6px;
+    }
+
+    .cancelar { background:#3a0f0f; color:#f87171; }
+
     .cancel-btn {
-      .disabled-btn {
-  background: #14532d;
-  opacity: 0.8;
-  cursor: not-allowed;
-}
-  display: block;
-  width: 100%;
-  margin-top: 18px;
-  padding: 14px;
-  border: none;
-  border-radius: 16px;
-  background: #ff4d4d;
-  color: white;
-  font-weight: 900;
-  font-size: 17px;
-  cursor: pointer;
-}
+      display:block;
+      width:100%;
+      margin-top:18px;
+      padding:14px;
+      border:none;
+      border-radius:16px;
+      background:#ff4d4d;
+      color:white;
+      font-weight:900;
+      font-size:17px;
+      cursor:pointer;
+    }
+
+    .disabled-btn {
+      background:#14532d;
+      opacity:0.8;
+      cursor:not-allowed;
+    }
   </style>
 </head>
 
@@ -91,18 +92,20 @@
         <div class="label">Próximo cobro</div>
         <strong id="nextCharge">—</strong>
       </div>
+
       <div class="card mini">
         <div class="label">Ahorro posible</div>
         <strong id="savingTotal">0,00 €</strong>
         <button id="shareBtn" class="primary" style="margin-top:10px;">
-  💸 Compartir mi ahorro
-</button>
+          💸 Compartir mi ahorro
+        </button>
       </div>
     </section>
 
     <section class="card">
       <h2>Detectá tus suscripciones</h2>
       <p>Pegá tus gastos o recordatorios y armamos tu lista.</p>
+
       <textarea id="aiInput" placeholder="Ej:
 Spotify 11.99 mensual renovación 9/5
 Netflix 6.99 mensual
@@ -117,15 +120,18 @@ Canva 120 anual"></textarea>
       <input id="mName" placeholder="Nombre" />
       <input id="mPrice" type="number" step="0.01" placeholder="Precio" />
       <input id="mDate" type="date" />
+
       <select id="mFrequency">
         <option value="monthly">Mensual</option>
         <option value="yearly">Anual</option>
       </select>
+
       <select id="mUsage">
         <option value="alta">Uso alto</option>
         <option value="media">Uso medio</option>
         <option value="baja">Uso bajo</option>
       </select>
+
       <button class="primary" id="manualBtn">Guardar</button>
     </section>
   </main>
@@ -136,13 +142,14 @@ Canva 120 anual"></textarea>
       <p><span id="count">0</span> activas</p>
       <input id="search" placeholder="Buscar suscripción..." />
     </section>
+
     <section id="subsList"></section>
   </main>
 
   <main id="ai" class="screen">
     <section class="card">
       <h2>IA de ahorro</h2>
-      <p>Preguntale qué cancelar, mantener o revisar.</p>
+      <p>Preguntale qué cancelar.</p>
       <input id="advisorInput" placeholder="Ej: ¿Qué debería cancelar?" />
       <button class="primary" id="advisorBtn">🤖 Analizar mis gastos</button>
       <div id="answer" class="answer">Esperando pregunta...</div>
@@ -175,7 +182,10 @@ let subs = [];
 const $ = id => document.getElementById(id);
 
 function money(n){
-  return Number(n || 0).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2}) + " €";
+  return Number(n || 0).toLocaleString("es-ES", {
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  }) + " €";
 }
 
 function monthlyCost(s){
@@ -195,27 +205,30 @@ function daysUntil(dateStr){
 function scoreSub(s){
   let score = 0;
   const m = monthlyCost(s);
+
   if(m >= 15) score += 3;
   else if(m >= 8) score += 2;
   else score += 1;
+
   if(s.usage === "baja") score += 4;
   if(s.usage === "media") score += 2;
   if(!s.date) score += 1;
+
   return Math.min(score,10);
 }
 
 function statusFor(s){
   const score = scoreSub(s);
-  if(score >= 7) return {text:"🔴 Eliminar",cls:"red"};
-  if(score >= 4) return {text:"🟡 Revisar",cls:"yellow"};
-  return {text:"🟢 Mantener",cls:"green"};
+  if(score >= 7) return {text:"🔴 Cancelar", cls:"red"};
+  if(score >= 4) return {text:"🟡 Revisar", cls:"yellow"};
+  return {text:"🟢 Mantener", cls:"green"};
 }
 
 async function loadFromSupabase(){
   const { data, error } = await supabaseClient
     .from("subscriptions")
     .select("*")
-    .order("created_at",{ascending:false});
+    .order("created_at", { ascending:false });
 
   if(error){
     $("answer").textContent = "Error cargando Supabase: " + error.message;
@@ -257,11 +270,14 @@ function cleanName(line){
 function parseDate(line){
   const match = line.match(/(\d{1,2})\/(\d{1,2})/);
   if(!match) return null;
+
   const day = Number(match[1]);
-  const month = Number(match[2])-1;
+  const month = Number(match[2]) - 1;
   const year = new Date().getFullYear();
-  const date = new Date(year,month,day);
-  if(date < new Date()) date.setFullYear(year+1);
+  const date = new Date(year, month, day);
+
+  if(date < new Date()) date.setFullYear(year + 1);
+
   return date.toISOString().split("T")[0];
 }
 
@@ -272,10 +288,11 @@ function parseAI(){
   const lines = text.split("\n").filter(Boolean);
   let added = 0;
 
-  lines.forEach(line=>{
+  lines.forEach(line => {
     const priceMatch = line.match(/(\d+([,.]\d+)?)/);
     const price = priceMatch ? Number(priceMatch[1].replace(",",".")) : 0;
     const name = cleanName(line);
+
     if(!name || !price) return;
 
     const exists = subs.some(s => String(s.name).toLowerCase() === name.toLowerCase());
@@ -303,6 +320,7 @@ function parseAI(){
 function addManual(){
   const name = $("mName").value.trim();
   const price = Number($("mPrice").value || 0);
+
   if(!name || !price) return alert("Completá nombre y precio.");
 
   const sub = {
@@ -324,7 +342,7 @@ function addManual(){
 
 async function removeSub(id){
   if(!id) return;
-  await supabaseClient.from("subscriptions").delete().eq("id",id);
+  await supabaseClient.from("subscriptions").delete().eq("id", id);
   await loadFromSupabase();
 }
 
@@ -332,21 +350,27 @@ function render(){
   const search = ($("search")?.value || "").toLowerCase();
   const filtered = subs.filter(s => String(s.name || "").toLowerCase().includes(search));
 
-  const total = subs.reduce((a,s)=>a+monthlyCost(s),0);
-  const saving = subs.filter(s=>scoreSub(s)>=4).reduce((a,s)=>a+monthlyCost(s),0);
+  const total = subs.reduce((a,s) => a + monthlyCost(s), 0);
+
+  const saved = Number(localStorage.getItem("totalSaving") || 0);
 
   $("total").textContent = money(total);
-  $("yearlyTotal").textContent = money(total*12) + " al año";
-  $("savingTotal").textContent = money(saving);
+  $("yearlyTotal").textContent = money(total * 12) + " al año";
+  $("savingTotal").textContent = money(saved);
   $("count").textContent = subs.length;
 
-  const next = subs.filter(s=>s.date).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];
+  const next = subs
+    .filter(s => s.date)
+    .sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+
   $("nextCharge").textContent = next ? next.name : "—";
 
-  $("subsList").innerHTML = filtered.map(s=>{
+  $("subsList").innerHTML = filtered.map(s => {
     const status = statusFor(s);
     const d = daysUntil(s.date);
-    const dateText = s.date ? `En ${d} días · ${new Date(s.date).toLocaleDateString("es-ES",{day:"numeric",month:"short"})}` : "Sin fecha de renovación";
+    const dateText = s.date
+      ? `En ${d} días · ${new Date(s.date).toLocaleDateString("es-ES",{day:"numeric",month:"short"})}`
+      : "Sin fecha de renovación";
 
     return `
       <div class="subCard">
@@ -357,13 +381,13 @@ function render(){
           </div>
           <div class="price">${money(s.price)}<div>/mes</div></div>
         </div>
+
         <div class="status ${status.cls}">${status.text}</div>
         <div><b>Mensual real:</b> ${money(monthlyCost(s))}</div>
         <div><b>Score IA:</b> ${scoreSub(s)}/10</div>
+
         <div class="actions">
           <button onclick="removeSub(${s.id})">Eliminar</button>
-          <button>Revisar</button>
-          <button>Mantener</button>
         </div>
       </div>
     `;
@@ -378,14 +402,14 @@ function renderRank(){
     return;
   }
 
-  const top = [...subs].sort((a,b)=>monthlyCost(b)-monthlyCost(a)).slice(0,3);
-  const priority = [...subs].sort((a,b)=>scoreSub(b)-scoreSub(a)).slice(0,3);
+  const top = [...subs].sort((a,b) => monthlyCost(b) - monthlyCost(a)).slice(0,3);
+  const priority = [...subs].sort((a,b) => scoreSub(b) - scoreSub(a)).slice(0,3);
 
   $("rankList").innerHTML =
     `<b>Top gastos:</b><br><br>` +
-    top.map(s=>`<b>${s.name}</b> — ${money(monthlyCost(s))}/mes`).join("<br>") +
+    top.map(s => `<b>${s.name}</b> — ${money(monthlyCost(s))}/mes`).join("<br>") +
     `<br><br><b>Prioridad de revisión:</b><br><br>` +
-    priority.map(s=>`<b>${s.name}</b> — Score ${scoreSub(s)}/10`).join("<br>");
+    priority.map(s => `<b>${s.name}</b> — Score ${scoreSub(s)}/10`).join("<br>");
 }
 
 async function askAI(question){
@@ -397,7 +421,7 @@ async function askAI(question){
   $("answer").textContent = "Analizando...";
 
   try{
-    const res = await fetch(aiFunctionUrl,{
+    const res = await fetch(aiFunctionUrl, {
       method:"POST",
       headers:{
         "Content-Type":"application/json"
@@ -405,7 +429,7 @@ async function askAI(question){
       body:JSON.stringify({
         subs,
         userName: "Santiago",
-        question: question || "Analizá mis suscripciones y decime qué cancelar, revisar o mantener."
+        question: question || "Analizá mis suscripciones y decime qué cancelar."
       })
     });
 
@@ -431,43 +455,46 @@ async function askAI(question){
       .replace(/\*\*/g, "")
       .replace(/###/g, "<br><b>")
       .replace(/Recomendación:/g, "</b>Recomendación:")
-      .replace(/Cancelar/gi, '<span class="badge cancelar">Cancelar</span>')
-     
+      .replace(/Cancelar/gi, '<span class="badge cancelar">Cancelar</span>');
 
     answerEl.innerHTML = formatted;
 
-    if (formatted.toLowerCase().includes("netflix")) {
-      const btn = document.createElement("button");
-    if (LocalStorage.getItem("cancelled_Netflix")) {
-  btn.textContent = "Netflix ya cancelado ✅";
-  btn.disabled = true;
-  btn.className = "cancel-btn disabled-btn";
-} else {
-  btn.textContent = "Cancelar Netflix";
-  btn.className = "cancel-btn";
-  btn.onclick = () => cancelService("Netflix");
-}
-      answerEl.appendChild(btn);
-    }
-
-    if (formatted.toLowerCase().includes("spotify")) {
-      const btn = document.createElement("button");
-      btn.textContent = "Cancelar Spotify";
-      btn.className = "cancel-btn";
-      btn.onclick = () => cancelService("Spotify");
-      answerEl.appendChild(btn);
-    }
+    addCancelButtonIfNeeded("Netflix", formatted, answerEl);
+    addCancelButtonIfNeeded("Spotify", formatted, answerEl);
 
   }catch(e){
     $("answer").textContent = "Error conectando con IA: " + e.message;
   }
 }
 
+function addCancelButtonIfNeeded(service, formatted, answerEl){
+  if(!formatted.toLowerCase().includes(service.toLowerCase())) return;
+
+  const btn = document.createElement("button");
+
+  if(localStorage.getItem("cancelled_" + service)){
+    btn.textContent = service + " ya cancelado ✅";
+    btn.disabled = true;
+    btn.className = "cancel-btn disabled-btn";
+  } else {
+    btn.textContent = "Cancelar " + service;
+    btn.className = "cancel-btn";
+    btn.onclick = () => cancelService(service);
+  }
+
+  answerEl.appendChild(btn);
+}
+
 function showUpcoming(){
-  const upcoming = subs.filter(s=>s.date).sort((a,b)=>new Date(a.date)-new Date(b.date)).slice(0,5);
+  const upcoming = subs
+    .filter(s => s.date)
+    .sort((a,b) => new Date(a.date) - new Date(b.date))
+    .slice(0,5);
+
   $("answer").textContent = upcoming.length
-    ? upcoming.map(s=>`${s.name}: ${new Date(s.date).toLocaleDateString("es-ES")}`).join("\n")
+    ? upcoming.map(s => `${s.name}: ${new Date(s.date).toLocaleDateString("es-ES")}`).join("\n")
     : "No hay fechas de renovación cargadas.";
+
   showTab("ai");
 }
 
@@ -479,6 +506,7 @@ async function activateNotifications(){
   }
 
   const permission = await Notification.requestPermission();
+
   $("answer").textContent = permission === "granted"
     ? "Notificaciones activadas correctamente."
     : "No se activaron las notificaciones.";
@@ -487,58 +515,19 @@ async function activateNotifications(){
 }
 
 function showTab(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   $(id).classList.add("active");
 
-  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-  if(id==="home") $("navHome").classList.add("active");
-  if(id==="list") $("navList").classList.add("active");
-  if(id==="ai") $("navAI").classList.add("active");
+  document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
 
-  window.scrollTo({top:0,behavior:"smooth"});
+  if(id === "home") $("navHome").classList.add("active");
+  if(id === "list") $("navList").classList.add("active");
+  if(id === "ai") $("navAI").classList.add("active");
+
+  window.scrollTo({top:0, behavior:"smooth"});
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
-  const saved = Number(localStorage.getItem("totalSaving") || 0);
-$("savingTotal").textContent = saved.toFixed(2) + " €";
-  if (localStorage.getItem("cancelled_Netflix")) {
-  console.log("Netflix ya cancelado");
-}
-
-if (localStorage.getItem("cancelled_Spotify")) {
-  btn.textContent = "Spotify ya cancelado ✅";
-  btn.disabled = true;
-  btn.className = "cancel-btn disabled-btn";
-} else {
-  btn.textContent = "Cancelar Spotify";
-  btn.className = "cancel-btn";
-  btn.onclick = () => cancelService("Spotify");
-}
-  $("aiBtn").addEventListener("click",parseAI);
-  $("manualOpenBtn").addEventListener("click",()=>{
-    $("manualBox").style.display = $("manualBox").style.display === "none" ? "block" : "none";
-  });
-  $("manualBtn").addEventListener("click",addManual);
-  $("search").addEventListener("input",render);
-  $("advisorBtn").addEventListener("click",()=>askAI($("advisorInput").value));
-  $("notifyBtn").addEventListener("click",activateNotifications);
-  $("upcomingBtn").addEventListener("click",showUpcoming);
-
-  $("navHome").addEventListener("click",()=>showTab("home"));
-  $("navList").addEventListener("click",()=>showTab("list"));
-  $("navAI").addEventListener("click",()=>showTab("ai"));
-$("shareBtn").addEventListener("click", () => {
-  const saved = Number(localStorage.getItem("totalSaving") || 0);
-
-  const text = `Estoy ahorrando ${saved.toFixed(2)}€ al mes usando SubAlert 💸`;
-
-  navigator.clipboard.writeText(text);
-
-  alert("Texto copiado. Compartilo 😏");
-});
-  loadFromSupabase();
-});
- function cancelService(service) {
+function cancelService(service){
   const links = {
     Netflix: "https://help.netflix.com/es/node/407",
     Spotify: "https://support.spotify.com/es/article/cancel-premium/"
@@ -549,11 +538,11 @@ $("shareBtn").addEventListener("click", () => {
     Spotify: 11.99
   };
 
-  if (localStorage.getItem("cancelled_" + service)) {
-  alert(`${service} ya figura como cancelado en SubAlert. No sumamos el ahorro otra vez.`);
-  window.open(links[service], "_blank");
-  return;
-}
+  if(localStorage.getItem("cancelled_" + service)){
+    alert(`${service} ya figura como cancelado en SubAlert. No sumamos el ahorro otra vez.`);
+    window.open(links[service], "_blank");
+    return;
+  }
 
   const currentSaving = Number(localStorage.getItem("totalSaving") || 0);
   const newSaving = currentSaving + (prices[service] || 0);
@@ -561,12 +550,44 @@ $("shareBtn").addEventListener("click", () => {
   localStorage.setItem("totalSaving", newSaving);
   localStorage.setItem("cancelled_" + service, "true");
 
-  $("savingTotal").textContent = newSaving.toFixed(2) + " €";
+  $("savingTotal").textContent = money(newSaving);
 
-  alert(`Perfecto. Si cancelás ${service}, podrías ahorrar ${prices[service]}€ al mes.`);
+  alert(`Perfecto. Si cancelás ${service}, podrías ahorrar ${money(prices[service])} al mes.`);
 
   window.open(links[service], "_blank");
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = Number(localStorage.getItem("totalSaving") || 0);
+  $("savingTotal").textContent = money(saved);
+
+  $("aiBtn").addEventListener("click", parseAI);
+
+  $("manualOpenBtn").addEventListener("click", () => {
+    $("manualBox").style.display =
+      $("manualBox").style.display === "none" ? "block" : "none";
+  });
+
+  $("manualBtn").addEventListener("click", addManual);
+  $("search").addEventListener("input", render);
+  $("advisorBtn").addEventListener("click", () => askAI($("advisorInput").value));
+  $("notifyBtn").addEventListener("click", activateNotifications);
+  $("upcomingBtn").addEventListener("click", showUpcoming);
+
+  $("navHome").addEventListener("click", () => showTab("home"));
+  $("navList").addEventListener("click", () => showTab("list"));
+  $("navAI").addEventListener("click", () => showTab("ai"));
+
+  $("shareBtn").addEventListener("click", () => {
+    const saved = Number(localStorage.getItem("totalSaving") || 0);
+    const text = `Estoy ahorrando ${money(saved)} al mes usando SubAlert 💸`;
+
+    navigator.clipboard.writeText(text);
+    alert("Texto copiado. Compartilo 😏");
+  });
+
+  loadFromSupabase();
+});
 </script>
 </body>
 </html>
