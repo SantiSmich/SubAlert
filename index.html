@@ -433,9 +433,15 @@ async function askAI(question){
 
     if (formatted.toLowerCase().includes("netflix")) {
       const btn = document.createElement("button");
-      btn.textContent = "Cancelar Netflix";
-      btn.className = "cancel-btn";
-      btn.onclick = () => cancelService("Netflix");
+     if (localStorage.getItem("cancelled_Netflix")) {
+  btn.textContent = "Netflix ya cancelado ✅";
+  btn.disabled = true;
+  btn.className = "cancel-btn disabled-btn";
+} else {
+  btn.textContent = "Cancelar Netflix";
+  btn.className = "cancel-btn";
+  btn.onclick = () => cancelService("Netflix");
+}
       answerEl.appendChild(btn);
     }
 
