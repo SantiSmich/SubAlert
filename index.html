@@ -392,7 +392,9 @@ async function askAI(question){
 
   $("answer").innerHTML = (data.answer || "Sin respuesta")
   .replace(/\n/g, "<br>")
-  .replace(/\*\*/g, "");
+  .replace(/\*\*/g, "")
+  .replace(/###/g, "<br><b>")
+  .replace(/Recomendación:/g, "</b>Recomendación:");
   }catch(e){
     $("answer").textContent = "Error conectando con IA: " + e.message;
   }
