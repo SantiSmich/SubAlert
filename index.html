@@ -366,11 +366,9 @@ async function askAI(question){
   try{
     const res = await fetch(aiFunctionUrl,{
       method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "apikey":supabaseKey,
-        "Authorization":"Bearer " + supabaseKey
-      },
+     headers:{
+  "Content-Type":"application/json"
+},
       body:JSON.stringify({
         subs,
         question: question || "Analizá mis suscripciones y decime qué cancelar, revisar o mantener."
