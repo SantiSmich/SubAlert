@@ -402,7 +402,9 @@ async function askAI(question){
       return;
     }
 
-  $("answer").innerHTML = (data.answer || "Sin respuesta")
+ const answerEl = $("answer");
+
+let formatted = (data.answer || "Sin respuesta")
   .replace(/\n/g, "<br>")
   .replace(/\*\*/g, "")
   .replace(/###/g, "<br><b>")
@@ -410,9 +412,26 @@ async function askAI(question){
   .replace(/Cancelar/gi, '<span class="badge cancelar">Cancelar</span>')
   .replace(/Mantener/gi, '<span class="badge mantener">Mantener</span>')
   .replace(/Revisar/gi, '<span class="badge revisar">Revisar</span>');
-  }catch(e){
-    $("answer").textContent = "Error conectando con IA: " + e.message;
-  }
+
+// Mostrar texto
+answerEl.innerHTML = formatted;
+
+// 👉 DETECTAR SI HAY QUE CANCELAR
+if (formatted.toLowerCase().includes("cancelar netflix")) {
+  const btn = document.createElement("button");
+  btn.textContent = "Cancelar Netflix";
+  btn.className = "cancel-btn";
+  btn.onclick = () => cancelService("Netflix");
+  answerEl.appendChild(btn);
+}
+
+if (formatted.toLowerCase().includes("cancelar spotify")) {
+  const btn = document.createElement("button");
+  btn.textContent = "Cancelar Spotify";
+  btn.className = "cancel-btn";
+  btn.onclick = () => cancelService("Spotify");
+  answerEl.appendChild(btn);
+}
 }
 
 function showUpcoming(){
