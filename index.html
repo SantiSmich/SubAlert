@@ -366,8 +366,9 @@ async function askAI(question){
   try{
     const res = await fetch(aiFunctionUrl,{
       method:"POST",
-     headers:{
-  "Content-Type":"application/json"
+    headers:{
+  "Content-Type":"application/json",
+  "Authorization": "Bearer " + supabaseKey
 },
       body:JSON.stringify({
         subs,
