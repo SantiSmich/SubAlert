@@ -504,11 +504,19 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
   function cancelService(service) {
   const links = {
-    Netflix: "https://help.netflix.com/es/node/407",
-    Spotify: "https://support.spotify.com/es/article/cancel-premium/"
+    Netflix: { url: "https://help.netflix.com/es/node/407", price: 6.99 },
+    Spotify: { url: "https://support.spotify.com/es/article/cancel-premium/", price: 11.99 }
   };
 
-  window.open(links[service], "_blank");
+  const item = links[service];
+
+  if (!item) return;
+
+  localStorage.setItem("lastSaving", item.price);
+
+  alert(`Perfecto. Si cancelás ${service}, podrías ahorrar ${item.price}€ al mes.`);
+
+  window.open(item.url, "_blank");
 }
 </script>
 </body>
