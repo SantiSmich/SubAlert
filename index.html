@@ -533,10 +533,10 @@ $("shareBtn").addEventListener("click", () => {
   };
 
   if (localStorage.getItem("cancelled_" + service)) {
-    alert(`El ahorro de ${service} ya fue registrado.`);
-    window.open(links[service], "_blank");
-    return;
-  }
+  alert(`${service} ya figura como cancelado en SubAlert. No sumamos el ahorro otra vez.`);
+  window.open(links[service], "_blank");
+  return;
+}
 
   const currentSaving = Number(localStorage.getItem("totalSaving") || 0);
   const newSaving = currentSaving + (prices[service] || 0);
