@@ -391,11 +391,12 @@ async function askAI(question){
   try{
     const res = await fetch(aiFunctionUrl,{
       method:"POST",
-    headers:{
-  "Content-Type":"application/json"
-},
+      headers:{
+        "Content-Type":"application/json"
+      },
       body:JSON.stringify({
         subs,
+        userName: "Santiago",
         question: question || "Analizá mis suscripciones y decime qué cancelar, revisar o mantener."
       })
     });
@@ -415,36 +416,38 @@ async function askAI(question){
       return;
     }
 
- const answerEl = $("answer");
+    const answerEl = $("answer");
 
-let formatted = (data.answer || "Sin respuesta")
-  .replace(/\n/g, "<br>")
-  .replace(/\*\*/g, "")
-  .replace(/###/g, "<br><b>")
-  .replace(/Recomendación:/g, "</b>Recomendación:")
-  .replace(/Cancelar/gi, '<span class="badge cancelar">Cancelar</span>')
-  .replace(/Mantener/gi, '<span class="badge mantener">Mantener</span>')
-  .replace(/Revisar/gi, '<span class="badge revisar">Revisar</span>');
+    let formatted = (data.answer || "Sin respuesta")
+      .replace(/\n/g, "<br>")
+      .replace(/\*\*/g, "")
+      .replace(/###/g, "<br><b>")
+      .replace(/Recomendación:/g, "</b>Recomendación:")
+      .replace(/Cancelar/gi, '<span class="badge cancelar">Cancelar</span>')
+      .replace(/Mantener/gi, '<span class="badge mantener">Mantener</span>')
+      .replace(/Revisar/gi, '<span class="badge revisar">Revisar</span>');
 
-// Mostrar texto
-answerEl.innerHTML = formatted;
+    answerEl.innerHTML = formatted;
 
-// 👉 DETECTAR SI HAY QUE CANCELAR
-if (formatted.toLowerCase().includes("cancelar netflix")) {
-  const btn = document.createElement("button");
-  btn.textContent = "Cancelar Netflix";
-  btn.className = "cancel-btn";
-  btn.onclick = () => cancelService("Netflix");
-  answerEl.appendChild(btn);
-}
+    if (formatted.toLowerCase().includes("netflix")) {
+      const btn = document.createElement("button");
+      btn.textContent = "Cancelar Netflix";
+      btn.className = "cancel-btn";
+      btn.onclick = () => cancelService("Netflix");
+      answerEl.appendChild(btn);
+    }
 
-if (formatted.toLowerCase().includes("cancelar spotify")) {
-  const btn = document.createElement("button");
-  btn.textContent = "Cancelar Spotify";
-  btn.className = "cancel-btn";
-  btn.onclick = () => cancelService("Spotify");
-  answerEl.appendChild(btn);
-}
+    if (formatted.toLowerCase().includes("spotify")) {
+      const btn = document.createElement("button");
+      btn.textContent = "Cancelar Spotify";
+      btn.className = "cancel-btn";
+      btn.onclick = () => cancelService("Spotify");
+      answerEl.appendChild(btn);
+    }
+
+  }catch(e){
+    $("answer").textContent = "Error conectando con IA: " + e.message;
+  }
 }
 
 function showUpcoming(){
