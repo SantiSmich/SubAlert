@@ -89,6 +89,9 @@
       <div class="card mini">
         <div class="label">Ahorro posible</div>
         <strong id="savingTotal">0,00 €</strong>
+        <button id="shareBtn" class="primary" style="margin-top:10px;">
+  💸 Compartir mi ahorro
+</button>
       </div>
     </section>
 
@@ -500,7 +503,15 @@ $("savingTotal").textContent = saved.toFixed(2) + " €";
   $("navHome").addEventListener("click",()=>showTab("home"));
   $("navList").addEventListener("click",()=>showTab("list"));
   $("navAI").addEventListener("click",()=>showTab("ai"));
+$("shareBtn").addEventListener("click", () => {
+  const saved = Number(localStorage.getItem("totalSaving") || 0);
 
+  const text = `Estoy ahorrando ${saved.toFixed(2)}€ al mes usando SubAlert 💸`;
+
+  navigator.clipboard.writeText(text);
+
+  alert("Texto copiado. Compartilo 😏");
+});
   loadFromSupabase();
 });
  function cancelService(service) {
