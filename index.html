@@ -394,7 +394,10 @@ async function askAI(question){
   .replace(/\n/g, "<br>")
   .replace(/\*\*/g, "")
   .replace(/###/g, "<br><b>")
-  .replace(/Recomendación:/g, "</b>Recomendación:");
+  .replace(/Recomendación:/g, "</b>Recomendación:")
+  .replace(/Cancelar/gi, '<span class="badge cancelar">Cancelar</span>')
+  .replace(/Mantener/gi, '<span class="badge mantener">Mantener</span>')
+  .replace(/Revisar/gi, '<span class="badge revisar">Revisar</span>');
   }catch(e){
     $("answer").textContent = "Error conectando con IA: " + e.message;
   }
