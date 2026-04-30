@@ -490,6 +490,13 @@ function showTab(id){
 document.addEventListener("DOMContentLoaded",()=>{
   const saved = Number(localStorage.getItem("totalSaving") || 0);
 $("savingTotal").textContent = saved.toFixed(2) + " €";
+  if (localStorage.getItem("cancelled_Netflix")) {
+  console.log("Netflix ya cancelado");
+}
+
+if (localStorage.getItem("cancelled_Spotify")) {
+  console.log("Spotify ya cancelado");
+}
   $("aiBtn").addEventListener("click",parseAI);
   $("manualOpenBtn").addEventListener("click",()=>{
     $("manualBox").style.display = $("manualBox").style.display === "none" ? "block" : "none";
