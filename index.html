@@ -486,6 +486,8 @@ function showTab(id){
 }
 
 document.addEventListener("DOMContentLoaded",()=>{
+  const saved = Number(localStorage.getItem("totalSaving") || 0);
+$("savingTotal").textContent = saved.toFixed(2) + " €";
   $("aiBtn").addEventListener("click",parseAI);
   $("manualOpenBtn").addEventListener("click",()=>{
     $("manualBox").style.display = $("manualBox").style.display === "none" ? "block" : "none";
@@ -502,21 +504,25 @@ document.addEventListener("DOMContentLoaded",()=>{
 
   loadFromSupabase();
 });
-  function cancelService(service) {
+ function cancelService(service) {
   const links = {
-    Netflix: { url: "https://help.netflix.com/es/node/407", price: 6.99 },
-    Spotify: { url: "https://support.spotify.com/es/article/cancel-premium/", price: 11.99 }
+    Netflix: "https://help.netflix.com/es/node/407",
+    Spotify: "https://support.spotify.com/es/article/cancel-premium/"
   };
 
-  const item = links[service];
+  const prices = {
+    Netflix: 6.99,
+    Spotify: 11.99
+  };
 
-  if (!item) return;
+  // 👉 Guardamos el ahorro
+  const currentSaving = Number(localStorage.getItem("totalSaving") || 0);
+  const newSaving = currentSaving + (prices[service] || 0);
 
-  localStorage.setItem("lastSaving", item.price);
+  localStorage.setItem("totalSaving", newSaving);
 
-  alert(`Perfecto. Si cancelás ${service}, podrías ahorrar ${item.price}€ al mes.`);
-
-  window.open(item.url, "_blank");
+  // 👉 Abrimos la página real
+  window.open(links[service], "_blank");
 }
 </script>
 </body>
