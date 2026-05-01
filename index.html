@@ -451,6 +451,9 @@ async function askAI(question){
     const answerEl = $("answer");
 
     let formatted = (data.answer || "Sin respuesta")
+      formatted = formatted.replace(/Usuario/gi, "Santiago");
+    const total = Number($("total").textContent.replace(",", "."));
+formatted = `💸 Santiago, estás gastando ${$("total").textContent} al mes.<br><br>` + formatted;
       .replace(/\n/g, "<br>")
       .replace(/\*\*/g, "")
       .replace(/###/g, "<br><b>")
@@ -570,7 +573,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("manualBtn").addEventListener("click", addManual);
   $("search").addEventListener("input", render);
-  $("advisorBtn").addEventListener("click", () => askAI($("advisorInput").value));
+  $("advisorBtn").addEventListener("click", () => {
+  const input = $("advisorInput").value.trim();
+  if (!input) {
+    $("answer").textContent = "Escribí algo tipo: ¿Qué debería cancelar?";
+    return;
+  }
+  askAI(input);
+});
   $("notifyBtn").addEventListener("click", activateNotifications);
   $("upcomingBtn").addEventListener("click", showUpcoming);
 
