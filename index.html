@@ -27,6 +27,7 @@
     .primary{width:100%;border:0;border-radius:18px;padding:15px;margin-top:12px;background:linear-gradient(90deg,#a333ea,#6d28d9);color:white;font-size:17px;font-weight:900}
     .secondary{width:100%;border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:13px;margin-top:10px;background:rgba(255,255,255,.07);color:white;font-size:17px;font-weight:850}
     .subCard{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:18px;margin:14px 0}
+    .cancelled-card{opacity:.55;filter:grayscale(.4)}
     .subTop{display:flex;justify-content:space-between;gap:12px}
     .subTop h3{font-size:29px;margin:0}
     .price{text-align:right;font-size:29px;font-weight:900}
@@ -37,48 +38,13 @@
     .actions button{flex:1;padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:white;font-weight:800}
     .answer{margin-top:14px;padding:16px;border-radius:18px;background:rgba(255,255,255,.08);color:#d8ccff;white-space:pre-line;font-size:17px;line-height:1.35}
     .nav{position:fixed;left:18px;right:18px;bottom:18px;max-width:520px;margin:auto;display:flex;justify-content:space-around;padding:14px;border-radius:26px;background:rgba(13,7,25,.96);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(12px);z-index:20}
-    .nav button{background:none;border:0;color:#d8ccff;font-size:18px;font-weight:900}
+    .nav button{background:none;border:0;color:#d8ccff;font-size:16px;font-weight:900}
     .nav button.active{color:white}
-
-    .badge {
-      display:inline-block;
-      padding:4px 10px;
-      border-radius:999px;
-      font-weight:800;
-      font-size:14px;
-      margin-right:6px;
-    }
-
-    .cancelar { background:#3a0f0f; color:#f87171; }
-
-    .cancel-btn {
-      display:block;
-      width:100%;
-      margin-top:18px;
-      padding:14px;
-      border:none;
-      border-radius:16px;
-      background:#ff4d4d;
-      color:white;
-      font-weight:900;
-      font-size:17px;
-      cursor:pointer;
-    }
-
-    .disabled-btn {
-      .cancelled-card {
-  opacity: 0.55;
-  filter: grayscale(0.4);
-}
-
-.cancelled-label {
-  color: #4ade80;
-  font-weight: 900;
-}
-      background:#14532d;
-      opacity:0.8;
-      cursor:not-allowed;
-    }
+    .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:800;font-size:14px;margin-right:6px}
+    .cancelar{background:#3a0f0f;color:#f87171}
+    .cancel-btn{display:block;width:100%;margin-top:18px;padding:14px;border:none;border-radius:16px;background:#ff4d4d;color:white;font-weight:900;font-size:17px;cursor:pointer}
+    .disabled-btn{background:#14532d!important;opacity:.85;cursor:not-allowed!important}
+    .live-number{font-size:46px;font-weight:950;margin-top:10px;color:#fff}
   </style>
 </head>
 
@@ -89,28 +55,76 @@
     <p>Detectá. Decidí. Ahorrá.</p>
   </header>
 
- <main id="live" class="screen">
-  <section class="card hero">
-    <h2>💸 Dinero en tiempo real</h2>
-    <p>Esto es lo que estás gastando ahora mismo</p>
+  <main id="home" class="screen active">
+    <section class="card hero">
+      <div class="label">Pagás al mes</div>
+      <div class="total" id="total">0,00 €</div>
+      <div class="muted" id="yearlyTotal">0,00 € al año</div>
+    </section>
 
-    <div id="liveMoney" style="font-size:42px;font-weight:900;margin-top:10px;">
-      0,00 €
-    </div>
+    <section class="grid">
+      <div class="card mini">
+        <div class="label">Próximo cobro</div>
+        <strong id="nextCharge">—</strong>
+      </div>
 
-    <div class="muted" id="liveDetail">
-      calculando...
-    </div>
-  </section>
+      <div class="card mini">
+        <div class="label">Ahorro posible</div>
+        <strong id="savingTotal">0,00 €</strong>
+        <button id="shareBtn" class="primary" style="margin-top:10px;">💸 Compartir</button>
+      </div>
+    </section>
 
-  <section class="card">
-    <h2>Impacto real</h2>
+    <section class="card">
+      <h2>Detectá tus suscripciones</h2>
+      <p>Pegá tus gastos o recordatorios y armamos tu lista.</p>
 
-    <p id="perMinute"></p>
-    <p id="perHour"></p>
-    <p id="perDay"></p>
-  </section>
-</main>
+      <textarea id="aiInput" placeholder="Ej:
+Spotify 11.99 mensual renovación 9/5
+Netflix 6.99 mensual
+Canva 120 anual"></textarea>
+
+      <button class="primary" id="aiBtn">✨ Detectar mis suscripciones</button>
+      <button class="secondary" id="manualOpenBtn">+ Agregar manualmente</button>
+    </section>
+
+    <section class="card" id="manualBox" style="display:none">
+      <h2>Agregar suscripción</h2>
+      <input id="mName" placeholder="Nombre" />
+      <input id="mPrice" type="number" step="0.01" placeholder="Precio" />
+      <input id="mDate" type="date" />
+
+      <select id="mFrequency">
+        <option value="monthly">Mensual</option>
+        <option value="yearly">Anual</option>
+      </select>
+
+      <select id="mUsage">
+        <option value="alta">Uso alto</option>
+        <option value="media">Uso medio</option>
+        <option value="baja">Uso bajo</option>
+      </select>
+
+      <button class="primary" id="manualBtn">Guardar</button>
+    </section>
+  </main>
+
+  <main id="live" class="screen">
+    <section class="card hero">
+      <h2>💸 Dinero en tiempo real</h2>
+      <p>Esto es lo que estás gastando ahora mismo en suscripciones activas.</p>
+
+      <div id="liveMoney" class="live-number">0,00 €</div>
+      <div class="muted" id="liveDetail">Desde que abriste esta pantalla</div>
+    </section>
+
+    <section class="card">
+      <h2>Impacto real</h2>
+      <p id="perMinute">Por minuto: 0,00 €</p>
+      <p id="perHour">Por hora: 0,00 €</p>
+      <p id="perDay">Por día: 0,00 €</p>
+    </section>
+  </main>
 
   <main id="list" class="screen">
     <section class="card">
@@ -142,8 +156,8 @@
 </div>
 
 <nav class="nav">
+  <button id="navHome" class="active">Inicio</button>
   <button id="navLive">Live</button>
-  <button class="active" id="navHome">Inicio</button>
   <button id="navList">Lista</button>
   <button id="navAI">IA</button>
 </nav>
@@ -155,6 +169,7 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 const aiFunctionUrl = "https://gicidxfdikujfomieisw.supabase.co/functions/v1/clever-worker";
 
 let subs = [];
+let liveInterval = null;
 
 const $ = id => document.getElementById(id);
 
@@ -170,16 +185,33 @@ function monthlyCost(s){
   return s.frequency === "yearly" ? price / 12 : price;
 }
 
+function cancelKey(service){
+  return "cancelled_" + String(service || "").toLowerCase().trim();
+}
+
+function isCancelled(service){
+  return localStorage.getItem(cancelKey(service)) === "true";
+}
+
+function markCancelled(service){
+  localStorage.setItem(cancelKey(service), "true");
+}
+
 function daysUntil(dateStr){
   if(!dateStr) return null;
+
   const today = new Date();
   const date = new Date(dateStr);
+
   today.setHours(0,0,0,0);
   date.setHours(0,0,0,0);
+
   return Math.ceil((date - today) / 86400000);
 }
-if (localStorage.getItem("cancelled_" + s.name)) return 0;
+
 function scoreSub(s){
+  if(isCancelled(s.name)) return 0;
+
   let score = 0;
   const m = monthlyCost(s);
 
@@ -195,6 +227,8 @@ function scoreSub(s){
 }
 
 function statusFor(s){
+  if(isCancelled(s.name)) return {text:"✅ Cancelado", cls:"green"};
+
   const score = scoreSub(s);
   if(score >= 7) return {text:"🔴 Cancelar", cls:"red"};
   if(score >= 4) return {text:"🟡 Revisar", cls:"yellow"};
@@ -277,17 +311,16 @@ function parseAI(){
 
     const frequency = line.toLowerCase().includes("anual") ? "yearly" : "monthly";
 
-    const sub = {
+    added++;
+
+    saveSub({
       name,
       price,
       frequency,
       date: parseDate(line),
       usage:"media",
       source:"IA"
-    };
-
-    added++;
-    saveSub(sub);
+    });
   });
 
   $("aiInput").value = "";
@@ -300,58 +333,48 @@ function addManual(){
 
   if(!name || !price) return alert("Completá nombre y precio.");
 
-  const sub = {
+  saveSub({
     name,
     price,
     date: $("mDate").value || null,
     frequency: $("mFrequency").value,
     usage: $("mUsage").value,
     source:"manual"
-  };
+  });
 
   $("mName").value = "";
   $("mPrice").value = "";
   $("mDate").value = "";
   $("manualBox").style.display = "none";
-
-  saveSub(sub);
 }
 
 async function removeSub(id){
   if(!id) return;
+
   await supabaseClient.from("subscriptions").delete().eq("id", id);
   await loadFromSupabase();
 }
-function cancelKey(service){
-  return "cancelled_" + String(service || "").toLowerCase().trim();
-}
 
-function isCancelled(service){
-  return localStorage.getItem(cancelKey(service)) === "true";
-}
-
-function markCancelled(service){
-  localStorage.setItem(cancelKey(service), "true");
-}
 function render(){
   const search = ($("search")?.value || "").toLowerCase();
   const filtered = subs.filter(s => String(s.name || "").toLowerCase().includes(search));
 
   const activeSubs = subs.filter(s => !isCancelled(s.name));
-const total = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
-  const potentialSaving = subs
-  .filter(s => !isCancelled(s.name))
-  .filter(s => scoreSub(s) >= 4)
-  .reduce((a, s) => a + monthlyCost(s), 0);
+  const total = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
 
   const saved = Number(localStorage.getItem("totalSaving") || 0);
 
+  const potentialSaving = subs
+    .filter(s => !isCancelled(s.name))
+    .filter(s => scoreSub(s) >= 4)
+    .reduce((a,s) => a + monthlyCost(s), 0);
+
   $("total").textContent = money(total);
   $("yearlyTotal").textContent = money(total * 12) + " al año";
-  $("savingTotal").textContent = money(saved) + " (podrías ahorrar " + money(potentialSaving) + ")";
- $("count").textContent = activeSubs.length;
+  $("savingTotal").textContent = money(saved) + " / potencial " + money(potentialSaving);
+  $("count").textContent = activeSubs.length;
 
-  const next = subs
+  const next = activeSubs
     .filter(s => s.date)
     .sort((a,b) => new Date(a.date) - new Date(b.date))[0];
 
@@ -366,7 +389,7 @@ const total = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
       : "Sin fecha de renovación";
 
     return `
-     <div class="subCard ${cancelled ? "cancelled-card" : ""}">
+      <div class="subCard ${cancelled ? "cancelled-card" : ""}">
         <div class="subTop">
           <div>
             <h3>${s.name}</h3>
@@ -379,12 +402,14 @@ const total = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
         <div><b>Mensual real:</b> ${money(monthlyCost(s))}</div>
         <div><b>Score IA:</b> ${scoreSub(s)}/10</div>
 
-  <div class="actions">
-  ${cancelled 
-    ? `<button disabled class="disabled-btn">Cancelado ✅</button>` 
-    : `<button onclick="cancelService('${s.name}')">Cancelar</button>`}
-  <button onclick="removeSub(${s.id})">Eliminar</button>
-</div>
+        <div class="actions">
+          ${
+            cancelled
+              ? `<button disabled class="disabled-btn">Cancelado ✅</button>`
+              : `<button onclick="cancelService('${String(s.name).replace(/'/g, "\\'")}')">Cancelar</button>`
+          }
+          <button onclick="removeSub(${s.id})">Eliminar</button>
+        </div>
       </div>
     `;
   }).join("");
@@ -393,13 +418,15 @@ const total = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
 }
 
 function renderRank(){
-  if(!subs.length){
-    $("rankList").textContent = "Todavía no hay datos suficientes.";
+  const activeSubs = subs.filter(s => !isCancelled(s.name));
+
+  if(!activeSubs.length){
+    $("rankList").textContent = "No hay suscripciones activas para revisar.";
     return;
   }
 
-  const top = [...subs].sort((a,b) => monthlyCost(b) - monthlyCost(a)).slice(0,3);
-  const priority = [...subs].sort((a,b) => scoreSub(b) - scoreSub(a)).slice(0,3);
+  const top = [...activeSubs].sort((a,b) => monthlyCost(b) - monthlyCost(a)).slice(0,3);
+  const priority = [...activeSubs].sort((a,b) => scoreSub(b) - scoreSub(a)).slice(0,3);
 
   $("rankList").innerHTML =
     `<b>Top gastos:</b><br><br>` +
@@ -409,8 +436,11 @@ function renderRank(){
 }
 
 async function askAI(question){
-  if(!subs.length){
-    $("answer").textContent = "No tenés suscripciones cargadas.";
+  const activeSubs = subs.filter(s => !isCancelled(s.name));
+  const cancelled = subs.filter(s => isCancelled(s.name)).map(s => s.name);
+
+  if(!activeSubs.length){
+    $("answer").textContent = "No tenés suscripciones activas para analizar.";
     return;
   }
 
@@ -422,16 +452,12 @@ async function askAI(question){
       headers:{
         "Content-Type":"application/json"
       },
-      const cancelled = subs
-  .filter(s => localStorage.getItem("cancelled_" + s.name))
-  .map(s => s.name);
-
-body: JSON.stringify({
-  subs,
-  cancelled,
-  userName: "Santiago",
-  question: question || "Analizá mis suscripciones y decime qué cancelar."
-})
+      body: JSON.stringify({
+        subs: activeSubs,
+        cancelled,
+        userName: "Santiago",
+        question: question || "Analizá mis suscripciones y decime qué cancelar."
+      })
     });
 
     const text = await res.text();
@@ -451,17 +477,21 @@ body: JSON.stringify({
 
     const answerEl = $("answer");
 
-   let formatted = (data.answer || "Sin respuesta")
-  .replace(/\n/g, "<br>")
-  .replace(/\*\*/g, "")
-  .replace(/###/g, "<br><b>")
-  .replace(/Recomendación:/g, "</b>Recomendación:")
-  .replace(/Cancelar/gi, '<span class="badge cancelar">Cancelar</span>');
+    const formatted = (data.answer || "Sin respuesta")
+      .replace(/Usuario/gi, "Santiago")
+      .replace(/\n/g, "<br>")
+      .replace(/\*\*/g, "")
+      .replace(/###/g, "<br><b>")
+      .replace(/Recomendación:/g, "</b>Recomendación:")
+      .replace(/Cancelar/gi, '<span class="badge cancelar">Cancelar</span>');
 
     answerEl.innerHTML = formatted;
 
-    addCancelButtonIfNeeded("Netflix", formatted, answerEl);
-    addCancelButtonIfNeeded("Spotify", formatted, answerEl);
+    activeSubs.forEach(s => {
+      if(formatted.toLowerCase().includes(String(s.name).toLowerCase())){
+        addCancelButtonIfNeeded(s.name, formatted, answerEl);
+      }
+    });
 
   }catch(e){
     $("answer").textContent = "Error conectando con IA: " + e.message;
@@ -469,11 +499,9 @@ body: JSON.stringify({
 }
 
 function addCancelButtonIfNeeded(service, formatted, answerEl){
-  if(!formatted.toLowerCase().includes(service.toLowerCase())) return;
-
   const btn = document.createElement("button");
 
-  if(localStorage.getItem("cancelled_" + service)){
+  if(isCancelled(service)){
     btn.textContent = service + " ya cancelado ✅";
     btn.disabled = true;
     btn.className = "cancel-btn disabled-btn";
@@ -487,7 +515,9 @@ function addCancelButtonIfNeeded(service, formatted, answerEl){
 }
 
 function showUpcoming(){
-  const upcoming = subs
+  const activeSubs = subs.filter(s => !isCancelled(s.name));
+
+  const upcoming = activeSubs
     .filter(s => s.date)
     .sort((a,b) => new Date(a.date) - new Date(b.date))
     .slice(0,5);
@@ -522,11 +552,14 @@ function showTab(id){
   document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
 
   if(id === "home") $("navHome").classList.add("active");
+  if(id === "live") $("navLive").classList.add("active");
   if(id === "list") $("navList").classList.add("active");
   if(id === "ai") $("navAI").classList.add("active");
-  if (id !== "live" && liveInterval) {
-  clearInterval(liveInterval);
-}
+
+  if(id !== "live" && liveInterval){
+    clearInterval(liveInterval);
+    liveInterval = null;
+  }
 
   window.scrollTo({top:0, behavior:"smooth"});
 }
@@ -537,10 +570,8 @@ function cancelService(service){
     Spotify: "https://support.spotify.com/es/article/cancel-premium/"
   };
 
-  const prices = {
-    Netflix: 6.99,
-    Spotify: 11.99
-  };
+  const priceFromList = subs.find(s => String(s.name).toLowerCase() === String(service).toLowerCase());
+  const price = priceFromList ? monthlyCost(priceFromList) : 0;
 
   if(isCancelled(service)){
     alert(`${service} ya figura como cancelado en SubAlert.`);
@@ -549,14 +580,14 @@ function cancelService(service){
   }
 
   const currentSaving = Number(localStorage.getItem("totalSaving") || 0);
-  const newSaving = currentSaving + (prices[service] || 0);
+  const newSaving = currentSaving + price;
 
   localStorage.setItem("totalSaving", newSaving);
   markCancelled(service);
 
   $("savingTotal").textContent = money(newSaving);
 
-  alert(`Perfecto. Si cancelás ${service}, podrías ahorrar ${money(prices[service] || 0)} al mes.`);
+  alert(`Perfecto. Si cancelás ${service}, podrías ahorrar ${money(price)} al mes.`);
 
   render();
 
@@ -564,23 +595,23 @@ function cancelService(service){
     window.open(links[service], "_blank");
   }
 }
-let liveInterval;
 
-function startLiveCounter() {
-  if (liveInterval) clearInterval(liveInterval);
+function startLiveCounter(){
+  if(liveInterval) clearInterval(liveInterval);
 
   const activeSubs = subs.filter(s => !isCancelled(s.name));
-  const monthly = activeSubs.reduce((a,s)=>a+monthlyCost(s),0);
-
+  const monthly = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
   const perSecond = monthly / (30 * 24 * 60 * 60);
 
-  let total = 0;
+  let liveTotal = 0;
 
-  function update() {
-    total += perSecond;
+  function update(){
+    liveTotal += perSecond;
 
-    $("liveMoney").textContent = money(total);
-    $("liveDetail").textContent = "Desde que abriste la app";
+    $("liveMoney").textContent = money(liveTotal);
+    $("liveDetail").textContent = activeSubs.length
+      ? "Desde que abriste esta pantalla"
+      : "No hay suscripciones activas";
 
     $("perMinute").textContent = "Por minuto: " + money(perSecond * 60);
     $("perHour").textContent = "Por hora: " + money(perSecond * 3600);
@@ -590,6 +621,7 @@ function startLiveCounter() {
   update();
   liveInterval = setInterval(update, 1000);
 }
+
 document.addEventListener("DOMContentLoaded", () => {
   const saved = Number(localStorage.getItem("totalSaving") || 0);
   $("savingTotal").textContent = money(saved);
@@ -603,22 +635,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("manualBtn").addEventListener("click", addManual);
   $("search").addEventListener("input", render);
+
   $("advisorBtn").addEventListener("click", () => {
-  const input = $("advisorInput").value.trim();
-  if (!input) {
-    $("answer").textContent = "Escribí algo tipo: ¿Qué debería cancelar?";
-    return;
-  }
-  askAI(input);
-});
+    const input = $("advisorInput").value.trim();
+
+    if(!input){
+      $("answer").textContent = "Escribí algo tipo: ¿Qué debería cancelar?";
+      return;
+    }
+
+    askAI(input);
+  });
+
   $("notifyBtn").addEventListener("click", activateNotifications);
   $("upcomingBtn").addEventListener("click", showUpcoming);
 
   $("navHome").addEventListener("click", () => showTab("home"));
   $("navLive").addEventListener("click", () => {
-  showTab("live");
-  startLiveCounter();
-});
+    showTab("live");
+    startLiveCounter();
+  });
   $("navList").addEventListener("click", () => showTab("list"));
   $("navAI").addEventListener("click", () => showTab("ai"));
 
