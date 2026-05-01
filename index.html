@@ -62,10 +62,21 @@
   </header>
 
   <main id="home" class="screen active">
-    <section class="card hero">
-      <div class="label">Pagás al mes</div>
-      <div class="total" id="total">0,00 €</div>
-      <div class="muted" id="yearlyTotal">0,00 € al año</div>
+   <h2>💸 Esto es lo que estás perdiendo</h2>
+
+<div style="font-size:48px;font-weight:900;margin-top:10px;">
+  <span id="total">0,00 €</span>
+</div>
+
+<div style="margin-top:8px;font-size:18px;color:#f87171;font-weight:700;">
+  cada mes
+</div>
+
+<div style="margin-top:14px;font-size:16px;color:#d8ccff;">
+  ≈ <span id="yearlyTotal">0,00 €</span> al año
+</div>
+    <div id="painMessage" style="margin-top:14px;font-size:17px;color:#facc15;font-weight:700;">
+</div>
     </section>
 
     <section class="grid">
@@ -367,7 +378,17 @@ function render(){
 
   const activeSubs = subs.filter(s => !isCancelled(s.name));
   const total = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
+const pain = $("painMessage");
 
+if (pain) {
+  if(total > 50){
+    pain.textContent = "🔥 Esto ya es un gasto serio… podrías viajar con esto.";
+  } else if(total > 20){
+    pain.textContent = "⚠️ Esto parece poco… pero suma fuerte.";
+  } else {
+    pain.textContent = "👀 Parece bajo… pero igual se acumula.";
+  }
+}
   const saved = Number(localStorage.getItem("totalSaving") || 0);
 
   const potentialSaving = subs
