@@ -603,14 +603,13 @@ function startLiveCounter(){
   const monthly = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
   const perSecond = monthly / (30 * 24 * 60 * 60);
 
-  let liveTotal = 0;
+  let total = monthly;
 
   function update(){
     liveTotal += perSecond;
 
     $("liveMoney").textContent = money(liveTotal);
-    $("liveDetail").textContent = activeSubs.length
-      ? "Desde que abriste esta pantalla"
+   $("liveDetail").textContent = "💸 Este dinero se está yendo ahora mismo";
       : "No hay suscripciones activas";
 
     $("perMinute").textContent = "Por minuto: " + money(perSecond * 60);
