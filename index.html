@@ -66,6 +66,15 @@
     }
 
     .disabled-btn {
+      .cancelled-card {
+  opacity: 0.55;
+  filter: grayscale(0.4);
+}
+
+.cancelled-label {
+  color: #4ade80;
+  font-weight: 900;
+}
       background:#14532d;
       opacity:0.8;
       cursor:not-allowed;
@@ -345,19 +354,30 @@ async function removeSub(id){
   await supabaseClient.from("subscriptions").delete().eq("id", id);
   await loadFromSupabase();
 }
+function cancelKey(service){
+  return "cancelled_" + String(service || "").toLowerCase().trim();
+}
 
+function isCancelled(service){
+  return localStorage.getItem(cancelKey(service)) === "true";
+}
+
+function markCancelled(service){
+  localStorage.setItem(cancelKey(service), "true");
+}
 function render(){
   const search = ($("search")?.value || "").toLowerCase();
   const filtered = subs.filter(s => String(s.name || "").toLowerCase().includes(search));
 
-  const total = subs.reduce((a,s) => a + monthlyCost(s), 0);
+  const activeSubs = subs.filter(s => !isCancelled(s.name));
+const total = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
 
   const saved = Number(localStorage.getItem("totalSaving") || 0);
 
   $("total").textContent = money(total);
   $("yearlyTotal").textContent = money(total * 12) + " al año";
   $("savingTotal").textContent = money(saved);
-  $("count").textContent = subs.length;
+ $("count").textContent = activeSubs.length;
 
   const next = subs
     .filter(s => s.date)
@@ -366,6 +386,7 @@ function render(){
   $("nextCharge").textContent = next ? next.name : "—";
 
   $("subsList").innerHTML = filtered.map(s => {
+    const cancelled = isCancelled(s.name);
     const status = statusFor(s);
     const d = daysUntil(s.date);
     const dateText = s.date
@@ -373,7 +394,7 @@ function render(){
       : "Sin fecha de renovación";
 
     return `
-      <div class="subCard">
+     <div class="subCard ${cancelled ? "cancelled-card" : ""}">
         <div class="subTop">
           <div>
             <h3>${s.name}</h3>
@@ -387,8 +408,13 @@ function render(){
         <div><b>Score IA:</b> ${scoreSub(s)}/10</div>
 
         <div class="actions">
-          <button onclick="removeSub(${s.id})">Eliminar</button>
-        </div>
+  ${
+    cancelled
+      ? `<button disabled class="disabled-btn">Cancelado ✅</button>`
+      : `<button onclick="cancelService('${s.name}')">Cancelar</button>`
+  }
+  <button onclick="removeSub(${s.id})">Eliminar</button>
+</div>
       </div>
     `;
   }).join("");
@@ -538,9 +564,9 @@ function cancelService(service){
     Spotify: 11.99
   };
 
-  if(localStorage.getItem("cancelled_" + service)){
-    alert(`${service} ya figura como cancelado en SubAlert. No sumamos el ahorro otra vez.`);
-    window.open(links[service], "_blank");
+  if(isCancelled(service)){
+    alert(`${service} ya figura como cancelado en SubAlert.`);
+    if(links[service]) window.open(links[service], "_blank");
     return;
   }
 
@@ -548,13 +574,17 @@ function cancelService(service){
   const newSaving = currentSaving + (prices[service] || 0);
 
   localStorage.setItem("totalSaving", newSaving);
-  localStorage.setItem("cancelled_" + service, "true");
+  markCancelled(service);
 
   $("savingTotal").textContent = money(newSaving);
 
-  alert(`Perfecto. Si cancelás ${service}, podrías ahorrar ${money(prices[service])} al mes.`);
+  alert(`Perfecto. Si cancelás ${service}, podrías ahorrar ${money(prices[service] || 0)} al mes.`);
 
-  window.open(links[service], "_blank");
+  render();
+
+  if(links[service]){
+    window.open(links[service], "_blank");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
