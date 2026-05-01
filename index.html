@@ -373,6 +373,9 @@
   <strong id="savingTotal">0,00 €</strong>
   <div class="micro-label" id="potentialSaving">Potencial: 0,00 €</div>
   <button id="shareBtn" class="mini-share">Compartir</button>
+       <button class="secondary" onclick="resetSavings()" style="font-size:13px;padding:8px;margin-top:8px;">
+  Reiniciar pruebas
+</button>
 </div>
     </section>
 
@@ -905,7 +908,13 @@ function saveUserEmail(){
   localStorage.setItem("userEmail", email);
   alert("Guardado. Se vienen mejoras 🔥");
 }
-
+function resetSavings(){
+  localStorage.removeItem("totalSaving");
+  localStorage.removeItem("cancelled_netflix");
+  localStorage.removeItem("cancelled_spotify");
+  alert("Ahorro reiniciado.");
+  location.reload();
+}
 document.addEventListener("DOMContentLoaded", () => {
   const saved = Number(localStorage.getItem("totalSaving") || 0);
   $("savingTotal").textContent = money(saved);
