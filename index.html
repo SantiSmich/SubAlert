@@ -210,7 +210,7 @@ function daysUntil(dateStr){
   date.setHours(0,0,0,0);
   return Math.ceil((date - today) / 86400000);
 }
-
+if (localStorage.getItem("cancelled_" + s.name)) return 0;
 function scoreSub(s){
   let score = 0;
   const m = monthlyCost(s);
@@ -371,12 +371,16 @@ function render(){
 
   const activeSubs = subs.filter(s => !isCancelled(s.name));
 const total = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
+  const potentialSaving = subs
+  .filter(s => !isCancelled(s.name))
+  .filter(s => scoreSub(s) >= 4)
+  .reduce((a, s) => a + monthlyCost(s), 0);
 
   const saved = Number(localStorage.getItem("totalSaving") || 0);
 
   $("total").textContent = money(total);
   $("yearlyTotal").textContent = money(total * 12) + " al año";
-  $("savingTotal").textContent = money(saved);
+  $("savingTotal").textContent = money(saved) + " (podrías ahorrar " + money(potentialSaving) + ")";
  $("count").textContent = activeSubs.length;
 
   const next = subs
@@ -450,11 +454,16 @@ async function askAI(question){
       headers:{
         "Content-Type":"application/json"
       },
-      body:JSON.stringify({
-        subs,
-        userName: "Santiago",
-        question: question || "Analizá mis suscripciones y decime qué cancelar."
-      })
+      const cancelled = subs
+  .filter(s => localStorage.getItem("cancelled_" + s.name))
+  .map(s => s.name);
+
+body: JSON.stringify({
+  subs,
+  cancelled,
+  userName: "Santiago",
+  question: question || "Analizá mis suscripciones y decime qué cancelar."
+})
     });
 
     const text = await res.text();
