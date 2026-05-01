@@ -36,6 +36,12 @@
     .green{color:#4ade80}.yellow{color:#facc15}.red{color:#f87171}
     .actions{display:flex;gap:8px;margin-top:14px}
     .actions button{flex:1;padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:white;font-weight:800}
+    .live-number {
+  transition: transform 0.2s ease;
+}
+.live-number.updating {
+  transform: scale(1.05);
+}
     .answer{margin-top:14px;padding:16px;border-radius:18px;background:rgba(255,255,255,.08);color:#d8ccff;white-space:pre-line;font-size:17px;line-height:1.35}
     .nav{position:fixed;left:18px;right:18px;bottom:18px;max-width:520px;margin:auto;display:flex;justify-content:space-around;padding:14px;border-radius:26px;background:rgba(13,7,25,.96);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(12px);z-index:20}
     .nav button{background:none;border:0;color:#d8ccff;font-size:16px;font-weight:900}
@@ -605,17 +611,25 @@ function startLiveCounter(){
 
   let total = monthly;
 
-  function update(){
-    liveTotal += perSecond;
+ function update() {
+  total += perSecond;
 
-    $("liveMoney").textContent = money(liveTotal);
-   $("liveDetail").textContent = "💸 Este dinero se está yendo ahora mismo";
-      : "No hay suscripciones activas";
+  const el = $("liveMoney");
 
-    $("perMinute").textContent = "Por minuto: " + money(perSecond * 60);
-    $("perHour").textContent = "Por hora: " + money(perSecond * 3600);
-    $("perDay").textContent = "Por día: " + money(perSecond * 86400);
-  }
+  el.textContent = money(total);
+
+  el.classList.add("updating");
+
+  setTimeout(() => {
+    el.classList.remove("updating");
+  }, 200);
+
+  $("liveDetail").textContent = "💸 Este dinero se está yendo ahora mismo";
+
+  $("perMinute").textContent = "Por minuto: " + money(perSecond * 60);
+  $("perHour").textContent = "Por hora: " + money(perSecond * 3600);
+  $("perDay").textContent = "Por día: " + money(perSecond * 86400);
+}
 
   update();
   liveInterval = setInterval(update, 1000);
