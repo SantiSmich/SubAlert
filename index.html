@@ -8,6 +8,7 @@
 
   <style>
     *{box-sizing:border-box}
+
     :root{
       --bg:#0b0218;
       --card:rgba(255,255,255,.085);
@@ -83,6 +84,7 @@
       box-shadow:0 24px 70px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.13);
       backdrop-filter:blur(18px);
       overflow:hidden;
+      transform-style:preserve-3d;
     }
 
     .card::before{
@@ -144,9 +146,54 @@
     .muted{color:var(--muted)}
     .label{color:var(--muted);font-size:16px}
 
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-    .mini{min-height:150px}
-    .mini strong{display:block;font-size:26px;margin-top:10px;line-height:1.08}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+    .mini{
+      min-height:135px;
+      padding:18px;
+    }
+
+    .mini strong{
+      display:block;
+      font-size:26px;
+      margin-top:10px;
+      line-height:1.08;
+    }
+
+    .metric-card{
+      min-height:135px;
+      padding:18px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.13), rgba(255,255,255,.04)),
+        radial-gradient(circle at 80% 10%, rgba(168,85,247,.35), transparent 40%);
+    }
+
+    .metric-card strong{
+      font-size:36px;
+      line-height:1;
+      letter-spacing:-1px;
+      text-shadow:0 4px 18px rgba(168,85,247,.4);
+    }
+
+    .micro-label{
+      margin-top:8px;
+      color:#bfaeff;
+      font-size:14px;
+      font-weight:800;
+      opacity:.85;
+    }
+
+    .mini-share{
+      width:100%;
+      margin-top:14px;
+      padding:11px;
+      border:0;
+      border-radius:16px;
+      color:white;
+      font-weight:950;
+      background:linear-gradient(135deg,#c026d3,#7c3aed,#2563eb);
+      box-shadow:0 10px 26px rgba(124,58,237,.38);
+    }
 
     textarea,input,select{
       width:100%;
@@ -159,10 +206,12 @@
       margin-top:10px;
       outline:none;
     }
+
     textarea:focus,input:focus,select:focus{
       border-color:rgba(168,85,247,.75);
       box-shadow:0 0 0 4px rgba(168,85,247,.14);
     }
+
     textarea{min-height:115px;resize:none}
     button{cursor:pointer}
 
@@ -180,6 +229,7 @@
       transition:.2s ease;
       animation:buttonGlow 2.8s ease-in-out infinite alternate;
     }
+
     .primary:active{transform:scale(.98)}
 
     @keyframes buttonGlow{
@@ -207,55 +257,129 @@
       margin:14px 0;
       box-shadow:0 20px 55px rgba(0,0,0,.24);
     }
+
     .cancelled-card{opacity:.55;filter:grayscale(.55)}
     .subTop{display:flex;justify-content:space-between;gap:12px}
     .subTop h3{font-size:30px;margin:0;letter-spacing:-.6px}
     .price{text-align:right;font-size:30px;font-weight:950}
     .status{display:inline-block;margin:14px 0;padding:8px 13px;border-radius:999px;background:rgba(255,255,255,.1);font-weight:900}
-    .green{color:var(--green)} .yellow{color:var(--yellow)} .red{color:#f87171}
+    .green{color:var(--green)}
+    .yellow{color:var(--yellow)}
+    .red{color:#f87171}
 
     .actions{display:flex;gap:8px;margin-top:14px}
     .actions button{
-      flex:1;padding:11px;border-radius:15px;border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.07);color:white;font-weight:850;
+      flex:1;
+      padding:11px;
+      border-radius:15px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.07);
+      color:white;
+      font-weight:850;
     }
 
     .answer{
-      margin-top:14px;padding:18px;border-radius:22px;background:rgba(255,255,255,.08);
-      color:#d8ccff;white-space:pre-line;font-size:17px;line-height:1.35;
+      margin-top:14px;
+      padding:18px;
+      border-radius:22px;
+      background:rgba(255,255,255,.08);
+      color:#d8ccff;
+      white-space:pre-line;
+      font-size:17px;
+      line-height:1.35;
     }
 
     .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:900;font-size:14px;margin-right:6px}
     .cancelar{background:#3a0f0f;color:#f87171}
+
     .cancel-btn{
-      display:block;width:100%;margin-top:18px;padding:15px;border:none;border-radius:18px;
-      background:#ff4d4d;color:white;font-weight:950;font-size:17px;cursor:pointer;
+      display:block;
+      width:100%;
+      margin-top:18px;
+      padding:15px;
+      border:none;
+      border-radius:18px;
+      background:#ff4d4d;
+      color:white;
+      font-weight:950;
+      font-size:17px;
+      cursor:pointer;
     }
+
     .disabled-btn{background:#14532d!important;opacity:.85;cursor:not-allowed!important}
 
     .live-number{
-      font-size:62px;font-weight:1000;margin-top:18px;color:white;letter-spacing:-2px;
+      font-size:62px;
+      font-weight:1000;
+      margin-top:18px;
+      color:white;
+      letter-spacing:-2px;
       transition:transform .2s ease,text-shadow .2s ease;
       text-shadow:0 0 28px rgba(255,255,255,.18);
     }
-    .live-number.updating{transform:scale(1.055);text-shadow:0 0 34px rgba(168,85,247,.75)}
+
+    .live-number.updating{
+      transform:scale(1.055);
+      text-shadow:0 0 34px rgba(168,85,247,.75);
+    }
 
     .email-box{
-      margin-top:18px;padding:14px;border-radius:22px;border:1px solid rgba(255,255,255,.13);
+      margin-top:14px;
+      padding:12px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.13);
       background:rgba(255,255,255,.055);
     }
-    .privacy-note{margin-top:10px;font-size:13px;color:#bfaeff;line-height:1.3}
+
+    .email-box input{
+      font-size:15px;
+      padding:13px;
+    }
+
+    .email-box .secondary{
+      padding:12px;
+      font-size:15px;
+    }
+
+    .privacy-note{
+      margin-top:10px;
+      font-size:13px;
+      color:#bfaeff;
+      line-height:1.3;
+    }
 
     .nav{
-      position:fixed;left:18px;right:18px;bottom:18px;max-width:520px;margin:auto;
-      display:flex;justify-content:space-around;padding:14px;border-radius:30px;
-      background:rgba(8,4,18,.94);border:1px solid rgba(255,255,255,.15);
-      backdrop-filter:blur(18px);z-index:20;box-shadow:0 20px 60px rgba(0,0,0,.45);
+      position:fixed;
+      left:18px;
+      right:18px;
+      bottom:18px;
+      max-width:520px;
+      margin:auto;
+      display:flex;
+      justify-content:space-around;
+      padding:14px;
+      border-radius:30px;
+      background:rgba(8,4,18,.94);
+      border:1px solid rgba(255,255,255,.15);
+      backdrop-filter:blur(18px);
+      z-index:20;
+      box-shadow:0 20px 60px rgba(0,0,0,.45);
     }
-    .nav button{background:none;border:0;color:#d8ccff;font-size:16px;font-weight:950}
+
+    .nav button{
+      background:none;
+      border:0;
+      color:#d8ccff;
+      font-size:16px;
+      font-weight:950;
+    }
+
     .nav button.active{color:white}
 
-    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(18px)}
+      to{opacity:1;transform:translateY(0)}
+    }
 
     @media(max-width:420px){
       h1{font-size:41px}
@@ -263,71 +387,8 @@
       .total{font-size:58px}
       .live-number{font-size:56px}
       .mini strong{font-size:23px}
+      .metric-card strong{font-size:31px}
     }
-    .metric-card{
-  min-height:135px;
-  padding:18px;
-  background:
-    linear-gradient(145deg, rgba(255,255,255,.13), rgba(255,255,255,.04)),
-    radial-gradient(circle at 80% 10%, rgba(168,85,247,.35), transparent 40%);
-}
-
-.metric-card strong{
-  font-size:34px;
-  line-height:1;
-  letter-spacing:-1px;
-}
-
-.micro-label{
-  margin-top:8px;
-  color:#bfaeff;
-  font-size:14px;
-  font-weight:800;
-}
-
-.mini-share{
-  width:100%;
-  margin-top:14px;
-  padding:11px;
-  border:0;
-  border-radius:16px;
-  color:white;
-  font-weight:950;
-  background:linear-gradient(135deg,#c026d3,#7c3aed,#2563eb);
-  box-shadow:0 10px 26px rgba(124,58,237,.38);
-}
-
-.card{
-  transform-style:preserve-3d;
-}
-
-.card:hover{
-  transform:translateY(-2px) scale(1.01);
-}
-
-.grid{
-  gap:10px;
-}
-
-.mini{
-  min-height:135px;
-  padding:18px;
-}
-
-.email-box{
-  margin-top:14px;
-  padding:12px;
-}
-
-.email-box input{
-  font-size:15px;
-  padding:13px;
-}
-
-.email-box .secondary{
-  padding:12px;
-  font-size:15px;
-}
   </style>
 </head>
 
@@ -340,17 +401,17 @@
 
   <main id="home" class="screen active">
     <section class="card hero3d">
-      <div class="pill" id="heroPill">⚡ Auditoría personal de gastos</div>
+      <div class="pill" id="heroPill">✨ Empezá en 10 segundos</div>
       <h2 id="heroTitle">Descubrí cuánto dinero se te va</h2>
 
       <div class="total" id="total">0,00 €</div>
-      <div class="loss-label" id="monthlyLabel">cada mes</div>
+      <div class="loss-label" id="monthlyLabel">sin darte cuenta</div>
 
       <div class="muted" style="margin-top:12px;font-size:18px;">
         <span id="yearlyTotal">0,00 € al año</span>
       </div>
 
-      <div id="painMessage" class="pain"></div>
+      <div id="painMessage" class="pain">Pegá tus gastos y te digo qué cancelar.</div>
 
       <button class="primary" id="heroCta">✨ Detectar mis suscripciones</button>
       <button class="secondary" id="heroLiveBtn">Ver mi pérdida en tiempo real</button>
@@ -358,7 +419,9 @@
       <div class="email-box">
         <input id="userEmail" placeholder="Dejá tu email para activar el modo PRO" />
         <button class="secondary" onclick="saveUserEmail()">Guardar email</button>
-        <div class="privacy-note">🔒 Próximamente: conexión consentida con gastos para detectar suscripciones automáticamente.</div>
+        <div class="privacy-note">
+          🔒 Próximamente: conexión consentida con gastos para detectar suscripciones automáticamente.
+        </div>
       </div>
     </section>
 
@@ -368,16 +431,15 @@
         <strong id="nextCharge">—</strong>
       </div>
 
-     <div class="card mini metric-card">
-  $("savingTotal").textContent = money(realSaving);
-$("potentialSaving").textContent = "Podrías eliminar: " + money(potentialSaving);
-  <strong id="savingTotal">0,00 €</strong>
-  <div class="micro-label" id="potentialSaving">Potencial: 0,00 €</div>
-  <button id="shareBtn" class="mini-share">Compartir</button>
-       <button class="secondary" onclick="resetSavings()" style="font-size:13px;padding:8px;margin-top:8px;">
-  Reiniciar pruebas
-</button>
-</div>
+      <div class="card mini metric-card">
+        <div class="label">Ya eliminaste</div>
+        <strong id="savingTotal">0,00 €</strong>
+        <div class="micro-label" id="potentialSaving">Podrías eliminar: 0,00 €</div>
+        <button id="shareBtn" class="mini-share">Compartir</button>
+        <button class="secondary" onclick="resetSavings()" style="font-size:13px;padding:8px;margin-top:8px;">
+          Reiniciar pruebas
+        </button>
+      </div>
     </section>
 
     <section class="card">
@@ -635,7 +697,11 @@ function render(){
   const search = ($("search")?.value || "").toLowerCase();
   const filtered = subs.filter(s => String(s.name || "").toLowerCase().includes(search));
   const activeSubs = subs.filter(s => !isCancelled(s.name));
+  const cancelledSubs = subs.filter(s => isCancelled(s.name));
+
   const total = activeSubs.reduce((a,s) => a + monthlyCost(s), 0);
+  const realSaving = cancelledSubs.reduce((a,s) => a + monthlyCost(s), 0);
+  const potentialSaving = activeSubs.filter(s => scoreSub(s) >= 4).reduce((a,s) => a + monthlyCost(s), 0);
 
   if(activeSubs.length === 0){
     $("heroPill").textContent = "✨ Empezá en 10 segundos";
@@ -659,15 +725,11 @@ function render(){
       $("painMessage").textContent = "👀 Parece bajo… pero igual se acumula.";
     }
   }
-const cancelledSubs = subs.filter(s => isCancelled(s.name));
-const realSaving = cancelledSubs.reduce((a, s) => a + monthlyCost(s), 0);
-  const saved = Number(localStorage.getItem("totalSaving") || 0);
-  const potentialSaving = activeSubs.filter(s => scoreSub(s) >= 4).reduce((a,s) => a + monthlyCost(s), 0);
 
   $("total").textContent = money(total);
   $("yearlyTotal").textContent = money(total * 12) + " al año";
-  $("savingTotal").textContent = money(saved);
-$("potentialSaving").textContent = "Potencial: " + money(potentialSaving);
+  $("savingTotal").textContent = money(realSaving);
+  $("potentialSaving").textContent = "Podrías eliminar: " + money(potentialSaving);
   $("count").textContent = activeSubs.length;
 
   const next = activeSubs.filter(s => s.date).sort((a,b) => new Date(a.date) - new Date(b.date))[0];
@@ -848,27 +910,27 @@ function cancelService(service){
     Spotify:"https://support.spotify.com/es/article/cancel-premium/"
   };
 
-  const priceFromList = subs.find(s => String(s.name).toLowerCase() === String(service).toLowerCase());
-  const price = priceFromList ? monthlyCost(priceFromList) : 0;
-
   if(isCancelled(service)){
     alert(`${service} ya figura como cancelado en SubAlert.`);
     if(links[service]) window.open(links[service], "_blank");
     return;
   }
 
-  const currentSaving = Number(localStorage.getItem("totalSaving") || 0);
-  const newSaving = currentSaving + price;
-
-  localStorage.setItem("totalSaving", newSaving);
   markCancelled(service);
 
-  $("savingTotal").textContent = money(newSaving);
-  alert(`Perfecto. Si cancelás ${service}, podrías ahorrar ${money(price)} al mes.`);
+  alert(`Perfecto. Marcamos ${service} como cancelado en SubAlert.`);
 
   render();
 
   if(links[service]) window.open(links[service], "_blank");
+}
+
+function resetSavings(){
+  localStorage.removeItem("totalSaving");
+  localStorage.removeItem("cancelled_netflix");
+  localStorage.removeItem("cancelled_spotify");
+  alert("Ahorro reiniciado.");
+  location.reload();
 }
 
 function startLiveCounter(){
@@ -910,21 +972,14 @@ function saveUserEmail(){
   localStorage.setItem("userEmail", email);
   alert("Guardado. Se vienen mejoras 🔥");
 }
-function resetSavings(){
-  localStorage.removeItem("totalSaving");
-  localStorage.removeItem("cancelled_netflix");
-  localStorage.removeItem("cancelled_spotify");
-  alert("Ahorro reiniciado.");
-  location.reload();
-}
-document.addEventListener("DOMContentLoaded", () => {
-  const saved = Number(localStorage.getItem("totalSaving") || 0);
-  $("savingTotal").textContent = money(saved);
 
+document.addEventListener("DOMContentLoaded", () => {
   $("aiBtn").addEventListener("click", parseAI);
+
   $("manualOpenBtn").addEventListener("click", () => {
     $("manualBox").style.display = $("manualBox").style.display === "none" ? "block" : "none";
   });
+
   $("manualBtn").addEventListener("click", addManual);
   $("search").addEventListener("input", render);
 
@@ -954,8 +1009,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   $("shareBtn").addEventListener("click", () => {
-    const saved = Number(localStorage.getItem("totalSaving") || 0);
-    const text = `Estoy ahorrando ${money(saved)} al mes usando SubAlert 💸`;
+    const cancelledSubs = subs.filter(s => isCancelled(s.name));
+    const realSaving = cancelledSubs.reduce((a,s) => a + monthlyCost(s), 0);
+    const text = `Estoy ahorrando ${money(realSaving)} al mes usando SubAlert 💸`;
     navigator.clipboard.writeText(text);
     alert("Texto copiado. Compartilo 😏");
   });
