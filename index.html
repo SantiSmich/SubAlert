@@ -264,6 +264,70 @@
       .live-number{font-size:56px}
       .mini strong{font-size:23px}
     }
+    .metric-card{
+  min-height:135px;
+  padding:18px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.13), rgba(255,255,255,.04)),
+    radial-gradient(circle at 80% 10%, rgba(168,85,247,.35), transparent 40%);
+}
+
+.metric-card strong{
+  font-size:34px;
+  line-height:1;
+  letter-spacing:-1px;
+}
+
+.micro-label{
+  margin-top:8px;
+  color:#bfaeff;
+  font-size:14px;
+  font-weight:800;
+}
+
+.mini-share{
+  width:100%;
+  margin-top:14px;
+  padding:11px;
+  border:0;
+  border-radius:16px;
+  color:white;
+  font-weight:950;
+  background:linear-gradient(135deg,#c026d3,#7c3aed,#2563eb);
+  box-shadow:0 10px 26px rgba(124,58,237,.38);
+}
+
+.card{
+  transform-style:preserve-3d;
+}
+
+.card:hover{
+  transform:translateY(-2px) scale(1.01);
+}
+
+.grid{
+  gap:10px;
+}
+
+.mini{
+  min-height:135px;
+  padding:18px;
+}
+
+.email-box{
+  margin-top:14px;
+  padding:12px;
+}
+
+.email-box input{
+  font-size:15px;
+  padding:13px;
+}
+
+.email-box .secondary{
+  padding:12px;
+  font-size:15px;
+}
   </style>
 </head>
 
@@ -304,11 +368,12 @@
         <strong id="nextCharge">—</strong>
       </div>
 
-      <div class="card mini">
-        <div class="label">Ahorro posible</div>
-        <strong id="savingTotal">0,00 €</strong>
-        <button id="shareBtn" class="primary" style="margin-top:14px;">💸 Compartir</button>
-      </div>
+     <div class="card mini metric-card">
+  <div class="label">Ahorro logrado</div>
+  <strong id="savingTotal">0,00 €</strong>
+  <div class="micro-label" id="potentialSaving">Potencial: 0,00 €</div>
+  <button id="shareBtn" class="mini-share">Compartir</button>
+</div>
     </section>
 
     <section class="card">
@@ -596,7 +661,8 @@ function render(){
 
   $("total").textContent = money(total);
   $("yearlyTotal").textContent = money(total * 12) + " al año";
-  $("savingTotal").textContent = money(saved) + " / potencial " + money(potentialSaving);
+  $("savingTotal").textContent = money(saved);
+$("potentialSaving").textContent = "Potencial: " + money(potentialSaving);
   $("count").textContent = activeSubs.length;
 
   const next = activeSubs.filter(s => s.date).sort((a,b) => new Date(a.date) - new Date(b.date))[0];
