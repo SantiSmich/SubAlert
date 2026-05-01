@@ -89,61 +89,28 @@
     <p>Detectá. Decidí. Ahorrá.</p>
   </header>
 
-  <main id="home" class="screen active">
-    <section class="card hero">
-      <div class="label">Pagás al mes</div>
-      <div class="total" id="total">0,00 €</div>
-      <div class="muted" id="yearlyTotal">0,00 € al año</div>
-    </section>
+ <main id="live" class="screen">
+  <section class="card hero">
+    <h2>💸 Dinero en tiempo real</h2>
+    <p>Esto es lo que estás gastando ahora mismo</p>
 
-    <section class="grid">
-      <div class="card mini">
-        <div class="label">Próximo cobro</div>
-        <strong id="nextCharge">—</strong>
-      </div>
+    <div id="liveMoney" style="font-size:42px;font-weight:900;margin-top:10px;">
+      0,00 €
+    </div>
 
-      <div class="card mini">
-        <div class="label">Ahorro posible</div>
-        <strong id="savingTotal">0,00 €</strong>
-        <button id="shareBtn" class="primary" style="margin-top:10px;">
-          💸 Compartir mi ahorro
-        </button>
-      </div>
-    </section>
+    <div class="muted" id="liveDetail">
+      calculando...
+    </div>
+  </section>
 
-    <section class="card">
-      <h2>Detectá tus suscripciones</h2>
-      <p>Pegá tus gastos o recordatorios y armamos tu lista.</p>
+  <section class="card">
+    <h2>Impacto real</h2>
 
-      <textarea id="aiInput" placeholder="Ej:
-Spotify 11.99 mensual renovación 9/5
-Netflix 6.99 mensual
-Canva 120 anual"></textarea>
-
-      <button class="primary" id="aiBtn">✨ Detectar mis suscripciones</button>
-      <button class="secondary" id="manualOpenBtn">+ Agregar manualmente</button>
-    </section>
-
-    <section class="card" id="manualBox" style="display:none">
-      <h2>Agregar suscripción</h2>
-      <input id="mName" placeholder="Nombre" />
-      <input id="mPrice" type="number" step="0.01" placeholder="Precio" />
-      <input id="mDate" type="date" />
-
-      <select id="mFrequency">
-        <option value="monthly">Mensual</option>
-        <option value="yearly">Anual</option>
-      </select>
-
-      <select id="mUsage">
-        <option value="alta">Uso alto</option>
-        <option value="media">Uso medio</option>
-        <option value="baja">Uso bajo</option>
-      </select>
-
-      <button class="primary" id="manualBtn">Guardar</button>
-    </section>
-  </main>
+    <p id="perMinute"></p>
+    <p id="perHour"></p>
+    <p id="perDay"></p>
+  </section>
+</main>
 
   <main id="list" class="screen">
     <section class="card">
@@ -175,6 +142,7 @@ Canva 120 anual"></textarea>
 </div>
 
 <nav class="nav">
+  <button id="navLive">Live</button>
   <button class="active" id="navHome">Inicio</button>
   <button id="navList">Lista</button>
   <button id="navAI">IA</button>
@@ -556,6 +524,9 @@ function showTab(id){
   if(id === "home") $("navHome").classList.add("active");
   if(id === "list") $("navList").classList.add("active");
   if(id === "ai") $("navAI").classList.add("active");
+  if (id !== "live" && liveInterval) {
+  clearInterval(liveInterval);
+}
 
   window.scrollTo({top:0, behavior:"smooth"});
 }
@@ -593,7 +564,32 @@ function cancelService(service){
     window.open(links[service], "_blank");
   }
 }
+let liveInterval;
 
+function startLiveCounter() {
+  if (liveInterval) clearInterval(liveInterval);
+
+  const activeSubs = subs.filter(s => !isCancelled(s.name));
+  const monthly = activeSubs.reduce((a,s)=>a+monthlyCost(s),0);
+
+  const perSecond = monthly / (30 * 24 * 60 * 60);
+
+  let total = 0;
+
+  function update() {
+    total += perSecond;
+
+    $("liveMoney").textContent = money(total);
+    $("liveDetail").textContent = "Desde que abriste la app";
+
+    $("perMinute").textContent = "Por minuto: " + money(perSecond * 60);
+    $("perHour").textContent = "Por hora: " + money(perSecond * 3600);
+    $("perDay").textContent = "Por día: " + money(perSecond * 86400);
+  }
+
+  update();
+  liveInterval = setInterval(update, 1000);
+}
 document.addEventListener("DOMContentLoaded", () => {
   const saved = Number(localStorage.getItem("totalSaving") || 0);
   $("savingTotal").textContent = money(saved);
@@ -619,6 +615,10 @@ document.addEventListener("DOMContentLoaded", () => {
   $("upcomingBtn").addEventListener("click", showUpcoming);
 
   $("navHome").addEventListener("click", () => showTab("home"));
+  $("navLive").addEventListener("click", () => {
+  showTab("live");
+  startLiveCounter();
+});
   $("navList").addEventListener("click", () => showTab("list"));
   $("navAI").addEventListener("click", () => showTab("ai"));
 
