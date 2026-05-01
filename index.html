@@ -369,7 +369,8 @@
       </div>
 
      <div class="card mini metric-card">
-  <div class="label">Ahorro logrado</div>
+  $("savingTotal").textContent = money(realSaving);
+$("potentialSaving").textContent = "Podrías eliminar: " + money(potentialSaving);
   <strong id="savingTotal">0,00 €</strong>
   <div class="micro-label" id="potentialSaving">Potencial: 0,00 €</div>
   <button id="shareBtn" class="mini-share">Compartir</button>
@@ -658,7 +659,8 @@ function render(){
       $("painMessage").textContent = "👀 Parece bajo… pero igual se acumula.";
     }
   }
-
+const cancelledSubs = subs.filter(s => isCancelled(s.name));
+const realSaving = cancelledSubs.reduce((a, s) => a + monthlyCost(s), 0);
   const saved = Number(localStorage.getItem("totalSaving") || 0);
   const potentialSaving = activeSubs.filter(s => scoreSub(s) >= 4).reduce((a,s) => a + monthlyCost(s), 0);
 
