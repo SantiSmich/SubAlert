@@ -961,7 +961,7 @@ function startLiveCounter(){
   liveInterval = setInterval(update, 1000);
 }
 
-function saveUserEmail(){
+async function saveUserEmail(){
   const email = $("userEmail").value.trim();
 
   if(!email || !email.includes("@")){
@@ -969,9 +969,24 @@ function saveUserEmail(){
     return;
   }
 
+  const { error } = await supabaseClient
+    .from("leads")
+    .insert([{
+      email,
+      source: "subalert_home"
+    }]);
+
+  if(error){
+    alert("Error guardando email: " + error.message);
+    return;
+  }
+
   localStorage.setItem("userEmail", email);
-  alert("Guardado. Se vienen mejoras 🔥");
+  $("userEmail").value = "";
+
+  alert("Listo. Activamos tu acceso al modo PRO 🔥");
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
   $("aiBtn").addEventListener("click", parseAI);
