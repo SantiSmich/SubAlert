@@ -984,7 +984,7 @@ async function saveUserEmail(){
 
   localStorage.setItem("userEmail", email);
   $("userEmail").value = "";
-
+$("userStatus").innerText = "🟢 Conectado como " + email;
   alert("Listo. Activamos tu acceso al modo PRO 🔥");
 }
 
