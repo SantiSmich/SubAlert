@@ -986,11 +986,24 @@ async function saveUserEmail(){
   }
 
   const { error } = await supabaseClient
-    .from("leads")
-    .insert([{
-      email,
-      source: "subalert_home"
-    }]);
+  .from("leads")
+  .insert([{
+    email,
+    source: "subalert_home"
+  }]);
+
+const { error: profileError } = await supabaseClient
+  .from("user_profiles")
+  .upsert([{
+    email,
+    country: "ES",
+    currency: "EUR"
+  }], { onConflict: "email" });
+
+if(profileError){
+  alert("Error guardando perfil: " + profileError.message);
+  return;
+}
 
   if(error){
     alert("Error guardando email: " + error.message);
