@@ -600,13 +600,15 @@ async function saveSub(sub){
   const { error } = await supabaseClient
     .from("subscriptions")
     .insert([{
-      name: sub.name,
-      price: sub.price,
-      frequency: sub.frequency,
-      date: sub.date || null,
-      usage: sub.usage || "media",
-      source: sub.source || "app"
-    }]);
+  user_email: localStorage.getItem("userEmail") || null,
+  name: sub.name,
+  price: sub.price,
+  period: sub.frequency,
+  frequency: sub.frequency,
+  date: sub.date || null,
+  usage: sub.usage || "media",
+  source: sub.source || "app"
+}])
 
   if(error){
     alert("Error guardando: " + error.message);
