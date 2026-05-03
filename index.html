@@ -582,10 +582,18 @@ function statusFor(s){
 }
 
 async function loadFromSupabase(){
-  const { data, error } = await supabaseClient
-    .from("subscriptions")
-    .select("*")
-    .order("created_at", { ascending:false });
+  const email = localStorage.getItem("userEmail");
+
+let query = supabaseClient
+  .from("subscriptions")
+  .select("*")
+  .order("created_at", { ascending:false });
+
+if(email){
+  query = query.eq("user_email", email);
+}
+
+const { data, error } = await query;
 
   if(error){
     $("answer").textContent = "Error cargando Supabase: " + error.message;
